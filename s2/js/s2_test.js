@@ -29,7 +29,7 @@
                  'Tocar la misma melodía más rápido',
                  'Repetir la tonalidad inicial al final'],
       correcta: 0,
-      pista: 'Modular es viajar de una tonalidad a otra sin que suene a pegote.' },
+      pista: 'Modular es viajar de una tonalidad a otra de forma coherente, que el oído acepte el cambio.' },
     { tipo: 'multi', titulo: 'Las ventajas del viaje', enunciado: '¿Qué ventajas tiene modular? (marca todas)',
       opciones: [{ t: 'Obras más largas y variadas', ok: true },
                  { t: 'Más riqueza armónica', ok: true },
