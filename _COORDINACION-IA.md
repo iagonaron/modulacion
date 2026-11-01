@@ -7,7 +7,10 @@ El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.h
 ## Registro (lo más reciente arriba · hora de Galicia)
 - 1-nov 21:10 · C1 · HECHO · S1 v48 y S2 v11 (commits 820f5a0 → este): ajuste a pantalla calculado una vez por tamaño (js/controles.js v2), percusión orquestal en las tres cinemáticas,
   diatónica en compases de 4/2 pulsos, cromática con la continuación desde el aterrizaje (n_C_3), partituras sin música de fondo. DESHACER: volver esos ficheros a da53b87.
-- 1-nov 21:10 · C1 · EN CURSO · S3 (carpeta s3/ nueva) y clips del puente (éxito y caída).
+- 1-nov 21:55 · C1 · HECHO · S3 «Construye el puente» (carpeta s3/ nueva, commits c60322d → 33dc4da) y S2 v12 (diatónica con los clips nuevos
+  del puente: entrada + 3 acordes / casilla 4 en adelante; commits c06213a → 437ceb2) + prueba.html con la tarjeta de la S3 (este commit).
+  DESHACER: S2 → volver s2/index.html, s2/js/s2_datos.js, s2/img/D1.webp y s2/video/diatonica.mp4 a 059bf4c; S3 → quitar la tarjeta de prueba.html
+  (volver a 059bf4c) y la carpeta s3/ deja de verse.
 - 1-nov 16:35 · C1 · HECHO · S2 v10: cinemáticas a velocidad constante (la música se adapta: diatónica 126 bpm, cromática 94, enarmónica 100), letrero fijo en cada vídeo, texto del desafío en el centro.
   Ficheros: s2/index.html, s2/js/s2_datos.js, s2/video/*. DESHACER: volver esos ficheros a cd583e5.
 - 1-nov 16:10 · C1 · HECHO · solo s2/index.html: música de fondo casi inaudible en las partituras (0,012) y acordes algo más fuertes. DESHACER: volver s2/index.html al commit anterior.
