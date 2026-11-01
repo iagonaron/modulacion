@@ -9,7 +9,7 @@
   function pinta(cont, D, op){
     op = op || {};
     var VF = Vex.Flow, porS = op.porSistema || 4, tinta = op.tinta || '#2a1d10', acento = op.acento || '#b5402a', tenue = 'rgba(42,29,16,.32)';
-    var ultimo = D[D.length - 1].c, W = op.ancho || cont.clientWidth || 900, filaH = 310;
+    var ultimo = D[D.length - 1].c, W = op.ancho || cont.clientWidth || 900, filaH = op.filaH || 310;
     var nS = Math.ceil(ultimo/porS);
     cont.innerHTML = '';
     var r = new VF.Renderer(cont, VF.Renderer.Backends.SVG); r.resize(W, nS*filaH + 10);
