@@ -8,7 +8,7 @@
 <title>Modulación · Sesión 2</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/s2_test.css?v=1">
+<link rel="stylesheet" href="css/s2_test.css?v=2">
 <style>
 /* Sesión 2 · «Tres formas de viajar». Misma interfaz que la S1 desde el wow (piedra, oro y pergamino), sin la etapa retro. */
 :root{
@@ -359,7 +359,7 @@ body.mundo .camCard:hover{background:#0b1024}
 .regs{display:flex;gap:14px;flex-wrap:wrap;font:700 12.5px var(--f-texto);color:var(--tinta-suave);margin:2px 0 4px}
 .regs span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--c);transform:rotate(45deg) scale(.85)}
 /* desafío */
-.retoMarco{position:relative;width:100%;height:clamp(560px,72vh,700px)}
+.retoMarco{position:relative;width:100%;height:clamp(480px,62vh,590px)}
 /* cierre: el mapa de los tres caminos */
 .mapa{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .mapa div{position:relative;border:2px solid var(--oro);overflow:hidden;aspect-ratio:16/10}
@@ -405,15 +405,15 @@ body.mundo .camCard:hover{background:#0b1024}
   <section class="escena" data-e="caminos">
     <h2>Tres formas de viajar</h2>
     <div class="caminos">
-      <button class="camCard" data-ir="diaCine"><img src="img/D2.webp" alt=""><span><b>Diatónica</b><em>el puente</em><small>A tonalidades cercanas, por un acorde común.</small></span></button>
-      <button class="camCard" data-ir="croCine"><img src="img/C2.webp" alt=""><span><b>Cromática</b><em>la escalera</em><small>Sin acordes comunes, pero sí parecidos: un semitono.</small></span></button>
-      <button class="camCard" data-ir="enaCine"><img src="img/E2.webp" alt=""><span><b>Enarmónica</b><em>el portal</em><small>Reescribir notas para irnos muy lejos.</small></span></button>
+      <button class="camCard" data-ir="diaCine"><img src="img/D2.webp?v=2" alt=""><span><b>Diatónica</b><em>el puente</em><small>A tonalidades cercanas, por un acorde común.</small></span></button>
+      <button class="camCard" data-ir="croCine"><img src="img/C2.webp?v=2" alt=""><span><b>Cromática</b><em>el desnivel</em><small>Sin acordes comunes, pero sí parecidos: un semitono.</small></span></button>
+      <button class="camCard" data-ir="enaCine"><img src="img/E2.webp?v=2" alt=""><span><b>Enarmónica</b><em>el portal</em><small>Reescribir notas para irnos muy lejos.</small></span></button>
     </div>
   </section>
 
   <!-- 3-4 · diatónica -->
   <section class="escena" data-e="diaCine">
-    <div class="marco cine"><video id="vDia" playsinline preload="none" src="video/diatonica.mp4?v=1" poster="img/D1.webp"></video>
+    <div class="marco cine"><video id="vDia" playsinline preload="none" src="video/diatonica.mp4?v=2" poster="img/D1.webp?v=2"></video>
       <div class="titulo" style="--g:#ffd166"><b>Diatónica</b><span>el puente</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vDia" aria-label="Acordes del viaje"></div>
@@ -429,13 +429,13 @@ body.mundo .camCard:hover{background:#0b1024}
 
   <!-- 5-6 · cromática -->
   <section class="escena" data-e="croCine">
-    <div class="marco cine"><video id="vCro" playsinline preload="none" src="video/cromatica.mp4?v=1" poster="img/C1.webp"></video>
-      <div class="titulo" style="--g:#b27cff"><b>Cromática</b><span>la escalera</span></div>
+    <div class="marco cine"><video id="vCro" playsinline preload="none" src="video/cromatica.mp4?v=2" poster="img/C1.webp?v=2"></video>
+      <div class="titulo" style="--g:#b27cff"><b>Cromática</b><span>el desnivel</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vCro" aria-label="Acordes del viaje"></div>
   </section>
   <section class="escena" data-e="croPart">
-    <h2>La escalera, en partitura</h2>
+    <h2>El desnivel, en partitura</h2>
     <div class="pergamino"><div class="tit"><span>Apuntes, pág. 37 · Do mayor → Mi♭ mayor</span><button class="prim flota bOye" aria-label="Escuchar">▶ Escuchar</button></div>
       <div class="regs"><span style="--c:#2f5fbf">Do mayor</span><span style="--c:#7a3fb5">acorde puente</span><span style="--c:#a8740f">Mi♭ mayor</span></div>
       <div class="pent" id="pCro"></div>
@@ -444,7 +444,7 @@ body.mundo .camCard:hover{background:#0b1024}
 
   <!-- 7-8 · enarmónica -->
   <section class="escena" data-e="enaCine">
-    <div class="marco cine"><video id="vEna" playsinline preload="none" src="video/enarmonica.mp4?v=1" poster="img/E1.webp"></video>
+    <div class="marco cine"><video id="vEna" playsinline preload="none" src="video/enarmonica.mp4?v=2" poster="img/E1.webp?v=2"></video>
       <div class="titulo" style="--g:#4dd0e1"><b>Enarmónica</b><span>el portal</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vEna" aria-label="Acordes del viaje"></div>
@@ -466,7 +466,7 @@ body.mundo .camCard:hover{background:#0b1024}
   <!-- 10 · cierre -->
   <section class="escena" data-e="cierre">
     <h2>Ya conoces los tres caminos</h2>
-    <div class="mapa"><div><img src="img/D3.webp" alt=""><b>Diatónica · el puente</b></div><div><img src="img/C3.webp" alt=""><b>Cromática · la escalera</b></div><div><img src="img/E3.webp" alt=""><b>Enarmónica · el portal</b></div></div>
+    <div class="mapa"><div><img src="img/D3.webp?v=2" alt=""><b>Diatónica · el puente</b></div><div><img src="img/C3.webp?v=2" alt=""><b>Cromática · el desnivel</b></div><div><img src="img/E3.webp?v=2" alt=""><b>Enarmónica · el portal</b></div></div>
     <div class="fila"><span class="resTest" id="resTest"></span></div>
   </section>
 
@@ -493,8 +493,8 @@ body.mundo .camCard:hover{background:#0b1024}
 <script>window.MOD_BASE = '../s1/';</script><script src="../s1/js/vexflow.js?v=13"></script>
 <script src="js/sonido.js?v=14"></script>
 <script src="js/pentagrama.js?v=17"></script>
-<script src="js/s2_datos.js?v=1"></script>
-<script src="js/s2_test.js?v=1"></script>
+<script src="js/s2_datos.js?v=3"></script>
+<script src="js/s2_test.js?v=6"></script>
 <script>
 (function(){
   var $ = function(i){ return document.getElementById(i); };
@@ -508,10 +508,10 @@ body.mundo .camCard:hover{background:#0b1024}
   var VOZ = {
     intro:'En la sesión anterior vimos dos formas de viajar con dos fragmentos. El de Mozart no sale de su reino. El de Rachmaninov se va lejos y tarda en volver.|Sin modular, la música tiene sus recursos limitados a los siete acordes de su tonalidad. Es como jugar en dos dimensiones.|Modular nos expande, obras más grandes, más ricas armónicamente, con viajes, contrastes y regresos.',
     definicion:'Dicho de forma muy simple, modular es ir de una tonalidad A a una tonalidad B de forma coherente musicalmente. Coherente quiere decir que el oído tiene que aceptar el cambio.',
-    caminos:'Hoy vemos tres formas de viajar. La diatónica, a tonalidades cercanas, el puente. La cromática, cuando no hay acordes comunes pero sí parecidos, la escalera. Y la enarmónica, el truco para irnos muy lejos, el portal.',
+    caminos:'Hoy vemos tres formas de viajar. La diatónica, a tonalidades cercanas, el puente. La cromática, cuando no hay acordes comunes pero sí parecidos, el desnivel. Y la enarmónica, el truco para irnos muy lejos, el portal.',
     diaCine:'Para ir a una tonalidad cercana, con hasta dos alteraciones de diferencia en la armadura, buscamos un acorde común, un acorde que pertenece a las dos tonalidades. Ese acorde es nuestro puente.',
     diaPart:'Es el ejemplo de los apuntes, de Do mayor a Sol mayor. Vamos paso a paso.',
-    croCine:'¿Y si queremos ir a una tonalidad lejana, que no tiene acordes en común con la nuestra? Buscamos uno parecido, que solo se diferencie por un cromatismo. Ese pequeño cambio es como bajar un escalón.',
+    croCine:'¿Y si queremos ir a una tonalidad lejana, que no tiene acordes en común con la nuestra? Buscamos uno parecido, que solo se diferencie por un cromatismo. Ese pequeño cambio es como saltar un desnivel.',
     croPart:'De Do mayor a Mi bemol mayor. Fíjate en el Fa mayor, le bajamos el la y se convierte en Fa menor, el segundo grado de Mi bemol.',
     enaCine:'La tercera es la más mágica y la menos común, la enarmónica. Una nota puede escribirse de dos maneras, la bemol es igual a sol sostenido. Si reescribimos el acorde puente, se abre un portal hacia tonalidades muy lejanas.',
     enaPart:'De Do mayor a Fa sostenido mayor, el otro extremo del mapa. Que os suene y ya me vale.',
@@ -739,7 +739,7 @@ body.mundo .camCard:hover{background:#0b1024}
       var colG = E.acordes.map(function(a, i){ return (i === E.puente && !P.pu) ? COL.A : COL[a.r]; });
       var PP = Pentagrama.pinta(cont, E.acordes.map(function(a){ return {t:a.t, b:a.b}; }), {vis:V, actual:actual, puente: P.pu ? E.puente : null,
         cifras: E.acordes.map(function(a){ return a.cif; }), grados: grados, colGrado: colG, extraH: 22, marcasDy: 16,
-        marcas: P.pu ? (E.marcas || []) : (paso >= 1 && E.marcas && E.marcas[0].txt.indexOf('escalón') >= 0 ? E.marcas : []),
+        marcas: P.pu ? (E.marcas || []) : (paso >= 1 && E.marcas && E.marcas[0].txt.indexOf('desnivel') >= 0 ? E.marcas : []),
         ancho: Math.max(330, cont.clientWidth - 4)});
       if(idCas){
         /* (Iago, 1-nov) cada casilla, justo debajo de su acorde del pentagrama (misma x); las vacías también se encienden al pasar su pulso */
