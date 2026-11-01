@@ -83,7 +83,7 @@
 .s2t .s2t-tt { min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
 .s2t .s2t-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .s2t .s2t-opts .s2t-tile { min-height: 84px; font-size: 18px; }
-.s2t .s2t-mark { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border: 2px solid var(--oro); font-family: "Marcellus SC", Georgia, serif; font-size: 17px; color: var(--oro2); }
+.s2t .s2t-mark { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border: 2px solid var(--oro); font: 700 15px/1 "Atkinson Hyperlegible", system-ui, sans-serif; color: var(--oro2); }   /* (Iago, 1-nov) la letra se veía rara en Marcellus */
 .s2t .s2t-mark-r { border-radius: 50%; }
 .s2t .s2t-mark-c { border-radius: 3px; }
 .s2t .s2t-sel > .s2t-mark { background: var(--oro2); color: #1a1300; }
@@ -231,3 +231,8 @@
   .s2t-pie { flex-direction: column; }
   .s2t-btns { min-height: 46px; }
 }
+
+/* (Iago, 1-nov) comprobación al pulsar: destello dorado que recorre la opción antes del veredicto */
+.s2t .s2t-chk { position: relative; overflow: hidden; }
+.s2t .s2t-chk::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(255,226,150,.55) 50%, transparent 80%); transform: translateX(-100%); animation: s2tBarre .5s ease-out forwards; pointer-events: none; }
+@keyframes s2tBarre { to { transform: translateX(100%); } }
