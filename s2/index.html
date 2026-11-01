@@ -354,6 +354,11 @@ body.mundo #mundoFondo{opacity:1;background-image:url(img/mundo_abierto.webp);fi
 body.mundo .camCard{background:#0b1024;box-shadow:0 8px 22px rgba(0,0,0,.5);text-shadow:none}
 body.mundo .camCard:hover{background:#0b1024}
 /* cinemáticas */
+.cine .etiq{position:absolute;left:14px;top:12px;z-index:5;display:flex;align-items:baseline;gap:10px;padding:6px 14px 7px;background:rgba(5,8,20,.66);border:2px solid var(--g,#ffd98a);box-shadow:0 0 14px color-mix(in srgb, var(--g,#ffd98a) 45%, transparent);pointer-events:none}
+.cine .etiq b{font:400 clamp(17px,1.7vw,24px)/1 var(--f-titulo);color:#fff4dc}
+.cine .etiq span{font:700 11px var(--f-texto);letter-spacing:.18em;text-transform:uppercase;color:#ffe7a3}
+body.lectura .escena.on .retoMarco{filter:blur(3px) brightness(.45);pointer-events:none}
+body.sinVoz #cajaVoz{display:none}
 body.lectura #cajaVoz{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(900px,90vw);z-index:30;font-size:clamp(17px,1.6vw,22px);padding:24px 30px 26px;box-shadow:0 0 0 4px rgba(0,0,0,.55), 0 20px 60px rgba(0,0,0,.7)}
 body.lectura .escena.on.cineE .marco video{filter:brightness(.32) blur(3px)}
 body.lectura .escena.on.cineE .hud{opacity:.35}
@@ -438,7 +443,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 
   <!-- 3-4 · diatónica -->
   <section class="escena cineE" data-e="diaCine">
-    <div class="marco cine"><video id="vDia" playsinline preload="none" src="video/diatonica.mp4?v=4" poster="img/D1.webp?v=2"></video>
+    <div class="marco cine"><video id="vDia" playsinline preload="none" src="video/diatonica.mp4?v=5" poster="img/D1.webp?v=2"></video>
       <div class="titulo" style="--g:#ffd166"><b>Diatónica</b><span>el puente</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vDia" aria-label="Acordes del viaje"></div>
@@ -454,7 +459,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 
   <!-- 5-6 · cromática -->
   <section class="escena cineE" data-e="croCine">
-    <div class="marco cine"><video id="vCro" playsinline preload="none" src="video/cromatica.mp4?v=4" poster="img/C1.webp?v=2"></video>
+    <div class="marco cine"><video id="vCro" playsinline preload="none" src="video/cromatica.mp4?v=5" poster="img/C1.webp?v=2"></video>
       <div class="titulo" style="--g:#b27cff"><b>Cromática</b><span>el desnivel</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vCro" aria-label="Acordes del viaje"></div>
@@ -469,7 +474,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 
   <!-- 7-8 · enarmónica -->
   <section class="escena cineE" data-e="enaCine">
-    <div class="marco cine"><video id="vEna" playsinline preload="none" src="video/enarmonica.mp4?v=4" poster="img/E1.webp?v=2"></video>
+    <div class="marco cine"><video id="vEna" playsinline preload="none" src="video/enarmonica.mp4?v=5" poster="img/E1.webp?v=2"></video>
       <div class="titulo" style="--g:#4dd0e1"><b>Enarmónica</b><span>el portal</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vEna" aria-label="Acordes del viaje"></div>
@@ -518,7 +523,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 <script>window.MOD_BASE = '../s1/';</script><script src="../s1/js/vexflow.js?v=13"></script>
 <script src="js/sonido.js?v=14"></script>
 <script src="js/pentagrama.js?v=17"></script>
-<script src="js/s2_datos.js?v=4"></script>
+<script src="js/s2_datos.js?v=5"></script>
 <script src="js/s2_test.js?v=6"></script>
 <script>
 (function(){
@@ -667,7 +672,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   $('cajaVoz').addEventListener('click', vozToca);
   $('bCont').addEventListener('click', function(ev){ ev.stopPropagation(); vozToca(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Enter' && txt && (txt.escribiendo || !$('bCont').hidden) && !/INPUT|TEXTAREA|BUTTON/.test((document.activeElement || {}).tagName || '')){ e.preventDefault(); vozToca(); } });
-  function limpia(){ CONT_EXTRA = null; document.body.classList.remove('lectura'); timers.forEach(clearTimeout); timers = []; if(raf) cancelAnimationFrame(raf); raf = null;
+  function limpia(){ CONT_EXTRA = null; document.body.classList.remove('lectura'); document.body.classList.remove('sinVoz'); timers.forEach(clearTimeout); timers = []; if(raf) cancelAnimationFrame(raf); raf = null;
     [].forEach.call(document.querySelectorAll('video'), function(m){ m.pause(); }); if(window.Sonido) Sonido.parar(); }
   function despues(ms, f){ timers.push(setTimeout(f, ms)); }
   var ENTRA = {};
@@ -731,6 +736,8 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   function cine(sec, E){
     var v = sec.querySelector('video'), cen = sec.querySelector('.centro'), bt = sec.querySelector('.bCine'), ti = sec.querySelector('.titulo');
     var SRC = v.getAttribute('src'); v.removeAttribute('src'); v.preload = 'none';
+    /* (Iago 1-nov) letrero fijo con el tipo de modulación, visible todo el vídeo */
+    var et = document.createElement('div'); et.className = 'etiq'; et.setAttribute('style', ti.getAttribute('style') || ''); et.innerHTML = ti.innerHTML; v.parentNode.appendChild(et);
     var hud = sec.querySelector('.hud'), slots = [];
     /* barra de casillas: la progresión del libro; cada casilla se enciende cuando el viajero llega a ese punto */
     hud.innerHTML = E.acordes.map(function(a, i){
@@ -834,7 +841,14 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 
   /* ---------- desafío final ---------- */
   var quiz = null, resultado = null;
+  PISTA_EN.desafio = {fin: function(){
+    if(!document.body.classList.contains('lectura')) return;
+    $('bSig').hidden = true; $('bSig').classList.remove('llama');
+    $('bCont').textContent = 'Empezar el desafío ▶'; $('bCont').hidden = false; $('bCont').classList.add('late');
+    CONT_EXTRA = function(){ document.body.classList.remove('lectura'); document.body.classList.add('sinVoz'); $('bCont').hidden = true; $('bSig').hidden = false; };
+  }};
   ENTRA.desafio = function(){
+    document.body.classList.add('lectura');
     if(quiz) return;
     quiz = S2Test.monta($('reto'), {retos: S2Test.RETOS, sonido: true, alFin: function(r){ resultado = r; }});
   };
