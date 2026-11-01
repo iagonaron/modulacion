@@ -5,5 +5,8 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
-- 1-nov 11:45 · C1 (coordinadora de Modulación) · EN CURSO · ficheros NUEVOS: prueba.html, s1/ (sesión 1, v42), s2/ (sesión 2, v2).
+- 1-nov 11:55 · C1 (coordinadora de Modulación) · HECHO, comprobado en vivo · ficheros NUEVOS: prueba.html, s1/ (sesión 1, v42), s2/ (sesión 2, v2).
+  16 commits, de 933be8e a 6bdc820. En vivo: prueba.html, s1 (wow reconstruido de 2 trozos, 67,2 s) y s2 (cinemáticas) se reproducen; ?compat94=forzar sin errores.
+  OJO: la subida desde Chrome añade metadatos C2PA a imágenes, audio y vídeo (los ficheros pesan algo más); se comprobó que todo se descodifica bien.
+  DESHACER: borrar prueba.html, s1/ y s2/ (el index.html de siempre no se tocó), o volver a 656d89b. Copia local: Dropbox APPs/LMATHOME GP (github lmpro)/subidas de Claude/1-nov-2026-modulacion/
   Solo los ve Protester (entrada u8 en PRUEBAS de lmpro, con «?»). Los vídeos de más de 9 MB van partidos (.1, .2) y la página los junta.
