@@ -676,7 +676,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   var MUS = $('musica'), musOn = true, musRaf = null;
   var PISTA = {intro:'mus/cama_diatonica.mp3', definicion:'mus/cama_diatonica.mp3', caminos:'mus/cama_diatonica.mp3',
     diaPart:'mus/cama_diatonica.mp3', croPart:'mus/cama_cromatica.mp3', enaPart:'mus/cama_enarmonica.mp3', desafio:'mus/test_portal.mp3', cierre:'mus/cama_enarmonica.mp3'};
-  var VOLM = {intro:.42, definicion:.3, caminos:.3, diaCine:0, croCine:0, enaCine:0, diaPart:.035, croPart:.035, enaPart:.035, desafio:.22, cierre:.38};
+  var VOLM = {intro:.42, definicion:.3, caminos:.3, diaCine:0, croCine:0, enaCine:0, diaPart:.012, croPart:.012, enaPart:.012, desafio:.22, cierre:.38};
   var LECHO = {};
   function pista(k){ var src = PISTA[k]; if(src && MUS.getAttribute('src') !== src){ MUS.pause(); MUS.setAttribute('src', src); MUS.volume = 0; } }
   function fundido(objetivo){
@@ -812,7 +812,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
           var notas = a.t.concat(a.b);
           if(E.igual && i === E.igual[1]){ despues(t*1000 + 200, function(){ actual = i; pinta(); }); return; }   /* el acorde reescrito suena igual: se mantiene */
           var dur = (E.igual && i === E.igual[0]) ? q*2 : q;
-          Sonido.acorde(notas, t0 + t, dur*.96, .5);
+          Sonido.acorde(notas, t0 + t, dur*.96, .62);   /* acordes algo más fuertes que el fondo */
           despues(t*1000 + 200, function(){ actual = i; pinta(); });
         });
         despues(j*q*1000 + 900, function(){ actual = null; pinta(); if(musOn) fundido((VOLM[k] || 0)); if(alAcabar) alAcabar(); });
