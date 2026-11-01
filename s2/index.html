@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<script src="js/controles.js?v=1"></script>
+<script src="js/controles.js?v=2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
 <script>window.TROZOS = {"video/cromatica.mp4": 2, "video/enarmonica.mp4": 2};</script>
@@ -443,7 +443,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 
   <!-- 3-4 · diatónica -->
   <section class="escena cineE" data-e="diaCine">
-    <div class="marco cine"><video id="vDia" playsinline preload="none" src="video/diatonica.mp4?v=5" poster="img/D1.webp?v=2"></video>
+    <div class="marco cine"><video id="vDia" playsinline preload="none" src="video/diatonica.mp4?v=6" poster="img/D1.webp?v=2"></video>
       <div class="titulo" style="--g:#ffd166"><b>Diatónica</b><span>el puente</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vDia" aria-label="Acordes del viaje"></div>
@@ -459,7 +459,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 
   <!-- 5-6 · cromática -->
   <section class="escena cineE" data-e="croCine">
-    <div class="marco cine"><video id="vCro" playsinline preload="none" src="video/cromatica.mp4?v=5" poster="img/C1.webp?v=2"></video>
+    <div class="marco cine"><video id="vCro" playsinline preload="none" src="video/cromatica.mp4?v=6" poster="img/C1.webp?v=2"></video>
       <div class="titulo" style="--g:#b27cff"><b>Cromática</b><span>el desnivel</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vCro" aria-label="Acordes del viaje"></div>
@@ -474,7 +474,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 
   <!-- 7-8 · enarmónica -->
   <section class="escena cineE" data-e="enaCine">
-    <div class="marco cine"><video id="vEna" playsinline preload="none" src="video/enarmonica.mp4?v=5" poster="img/E1.webp?v=2"></video>
+    <div class="marco cine"><video id="vEna" playsinline preload="none" src="video/enarmonica.mp4?v=6" poster="img/E1.webp?v=2"></video>
       <div class="titulo" style="--g:#4dd0e1"><b>Enarmónica</b><span>el portal</span></div>
       <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
       <div class="hud" id="hud_vEna" aria-label="Acordes del viaje"></div>
@@ -523,7 +523,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 <script>window.MOD_BASE = '../s1/';</script><script src="../s1/js/vexflow.js?v=13"></script>
 <script src="js/sonido.js?v=14"></script>
 <script src="js/pentagrama.js?v=17"></script>
-<script src="js/s2_datos.js?v=5"></script>
+<script src="js/s2_datos.js?v=6"></script>
 <script src="js/s2_test.js?v=6"></script>
 <script>
 (function(){
@@ -681,7 +681,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   var MUS = $('musica'), musOn = true, musRaf = null;
   var PISTA = {intro:'mus/cama_diatonica.mp3', definicion:'mus/cama_diatonica.mp3', caminos:'mus/cama_diatonica.mp3',
     diaPart:'mus/cama_diatonica.mp3', croPart:'mus/cama_cromatica.mp3', enaPart:'mus/cama_enarmonica.mp3', desafio:'mus/test_portal.mp3', cierre:'mus/cama_enarmonica.mp3'};
-  var VOLM = {intro:.42, definicion:.3, caminos:.3, diaCine:0, croCine:0, enaCine:0, diaPart:.012, croPart:.012, enaPart:.012, desafio:.22, cierre:.38};
+  var VOLM = {intro:.42, definicion:.3, caminos:.3, diaCine:0, croCine:0, enaCine:0, diaPart:0, croPart:0, enaPart:0, desafio:.22, cierre:.38};
   var LECHO = {};
   function pista(k){ var src = PISTA[k]; if(src && MUS.getAttribute('src') !== src){ MUS.pause(); MUS.setAttribute('src', src); MUS.volume = 0; } }
   function fundido(objetivo){
