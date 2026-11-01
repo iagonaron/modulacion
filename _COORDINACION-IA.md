@@ -5,6 +5,9 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
+- 1-nov 23:30 · C1 · HECHO · S4 «Práctica libre» (carpeta s4/ nueva: solo index.html; js, img, sfx y vídeos se toman de ../s3/) + tarjeta en prueba.html
+  + s3/index.html (precarga del vídeo con la versión buena). Ejercicios infinitos alternando 7 y 8 casillas, mayores y menores, sin carteles ni pistas;
+  armaduras obligatorias; marcador (puentes en pie, racha); «Saltar ▶» en la cinemática. DESHACER: quitar la tarjeta de prueba.html (volver a 89d7bb2).
 - 1-nov 23:10 · C1 · HECHO · S3 v2 y S2 v13 (commits tras 669f6b3 → este). S3: paso 0 obligatorio (armaduras con selector), carteles abajo junto a los botones,
   «▶ Escuchar» siempre (las casillas vacías se iluminan sin sonar), al completar una sección suenan todos sus acordes, ratón de la demo más lento y sin
   mancha, sonidos de botones retro (Splice), ejemplo de 8 casillas en menor (La m → Mi m), cinemática con paisaje sonoro (pájaros, agua, pasos de tierra
