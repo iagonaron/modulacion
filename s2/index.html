@@ -161,15 +161,11 @@ body.retro .pergamino::before, body.retro .pergamino::after, body.retro.perg-rea
   box-shadow:0 -4px 0 0 #2b1906, 0 4px 0 0 #2b1906, -4px 0 0 0 #2b1906, 4px 0 0 0 #2b1906, inset 0 4px 0 #b07a36, inset 0 -4px 0 #5e3a12}
 body.retro .pergamino::before, body.retro.perg-real .pergamino::before{top:-20px} body.retro .pergamino::after, body.retro.perg-real .pergamino::after{bottom:-20px}
 body.retro .pergamino .tit .prim.flota, body.retro.perg-real .pergamino .tit .prim.flota{border-radius:0;right:-16px;top:-22px}
-/* «Continuar ▶» dentro de la caja de diálogo, como en un RPG (Iago, 1-nov-2026) */
-#cajaVoz.voz{padding-bottom:46px}
-.voz .cont{position:absolute;right:12px;bottom:8px;min-height:30px;padding:0 12px;font:500 14px/1 'IBM Plex Mono', ui-monospace, monospace;letter-spacing:.04em;color:#2b1906;
-  background:linear-gradient(#ffe9a8,#e0a83a);border:2px solid #2b1906;border-radius:3px;box-shadow:0 2px 0 #000;text-shadow:none;animation:contLate 1.1s steps(2) infinite}
-body.mundo .voz .cont{background:linear-gradient(#ffe9a8,#e0a83a);border:2px solid #2b1906;color:#2b1906;text-shadow:none;font-size:14px}
-body.retro .voz .cont{font-family:"DotGothic16", monospace;border-radius:0}
-.voz .cont:hover{filter:brightness(1.08)}
-.voz:has(.cont:not([hidden])) .sigue{display:none}
-@keyframes contLate{50%{box-shadow:0 2px 0 #000, 0 0 12px rgba(255,217,138,.9)}}
+/* «Continuar ▶» ocupa el hueco de «Siguiente ▶» mientras queda texto por leer; «Siguiente» aparece al terminar (Iago, 1-nov) */
+.nav .navDer{display:flex;gap:10px;margin-left:auto}
+.nav #bCont, .nav #bSig{min-width:190px;justify-content:center}
+.nav #bCont{animation:contLate 1.1s steps(2) infinite}
+@keyframes contLate{50%{box-shadow:inset 0 2px 0 rgba(255,240,190,.35), 0 2px 0 #000, 0 0 14px rgba(255,217,138,.85)}}
 /* (Iago, 1-nov-2026) pergamino de 8 bits SIN varillas arriba y abajo: una hoja con contorno de píxel y la esquina inferior derecha
    un poco enrollada (solapa escalonada). La esquina se recorta en escalera con clip-path y la solapa la dibuja ::after. */
 body.retro .pergamino, body.retro.perg-real .pergamino{margin:14px 6px;clip-path:polygon(-40px -40px, calc(100% + 40px) -40px, calc(100% + 40px) calc(100% - 36px), calc(100% - 36px + 40px) calc(100% - 36px + 0px), calc(100% - 36px + 40px) calc(100% - 36px + 5px), calc(100% - 36px + 35px) calc(100% - 36px + 5px), calc(100% - 36px + 35px) calc(100% - 36px + 10px), calc(100% - 36px + 30px) calc(100% - 36px + 10px), calc(100% - 36px + 30px) calc(100% - 36px + 15px), calc(100% - 36px + 25px) calc(100% - 36px + 15px), calc(100% - 36px + 25px) calc(100% - 36px + 20px), calc(100% - 36px + 20px) calc(100% - 36px + 20px), calc(100% - 36px + 20px) calc(100% - 36px + 25px), calc(100% - 36px + 15px) calc(100% - 36px + 25px), calc(100% - 36px + 15px) calc(100% - 36px + 30px), calc(100% - 36px + 10px) calc(100% - 36px + 30px), calc(100% - 36px + 10px) calc(100% - 36px + 35px), calc(100% - 36px + 5px) calc(100% - 36px + 35px), calc(100% - 36px + 5px) calc(100% - 36px + 40px), calc(100% - 36px) calc(100% + 40px), -40px calc(100% + 40px))}
@@ -246,6 +242,20 @@ body.retro .pergamino::after, body.retro.perg-real .pergamino::after{display:blo
 .acWow .hype.fin{top:30%}
 .acWow .hype.fin b{display:block;font:400 clamp(56px,10vw,140px)/1 var(--f-titulo);letter-spacing:.04em;text-transform:none;text-shadow:0 0 26px #ffd166, 0 0 80px #ffb703, 0 4px 0 #000}
 .acWow .hype.fin span{display:inline-block;margin-top:14px;padding:4px 16px;border-radius:4px;background:rgba(5,8,20,.6);font-size:clamp(16px,1.9vw,26px)}
+.acWow .alt{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+/* (Iago, 1-nov) «tonalidades con más sostenidos» / «las profundidades de los bemoles»: alteraciones doradas que suben o se hunden */
+.acWow .alt i{position:absolute;font:400 clamp(44px,6.4vw,96px)/1 Georgia, "Times New Roman", serif;font-style:normal;color:#fff3cf;opacity:0;
+  text-shadow:0 0 14px rgba(255,205,90,.95), 0 0 40px rgba(255,170,40,.7), 0 3px 0 #000;animation-delay:var(--d);animation-fill-mode:forwards}
+.acWow .alt i::after{content:"";position:absolute;left:50%;top:50%;width:1.7em;height:1.7em;margin:-.85em 0 0 -.85em;border-radius:50%;opacity:0;
+  background:radial-gradient(circle, rgba(255,232,160,.9), rgba(255,190,60,0) 62%);animation:altChispa .8s ease-out var(--d) forwards}
+.acWow .alt.sos i{animation-name:altSube;animation-duration:2.9s;animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+.acWow .alt.bem i{color:#fff3cf;font-weight:700;text-shadow:0 0 12px rgba(255,205,90,.95), 0 0 30px rgba(255,170,40,.6), 0 0 54px rgba(90,160,255,.8), 0 3px 0 #000;animation-name:altBaja;animation-duration:2.9s;animation-timing-function:cubic-bezier(.2,.8,.3,1)}
+.acWow .alt.bem i::after{background:radial-gradient(circle, rgba(200,225,255,.9), rgba(90,160,255,0) 62%)}
+@keyframes altSube{0%{opacity:0;transform:translate(-50%,50%) scale(2.3);filter:blur(7px)} 14%{opacity:1;transform:translate(-50%,50%) scale(1);filter:none}
+  65%{opacity:1;transform:translate(-50%,20%) scale(1.06)} 100%{opacity:0;transform:translate(-50%,-90%) scale(.9)}}
+@keyframes altBaja{0%{opacity:0;transform:translate(-50%,-50%) scale(2.3);filter:blur(7px)} 14%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:none}
+  65%{opacity:1;transform:translate(-50%,-20%) scale(1.06)} 100%{opacity:0;transform:translate(-50%,90%) scale(.9)}}
+@keyframes altChispa{0%{opacity:1;transform:scale(.2)} 100%{opacity:0;transform:scale(1.7)}}
 .acWow .destello{position:absolute;inset:0;opacity:0}
 .acWow .destello.va{animation:flash 1.4s ease-out forwards}
 @keyframes flash{0%{opacity:.95} 100%{opacity:0}}
@@ -377,14 +387,14 @@ body.mundo .camCard:hover{background:#0b1024}
   <!-- 0 · portada y repaso -->
   <section class="escena" data-e="intro">
     <div class="portada"><span class="sup">Unidad 8 · Sesión 2</span><h1 id="tituloS2" aria-label="Tres formas de viajar"></h1>
-      <p>En la sesión anterior conocimos a dos viajeros. Hoy aprendemos los caminos para ir de un reino a otro.</p></div>
+      <p>En la sesión anterior vimos dos formas de viajar. Hoy aprendemos los caminos para ir de un reino a otro.</p></div>
   </section>
 
   <!-- 1 · definición -->
   <section class="escena" data-e="definicion">
     <div class="def">
       <blockquote>Modular es ir de una tonalidad <em>A</em> a una tonalidad <em>B</em> de forma <em>coherente</em>.</blockquote>
-      <div class="viaje"><div class="reino">A<small>Do mayor</small></div><div class="camino"><i></i><b>sin «pegotes»</b></div><div class="reino b">B<small>otro reino</small></div></div>
+      <div class="viaje"><div class="reino">A<small>Do mayor</small></div><div class="camino"><i></i><b>de forma coherente</b></div><div class="reino b">B<small>otro reino</small></div></div>
       <p>Coherente: el oído tiene que aceptar el cambio.</p>
     </div>
   </section>
@@ -458,8 +468,8 @@ body.mundo .camCard:hover{background:#0b1024}
     <div class="fila"><span class="resTest" id="resTest"></span></div>
   </section>
 
-  <div class="voz" aria-live="polite" id="cajaVoz"><span class="mic">Iago</span><p id="voz"></p><span class="sigue" aria-hidden="true">▼</span><button class="cont" id="bCont" hidden>Continuar ▶</button></div>
-  <div class="nav"><button id="bAnt">◀ Anterior</button><button id="bSig" class="prim">Siguiente ▶</button></div>
+  <div class="voz" aria-live="polite" id="cajaVoz"><span class="mic">Iago</span><p id="voz"></p><span class="sigue" aria-hidden="true">▼</span></div>
+  <div class="nav"><button id="bAnt">◀ Anterior</button><span class="navDer"><button id="bCont" class="prim" hidden>Continuar ▶</button><button id="bSig" class="prim">Siguiente ▶</button></span></div>
 </div>
 
 <script>
@@ -494,8 +504,8 @@ body.mundo .camCard:hover{background:#0b1024}
   $('tituloS2').innerHTML = 'Tres formas de viajar'.split('').map(function(ch, i){ return ch === ' ' ? ' ' : '<span class="l" aria-hidden="true" style="animation-delay:' + (0.5 + i*0.07).toFixed(2) + 's">' + ch + '</span>'; }).join('');
   /* guion de voz (subtítulos hasta que Iago lo grabe; «|» = cuadro nuevo) */
   var VOZ = {
-    intro:'En la sesión anterior conocimos a dos viajeros, Mozart, que no sale de su reino, y Rachmaninov, que se va lejos y tarda en volver.|Sin modular, la música tiene sus recursos limitados a los siete acordes de su tonalidad. Es como jugar en dos dimensiones.|Modular nos expande, obras más grandes, más ricas armónicamente, con viajes, contrastes y regresos.',
-    definicion:'Dicho de forma muy simple, modular es ir de una tonalidad A a una tonalidad B de forma coherente musicalmente. Coherente quiere decir sin que suene a pegote, el oído tiene que aceptar el cambio.',
+    intro:'En la sesión anterior vimos dos formas de viajar con dos fragmentos. El de Mozart no sale de su reino. El de Rachmaninov se va lejos y tarda en volver.|Sin modular, la música tiene sus recursos limitados a los siete acordes de su tonalidad. Es como jugar en dos dimensiones.|Modular nos expande, obras más grandes, más ricas armónicamente, con viajes, contrastes y regresos.',
+    definicion:'Dicho de forma muy simple, modular es ir de una tonalidad A a una tonalidad B de forma coherente musicalmente. Coherente quiere decir que el oído tiene que aceptar el cambio.',
     caminos:'Hoy vemos tres formas de viajar. La diatónica, a tonalidades cercanas, el puente. La cromática, cuando no hay acordes comunes pero sí parecidos, la escalera. Y la enarmónica, el truco para irnos muy lejos, el portal.',
     diaCine:'Para ir a una tonalidad cercana, con hasta dos alteraciones de diferencia en la armadura, buscamos un acorde común, un acorde que pertenece a las dos tonalidades. Ese acorde es nuestro puente.',
     diaPart:'Es el ejemplo de los apuntes, de Do mayor a Sol mayor. Vamos paso a paso.',
@@ -549,7 +559,7 @@ body.mundo .camCard:hover{background:#0b1024}
     var habla = vozHabla(k); txt = null;
     /* «|» parte el texto en cuadros (páginas); VOZA[k].pag = segundo en que empieza cada cuadro */
     var partes = (VOZ[k] || '').split('|').map(function(x){ return x.trim(); }), pi = 0;
-    vozTxt = partes[0]; vozN = 0; clearInterval(vozT); clearTimeout(vozAuto); $('cajaVoz').classList.remove('lista'); $('voz').textContent = ''; $('bCont').hidden = true; $('bSig').classList.remove('llama');
+    vozTxt = partes[0]; vozN = 0; clearInterval(vozT); clearTimeout(vozAuto); $('cajaVoz').classList.remove('lista'); $('voz').textContent = ''; $('bCont').hidden = true; $('bSig').hidden = false; $('bSig').classList.remove('llama');
     var reducido = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     $('cajaVoz').hidden = !vozTxt;
     if(vozTxt) pintaVoz(0);   /* la caja toma ya su tamaño final (texto invisible) y muestra el cursor: nada salta al escribir la 1.ª letra */
@@ -593,7 +603,7 @@ body.mundo .camCard:hover{background:#0b1024}
   function cuadro(i){
     if(!txt) return;
     clearInterval(vozT); clearTimeout(vozAuto);
-    txt.pi = i; vozTxt = txt.partes[i]; vozN = 0; $('bCont').hidden = true; $('cajaVoz').classList.remove('lista');
+    txt.pi = i; vozTxt = txt.partes[i]; vozN = 0; $('bCont').hidden = false; $('bSig').hidden = true; $('cajaVoz').classList.remove('lista');
     var pis = TEXTO_PISTAS[txt.k] && TEXTO_PISTAS[txt.k][i], f = pis && PISTA_EN[txt.k] && PISTA_EN[txt.k][pis]; if(f) f();
     if(txt.reducido){ finCuadro(); return; }
     pintaVoz(0); txt.escribiendo = true;
@@ -608,14 +618,14 @@ body.mundo .camCard:hover{background:#0b1024}
   function finCuadro(){
     clearInterval(vozT); txt.escribiendo = false; vozN = vozTxt.length; pintaVoz(vozN);
     var ultimo = txt.pi >= txt.partes.length - 1, k = txt.k;
-    $('cajaVoz').classList.add('lista');
-    if(!ultimo){ $('bCont').hidden = false;
+    $('cajaVoz').classList.toggle('lista', !ultimo);   /* ▼ solo si queda otro cuadro */
+    if(!ultimo){
       if(AULA) vozAuto = setTimeout(function(){ cuadro(txt.pi + 1); }, Math.max(2500, vozTxt.length*55)); }
-    else { $('bSig').classList.add('llama'); var f = PISTA_EN[k] && PISTA_EN[k].fin; if(f) f(); }
+    else { $('bCont').hidden = true; $('bSig').hidden = false; $('bSig').classList.add('llama'); var f = PISTA_EN[k] && PISTA_EN[k].fin; if(f) f(); }
   }
   function vozToca(){
     if(txt && txt.escribiendo){ finCuadro(); return; }
-    if(txt && txt.pi < txt.partes.length - 1 && !$('bCont').hidden){ cuadro(txt.pi + 1); return; }
+    if(txt && txt.pi < txt.partes.length - 1){ cuadro(txt.pi + 1); return; }
     if(!txt) vozCompleta();
   }
   $('cajaVoz').addEventListener('click', vozToca);
