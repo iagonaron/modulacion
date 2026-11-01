@@ -155,12 +155,12 @@ body.retro #voz, body.retro .nav button, body.retro .sel button{font-family:"Dot
 body.retro button, body.retro .voz, body.retro .voz .mic, body.retro .crono{border-radius:0}
 body.retro .voz .mic{background:#e0a83a}
 /* pergamino de píxeles, limpio: papel liso, contorno de píxel con esquinas escalonadas, luz arriba-izquierda y sombra abajo-derecha, varillas de píxel */
-body.retro .pergamino, body.retro.perg-real .pergamino{background:#f3e6c4;border:0;border-image:none;border-radius:0;padding:16px 18px 12px;margin:22px 8px;
+body .pergamino, body.perg-real .pergamino{background:#f3e6c4;border:0;border-image:none;border-radius:0;padding:16px 18px 12px;margin:22px 8px;
   box-shadow:0 -4px 0 0 #3a2410, 0 4px 0 0 #3a2410, -4px 0 0 0 #3a2410, 4px 0 0 0 #3a2410, inset 4px 4px 0 #fff8e2, inset -4px -4px 0 #d8bf88}
-body.retro .pergamino::before, body.retro .pergamino::after, body.retro.perg-real .pergamino::before, body.retro.perg-real .pergamino::after{display:block;content:"";position:absolute;left:-16px;right:-16px;height:12px;background:#8a5a22;border:0;border-radius:0;z-index:2;
+body .pergamino::before, body .pergamino::after, body.perg-real .pergamino::before, body.perg-real .pergamino::after{display:block;content:"";position:absolute;left:-16px;right:-16px;height:12px;background:#8a5a22;border:0;border-radius:0;z-index:2;
   box-shadow:0 -4px 0 0 #2b1906, 0 4px 0 0 #2b1906, -4px 0 0 0 #2b1906, 4px 0 0 0 #2b1906, inset 0 4px 0 #b07a36, inset 0 -4px 0 #5e3a12}
-body.retro .pergamino::before, body.retro.perg-real .pergamino::before{top:-20px} body.retro .pergamino::after, body.retro.perg-real .pergamino::after{bottom:-20px}
-body.retro .pergamino .tit .prim.flota, body.retro.perg-real .pergamino .tit .prim.flota{border-radius:0;right:-16px;top:-22px}
+body .pergamino::before, body.perg-real .pergamino::before{top:-20px} body .pergamino::after, body.perg-real .pergamino::after{bottom:-20px}
+body .pergamino .tit .prim.flota, body.perg-real .pergamino .tit .prim.flota{border-radius:0;right:-16px;top:-22px}
 /* «Continuar ▶» ocupa el hueco de «Siguiente ▶» mientras queda texto por leer; «Siguiente» aparece al terminar (Iago, 1-nov) */
 .nav .navDer{display:flex;gap:10px;margin-left:auto}
 .nav #bCont, .nav #bSig{min-width:190px;justify-content:center}
@@ -168,9 +168,9 @@ body.retro .pergamino .tit .prim.flota, body.retro.perg-real .pergamino .tit .pr
 @keyframes contLate{50%{box-shadow:inset 0 2px 0 rgba(255,240,190,.35), 0 2px 0 #000, 0 0 14px rgba(255,217,138,.85)}}
 /* (Iago, 1-nov-2026) pergamino de 8 bits SIN varillas arriba y abajo: una hoja con contorno de píxel y la esquina inferior derecha
    un poco enrollada (solapa escalonada). La esquina se recorta en escalera con clip-path y la solapa la dibuja ::after. */
-body.retro .pergamino, body.retro.perg-real .pergamino{margin:14px 6px;clip-path:polygon(-40px -40px, calc(100% + 40px) -40px, calc(100% + 40px) calc(100% - 36px), calc(100% - 36px + 40px) calc(100% - 36px + 0px), calc(100% - 36px + 40px) calc(100% - 36px + 5px), calc(100% - 36px + 35px) calc(100% - 36px + 5px), calc(100% - 36px + 35px) calc(100% - 36px + 10px), calc(100% - 36px + 30px) calc(100% - 36px + 10px), calc(100% - 36px + 30px) calc(100% - 36px + 15px), calc(100% - 36px + 25px) calc(100% - 36px + 15px), calc(100% - 36px + 25px) calc(100% - 36px + 20px), calc(100% - 36px + 20px) calc(100% - 36px + 20px), calc(100% - 36px + 20px) calc(100% - 36px + 25px), calc(100% - 36px + 15px) calc(100% - 36px + 25px), calc(100% - 36px + 15px) calc(100% - 36px + 30px), calc(100% - 36px + 10px) calc(100% - 36px + 30px), calc(100% - 36px + 10px) calc(100% - 36px + 35px), calc(100% - 36px + 5px) calc(100% - 36px + 35px), calc(100% - 36px + 5px) calc(100% - 36px + 40px), calc(100% - 36px) calc(100% + 40px), -40px calc(100% + 40px))}
-body.retro .pergamino::before, body.retro.perg-real .pergamino::before{display:none}
-body.retro .pergamino::after, body.retro.perg-real .pergamino::after{display:block;content:"";position:absolute;left:auto;top:auto;right:-4px;bottom:-4px;width:40px;height:40px;
+body .pergamino, body.perg-real .pergamino{margin:14px 6px;clip-path:polygon(-40px -40px, calc(100% + 40px) -40px, calc(100% + 40px) calc(100% - 36px), calc(100% - 36px + 40px) calc(100% - 36px + 0px), calc(100% - 36px + 40px) calc(100% - 36px + 5px), calc(100% - 36px + 35px) calc(100% - 36px + 5px), calc(100% - 36px + 35px) calc(100% - 36px + 10px), calc(100% - 36px + 30px) calc(100% - 36px + 10px), calc(100% - 36px + 30px) calc(100% - 36px + 15px), calc(100% - 36px + 25px) calc(100% - 36px + 15px), calc(100% - 36px + 25px) calc(100% - 36px + 20px), calc(100% - 36px + 20px) calc(100% - 36px + 20px), calc(100% - 36px + 20px) calc(100% - 36px + 25px), calc(100% - 36px + 15px) calc(100% - 36px + 25px), calc(100% - 36px + 15px) calc(100% - 36px + 30px), calc(100% - 36px + 10px) calc(100% - 36px + 30px), calc(100% - 36px + 10px) calc(100% - 36px + 35px), calc(100% - 36px + 5px) calc(100% - 36px + 35px), calc(100% - 36px + 5px) calc(100% - 36px + 40px), calc(100% - 36px) calc(100% + 40px), -40px calc(100% + 40px))}
+body .pergamino::before, body.perg-real .pergamino::before{display:none}
+body .pergamino::after, body.perg-real .pergamino::after{display:block;content:"";position:absolute;left:auto;top:auto;right:-4px;bottom:-4px;width:40px;height:40px;
   background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2740%27%20height%3D%2740%27%20shape-rendering%3D%27crispEdges%27%3E%3Crect%20x%3D%270%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%275%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%2710%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%2715%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%2720%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%2725%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%2730%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%2735%27%20y%3D%270%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%270%27%20y%3D%275%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%275%27%20y%3D%275%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23fff3d2%27/%3E%3Crect%20x%3D%2710%27%20y%3D%275%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23fff3d2%27/%3E%3Crect%20x%3D%2715%27%20y%3D%275%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23fff3d2%27/%3E%3Crect%20x%3D%2720%27%20y%3D%275%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23fff3d2%27/%3E%3Crect%20x%3D%2725%27%20y%3D%275%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23c8ab70%27/%3E%3Crect%20x%3D%2730%27%20y%3D%275%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%270%27%20y%3D%2710%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%275%27%20y%3D%2710%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23fff3d2%27/%3E%3Crect%20x%3D%2710%27%20y%3D%2710%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23e8d3a0%27/%3E%3Crect%20x%3D%2715%27%20y%3D%2710%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23e8d3a0%27/%3E%3Crect%20x%3D%2720%27%20y%3D%2710%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23c8ab70%27/%3E%3Crect%20x%3D%2725%27%20y%3D%2710%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%270%27%20y%3D%2715%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%275%27%20y%3D%2715%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23fff3d2%27/%3E%3Crect%20x%3D%2710%27%20y%3D%2715%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23e8d3a0%27/%3E%3Crect%20x%3D%2715%27%20y%3D%2715%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23c8ab70%27/%3E%3Crect%20x%3D%2720%27%20y%3D%2715%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%270%27%20y%3D%2720%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%275%27%20y%3D%2720%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23fff3d2%27/%3E%3Crect%20x%3D%2710%27%20y%3D%2720%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23c8ab70%27/%3E%3Crect%20x%3D%2715%27%20y%3D%2720%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%270%27%20y%3D%2725%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%275%27%20y%3D%2725%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%23c8ab70%27/%3E%3Crect%20x%3D%2710%27%20y%3D%2725%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%270%27%20y%3D%2730%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%275%27%20y%3D%2730%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3Crect%20x%3D%270%27%20y%3D%2735%27%20width%3D%275%27%20height%3D%275%27%20fill%3D%27%233a2410%27/%3E%3C/svg%3E") 0 0/40px 40px no-repeat;border:0;box-shadow:none;image-rendering:pixelated;z-index:3}
 #voz .cur{display:inline-block;width:0;overflow:visible;animation:cursorT 1s steps(1) infinite}
 @keyframes cursorT{50%{opacity:0}}
@@ -303,7 +303,7 @@ body.mundo #mundoFondo{opacity:1;background-image:url(img/mundo_abierto.webp);fi
 #mundoVelo{background:rgba(6,10,26,.3)}
 #inicio{background:radial-gradient(ellipse at 50% 60%, rgba(30,40,90,.45), rgba(3,5,14,.92) 72%), url(img/mundo_abierto.webp) center/cover}
 /* el papel del pergamino real tiene rizos a los lados: el contenido, más adentro */
-body.perg-real .pergamino{padding:6px clamp(14px,2.4vw,34px) 4px}
+
 .def{display:flex;flex-direction:column;align-items:center;gap:26px;padding:6vh 10px 10px;text-align:center}
 .def blockquote{margin:0;font:400 clamp(26px,4vw,50px)/1.2 var(--f-titulo);color:#fff4dc;text-shadow:0 3px 0 #000, 0 0 30px rgba(255,200,100,.25);max-width:22ch}
 .def blockquote em{font-style:normal;color:#ffd98a}
@@ -338,22 +338,24 @@ body.mundo .camCard:hover{background:#0b1024}
 .cine .titulo span{display:inline-block;margin-top:10px;padding:4px 14px;background:rgba(5,8,20,.55);border-radius:4px;font:700 clamp(15px,1.8vw,22px) var(--f-texto);letter-spacing:.2em;text-transform:uppercase;color:#ffe7a3;text-shadow:0 2px 0 #000}
 .cine .titulo.va{animation:llega 5.2s ease forwards}
 /* casillas del libro (método «Minecraft») */
-.casillas{display:flex;flex-direction:column;gap:4px;margin:4px 0 10px}
-.casillas .arm{display:flex;justify-content:space-between;font:700 12px var(--f-texto);color:var(--tinta-suave);width:min(100%,560px)}
-.casillas .arm span{text-align:center;line-height:1.2}
-.casillas .fila7{display:grid;grid-template-columns:repeat(7,1fr);width:min(100%,560px);border:2px solid var(--tinta);background:#fffaf0}
-.casillas .c{aspect-ratio:1.25;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(42,29,16,.35);font:700 clamp(17px,2.2vw,26px) var(--f-texto);color:var(--tinta);transition:background .3s, color .3s}
-.casillas .c:last-child{border-right:0}
-.casillas .c.vacia{color:transparent}
+.casillas{position:relative;margin:2px 0 10px;max-width:100%}
+.casillas .arm, .casillas .fila7, .casillas .gr{position:relative}
+.casillas .arm{height:30px;font:700 12px/1.2 var(--f-texto);color:var(--tinta-suave)} .casillas .arm .a{position:absolute;bottom:2px;text-align:center}
+.casillas .fila7{height:62px}
+.casillas .c{position:absolute;top:0;height:58px;display:flex;align-items:center;justify-content:center;background:#fffaf0;border:2px solid var(--tinta);margin-left:-1px;
+  font:700 clamp(17px,2vw,24px) var(--f-texto);color:var(--tinta);transition:background .15s, color .15s}
+.casillas .c.vacia{color:rgba(42,29,16,.25)}
 .casillas .c.nueva{animation:slotPop .35s ease-out}
 .casillas .c.pu{background:#efe2ff;color:#5b2a96}
 .casillas .c.act{background:var(--acento);color:#fff}
-.casillas .gr{display:grid;grid-template-columns:repeat(7,1fr);width:min(100%,560px);font:700 12px/1.25 var(--f-texto);color:var(--tinta-suave);text-align:center}
+.casillas .c.vacia.act{background:#e9dcc0;color:var(--tinta);box-shadow:inset 0 0 0 3px var(--acento)}
+.casillas .gr{height:34px;font:700 12px/1.25 var(--f-texto);color:var(--tinta-suave)} .casillas .gr .g{position:absolute;top:2px;text-align:center}
 .paso{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-top:6px;padding-top:8px;border-top:1px dashed rgba(42,29,16,.35);color:var(--tinta)}
 .paso .txt{flex:1 1 320px;min-width:0}
 .paso .txt b{display:block;font:400 19px var(--f-titulo);color:var(--acento);margin-bottom:2px}
 .paso .txt span{line-height:1.45}
 .paso .fila button{min-height:38px;font-size:14px}
+.paso .fila{margin-right:34px}   /* que «Paso ▶» no pise la esquina enrollada */
 .regs{display:flex;gap:14px;flex-wrap:wrap;font:700 12.5px var(--f-texto);color:var(--tinta-suave);margin:2px 0 4px}
 .regs span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--c);transform:rotate(45deg) scale(.85)}
 /* desafío */
@@ -499,7 +501,7 @@ body.mundo .camCard:hover{background:#0b1024}
   window.fuenteCifra = function(){ return 'Atkinson Hyperlegible, sans-serif'; };
   var AULA = false, idx = 0, raf = null, timers = [];
   var ESC = [].slice.call(document.querySelectorAll('.escena'));
-  (function(){ var im = new Image(); im.onload = function(){ document.body.classList.add('perg-real'); }; im.src = 'img/pergamino.webp'; })();
+  /* (Iago, 1-nov) pergamino de 8 bits con la esquina enrollada, como en la S1 (sin el pergamino pintado) */
   /* título letra a letra */
   $('tituloS2').innerHTML = 'Tres formas de viajar'.split('').map(function(ch, i){ return ch === ' ' ? ' ' : '<span class="l" aria-hidden="true" style="animation-delay:' + (0.5 + i*0.07).toFixed(2) + 's">' + ch + '</span>'; }).join('');
   /* guion de voz (subtítulos hasta que Iago lo grabe; «|» = cuadro nuevo) */
@@ -735,15 +737,18 @@ body.mundo .camCard:hover{background:#0b1024}
       bTxt.textContent = P.tit; sTxt.textContent = P.txt;
       var grados = E.acordes.map(function(a, i){ return (i === E.puente && !P.pu) ? '' : a.g; });
       var colG = E.acordes.map(function(a, i){ return (i === E.puente && !P.pu) ? COL.A : COL[a.r]; });
-      Pentagrama.pinta(cont, E.acordes.map(function(a){ return {t:a.t, b:a.b}; }), {vis:V, actual:actual, puente: P.pu ? E.puente : null,
+      var PP = Pentagrama.pinta(cont, E.acordes.map(function(a){ return {t:a.t, b:a.b}; }), {vis:V, actual:actual, puente: P.pu ? E.puente : null,
         cifras: E.acordes.map(function(a){ return a.cif; }), grados: grados, colGrado: colG, extraH: 22, marcasDy: 16,
         marcas: P.pu ? (E.marcas || []) : (paso >= 1 && E.marcas && E.marcas[0].txt.indexOf('escalón') >= 0 ? E.marcas : []),
         ancho: Math.max(330, cont.clientWidth - 4)});
       if(idCas){
-        var c = $(idCas);
-        c.innerHTML = '<div class="arm"><span>' + E.A + '<br>' + E.armA + '</span><span>' + E.B + '<br>' + E.armB + '</span></div>' +
-          '<div class="fila7">' + E.acordes.map(function(a, i){ return '<div class="c' + (V[i] ? '' : ' vacia') + (i === E.puente && P.pu ? ' pu' : '') + (i === actual ? ' act' : '') + (nuevo && nuevo[i] ? ' nueva' : '') + '">' + (V[i] ? menor(a.cif) : '·') + '</div>'; }).join('') + '</div>' +
-          '<div class="gr">' + E.acordes.map(function(a, i){ return '<span>' + (V[i] && grados[i] ? grados[i].replace('/', '<br>') : '') + '</span>'; }).join('') + '</div>';
+        /* (Iago, 1-nov) cada casilla, justo debajo de su acorde del pentagrama (misma x); las vacías también se encienden al pasar su pulso */
+        var c = $(idCas), xs = PP.xs, paso_ = xs.length > 1 ? (xs[xs.length - 1] - xs[0])/(xs.length - 1) : 80, w = Math.min(84, paso_*.92);
+        var caja = function(i, html, cls){ return '<div class="' + cls + '" style="left:' + (xs[i] - w/2).toFixed(1) + 'px;width:' + w.toFixed(1) + 'px">' + html + '</div>'; };
+        c.style.width = (cont.querySelector('svg') ? cont.querySelector('svg').getAttribute('width') : cont.clientWidth) + 'px';
+        c.innerHTML = '<div class="arm">' + caja(0, E.A + '<br>' + E.armA, 'a') + caja(n - 1, E.B + '<br>' + E.armB, 'a') + '</div>' +
+          '<div class="fila7">' + E.acordes.map(function(a, i){ return caja(i, V[i] ? menor(a.cif) : '·', 'c' + (V[i] ? '' : ' vacia') + (i === E.puente && P.pu ? ' pu' : '') + (i === actual ? ' act' : '') + (nuevo && nuevo[i] ? ' nueva' : '')); }).join('') + '</div>' +
+          '<div class="gr">' + E.acordes.map(function(a, i){ return caja(i, V[i] && grados[i] ? grados[i].replace('/', '<br>') : '', 'g'); }).join('') + '</div>';
       }
       sec.querySelector('.bPA').disabled = paso === 0;
       sec.querySelector('.bPS').disabled = paso === E.pasos.length - 1;
@@ -753,9 +758,11 @@ body.mundo .camCard:hover{background:#0b1024}
       var V = vis(), q = 1.15;
       Sonido.listo().then(function(){
         var t0 = Sonido.ahora() + .2, j = 0;
+        var casillas = !!E.pasos[paso].vis;
         E.acordes.forEach(function(a, i){
-          if(!V[i]) return;
+          if(!V[i] && !casillas) return;
           var t = j*q; j++;
+          if(!V[i]){ despues(t*1000 + 200, function(){ actual = i; pinta(); }); return; }   /* casilla vacía: un pulso en silencio */
           var notas = a.t.concat(a.b);
           if(E.igual && i === E.igual[1]){ despues(t*1000 + 200, function(){ actual = i; pinta(); }); return; }   /* el acorde reescrito suena igual: se mantiene */
           var dur = (E.igual && i === E.igual[0]) ? q*2 : q;
