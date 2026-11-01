@@ -19,7 +19,7 @@ window.S2_EJ = {
     pasos: [
       {vis:[1,0,0,0,0,0,1], tit:'Paso 0 · Las armaduras', txt:'Do mayor no tiene alteraciones. Sol mayor tiene un sostenido, fa♯.'},
       {vis:[1,1,1,1,0,0,1], tit:'Paso 1 · Asentar la tonalidad A', txt:'Una cadencia básica en Do mayor: I · IV · V7 · I.'},
-      {pu:1, vis:[1,1,1,1,1,0,1], tit:'Paso 2 · El acorde común', txt:'Evitamos el fa (natural en Do, sostenido en Sol). Mi menor está en las dos: III de Do y VI de Sol. Es el puente.'},
+      {pu:1, vis:[1,1,1,1,1,0,1], tit:'Paso 2 · El acorde común', txt:'Evita el fa (natural en Do, sostenido en Sol). Mi menor está en las dos: III de Do y VI de Sol. Es el puente.'},
       {pu:1, vis:[1,1,1,1,1,1,1], tit:'Paso 3 · Asentar la tonalidad B', txt:'Solo queda una casilla: la dominante de Sol, D7 → G. La dominante siempre es mayor y con séptima.'}
     ]
   },
@@ -39,10 +39,10 @@ window.S2_EJ = {
     cine: [5.12, 7.68, 10.24, 12.8, 14.08, 15.36, 16.64, 17.92],   /* tras el salto, medio compás por acorde */
     marcas: [{i:2, txt:'la → la♭ · el desnivel'}],
     pasos: [
-      {hasta:1, tit:'Estamos en Do mayor', txt:'I y IV: C y F.'},
-      {hasta:2, tit:'El desnivel cromático', txt:'Al Fa mayor le bajamos el la a la♭: se convierte en Fa menor.'},
-      {pu:1, hasta:2, tit:'El acorde puente', txt:'Fa menor no existe en Do mayor, pero es el II de Mi♭ mayor. Por ahí cruzamos.'},
-      {pu:1, hasta:7, tit:'Ya en Mi♭ mayor', txt:'La asentamos: V · I · IV · V7 · I.'}
+      {hasta:1, tit:'Estás en Do mayor', txt:'I y IV: C y F.'},
+      {hasta:2, tit:'El desnivel cromático', txt:'Al Fa mayor le bajas el la a la♭: se convierte en Fa menor.'},
+      {pu:1, hasta:2, tit:'El acorde puente', txt:'Fa menor no existe en Do mayor, pero es el II de Mi♭ mayor. Por ahí cruzas.'},
+      {pu:1, hasta:7, tit:'Ya en Mi♭ mayor', txt:'La asientas: V · I · IV · V7 · I.'}
     ]
   },
   enarmonica: {
@@ -61,9 +61,9 @@ window.S2_EJ = {
     cine: [0.44, 2.84, 5.24, 7.64, 10.04, 13.24, 15.64, 18.04],
     marcas: [{i:5, txt:'la♭ = sol♯ · fa = mi♯'}],
     pasos: [
-      {hasta:3, tit:'Estamos en Do mayor', txt:'Cadencia: I · IV · V7 · I.'},
+      {hasta:3, tit:'Estás en Do mayor', txt:'Cadencia: I · IV · V7 · I.'},
       {hasta:4, tit:'Si° con séptima', txt:'Si, re, fa, la♭: el VII de Do mayor.'},
-      {pu:1, hasta:5, tit:'El portal: reescribimos dos notas', txt:'La♭ pasa a ser sol♯ y fa pasa a ser mi♯. Suena exactamente igual, pero ahora es Mi♯°7, el VII de Fa♯ mayor.'},
+      {pu:1, hasta:5, tit:'El portal: reescribe dos notas', txt:'La♭ pasa a ser sol♯ y fa pasa a ser mi♯. Suena exactamente igual, pero ahora es Mi♯°7, el VII de Fa♯ mayor.'},
       {pu:1, hasta:7, tit:'Al otro extremo del mapa', txt:'C♯7 → F♯. Fa♯ mayor es la tonalidad más lejana posible de Do mayor.'}
     ]
   }

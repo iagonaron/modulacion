@@ -35,7 +35,7 @@
                  { t: 'Más riqueza armónica', ok: true },
                  { t: 'Contraste y sensación de viaje', ok: true },
                  { t: 'Que la obra tenga menos acordes', ok: false }],
-      pista: 'Sin modular, solo tenemos los acordes de una tonalidad.' },
+      pista: 'Sin modular, solo tienes los acordes de una tonalidad.' },
     { tipo: 'unir', titulo: 'Tres formas de viajar', enunciado: 'Une cada tipo de modulación con su imagen',
       pares: [['Diatónica', 'Un puente entre reinos parecidos'],
               ['Cromática', 'Un desnivel: un semitono que cambia'],
@@ -49,7 +49,7 @@
     { tipo: 'vf', titulo: 'La dominante', enunciado: 'Verdadero o falso: ¡tienes 10 segundos!',
       afirmacion: 'La dominante siempre es un acorde mayor, aunque la armadura diga lo contrario',
       verdadero: true, segundos: 10,
-      pista: 'Por definición la dominante es mayor (y la ponemos con 7ª).' },
+      pista: 'Por definición la dominante es mayor (y la escribes con 7ª).' },
     { tipo: 'unica', titulo: 'El desnivel cromático', enunciado: 'En la modulación cromática del libro, F pasa a F-. ¿Qué nota cambia?',
       opciones: ['la → la♭', 'fa → fa♯', 'do → do♯', 'si → si♭'],
       correcta: 0, pista: 'Un solo cromatismo: el la baja medio tono.' },
@@ -64,7 +64,7 @@
                  { t: 'Reinterpreta las notas de un acorde (p. ej. Si°7 = Mi♯°7)', ok: true },
                  { t: 'Es la más común de las tres', ok: false },
                  { t: 'Necesita un acorde idéntico en las dos tonalidades sin cambiar ninguna nota de nombre', ok: false }],
-      pista: 'Es la menos común: que os suene.' }
+      pista: 'Es la menos común: que te suene.' }
   ];
 
   /* ------------------------------------------------------------------------
