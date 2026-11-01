@@ -1210,7 +1210,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     var k = ESC[idx].dataset.e; tema(k); setTimeout(function(){ if(ESC[idx].dataset.e === k) voz(k); }, 3300);
     if(ENTRA[k]) ENTRA[k]();
     Orq.listo();
-    precarga('video/s3_exito.mp4?v=1').then(function(){ return precarga('video/s3_caida.mp4?v=1'); });
+    precarga('video/s3_exito.mp4?v=2').then(function(){ return precarga('video/s3_caida.mp4?v=2'); });
   }
   $('inicio').addEventListener('click', empezar);
   document.addEventListener('keydown', function tecla(e){ if(!arrancado){ e.preventDefault(); empezar(); } });
