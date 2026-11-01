@@ -5,9 +5,9 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
-- 1-nov 15:40 · C1 · EN CURSO · S1 v47 y S2 v9: controles arriba (volver, pausa, pantalla completa; js/controles.js), todo cabe en pantalla, texto antes de cada cinemática,
-  cinemáticas rehechas (flauta, sin cámara lenta; diatónica en un solo fichero video/diatonica.mp4), animación A→B (sfx/viaje_ab.mp3). Ficheros: s1/index.html, s1/js/controles.js, s1/js/coral.js,
-  s2/index.html, s2/js/controles.js, s2/js/s2_datos.js, s2/sfx/viaje_ab.mp3, s2/video/*.
+- 1-nov 15:45 · C1 · HECHO · S1 v47 y S2 v9, commits b82f48b → 2454b3e: controles arriba (s1/js/controles.js y s2/js/controles.js: volver, pausa, pantalla completa; cada escena cabe sin scroll),
+  texto antes de cada cinemática, cinemáticas rehechas (flauta, sin cámara lenta, portal continuo; la diatónica va en un solo fichero video/diatonica.mp4 y sus .1/.2 viejos ya no se usan),
+  A→B animado (s2/sfx/viaje_ab.mp3), negritas en el texto, pitido más alto, «Continuar» parpadea al acabar. DESHACER: volver esos ficheros a fcdc2b3.
 - 1-nov 15:05 · C1 · HECHO · S2 v8, commits 862c692 → 618f0f8: cinemáticas nuevas (s2/video/*.mp4.1-2, música orquestal exacta, un acorde por compás
   con su casilla), s2/index.html, s2/js/s2_datos.js y s2_test.js, s2/css/s2_test.css, s2/img (C1 C2 D1-3 E1-3) y prueba.html («desnivel»).
   Antes, sin apuntar: a3b3c6e (S1 v46) y aaafe45 (S2 v7), ambos de C1. DESHACER: volver esos ficheros a aaafe45.
