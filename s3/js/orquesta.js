@@ -3,8 +3,8 @@
    Usa el mismo AudioContext que Sonido (piano), para que la pausa global y el volumen sean los mismos.
    API: Orq.listo() → Promise · Orq.nota(instr, midi, t, dur, vol, ataque) · Orq.fx(nombre, t, vol) · Orq.parar() · Orq.ahora() */
 (function(){
-  var INS = {cu:[36,84], cb:[28,55], ar:[48,84], co:[48,78], ti:[36,54], tr:[41,77]};
-  var FX = ['boom','cae','crash','brillo','swell','revela','gema'];
+  var INS = {cu:[36,84]};   /* (Iago 1-nov) solo la cuerda tenida bajo los acordes; nada de arreglo orquestal */
+  var FX = ['boom','revela','tecla','maquina','boton','ding'];
   var buf = {}, fxb = {}, vivas = [], cargando = null, bus = null;
   function ctx(){ return Sonido.ctx; }
   function salida(){
