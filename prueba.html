@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
+<title>Modulación · Unidad 8</title>
+<link rel="icon" href="favicon-32.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Portal de la U8 · Modulación (versión en prueba, solo Protester). Cada sesión es una página propia (s1/, s2/…). */
+:root{--noche:#070a14;--oro:#e8c46a;--oro2:#ffd98a;--tinta:#f3f0ff;--tenue:#b9c2de;--panel:rgba(10,14,38,.9);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--noche);color:var(--tinta);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.fondo{position:fixed;inset:0;z-index:-1;background:linear-gradient(rgba(6,10,26,.35), rgba(6,10,26,.75)), url(s2/img/mundo_abierto.webp) center/cover;filter:saturate(.95)}
+main{max-width:1100px;margin:0 auto;padding-block:6vh 40px;display:flex;flex-direction:column;gap:22px}
+.sup{font:700 13px "Pixelify Sans",sans-serif;letter-spacing:.32em;text-transform:uppercase;color:var(--oro2)}
+h1{margin:0;font:400 clamp(46px,8vw,96px)/1 "Marcellus SC",Georgia,serif;letter-spacing:.04em;text-shadow:0 4px 0 #000, 0 0 30px rgba(255,200,100,.3)}
+p.lead{margin:0;color:var(--tenue);font-size:clamp(16px,1.8vw,19px);max-width:56ch;line-height:1.5}
+.sesiones{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+a.ses{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--panel);border:2px solid var(--oro);box-shadow:0 0 0 2px #1a1206, 0 3px 0 #000}
+a.ses img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+a.ses span{display:flex;flex-direction:column;gap:4px;padding:12px 16px 14px}
+a.ses em{font:700 12px "Pixelify Sans",sans-serif;font-style:normal;letter-spacing:.2em;text-transform:uppercase;color:var(--oro2)}
+a.ses b{font:400 clamp(22px,2.4vw,28px)/1.1 "Marcellus SC",Georgia,serif}
+a.ses small{color:var(--tenue);font-size:14px;line-height:1.4}
+a.ses:hover, a.ses:focus-visible{border-color:#fff;outline:none}
+.ses.prox{opacity:.45;pointer-events:none}
+.ses.prox img{filter:grayscale(1) blur(2px)}
+</style>
+</head>
+<body>
+<div class="fondo" aria-hidden="true"></div>
+<main>
+  <span class="sup">Unidad 8 · 2.º GP</span>
+  <h1>Modulación</h1>
+  <p class="lead">Cada tonalidad es un reino. Aprende a viajar de uno a otro.</p>
+  <div class="sesiones">
+    <a class="ses" data-ir="s1/"><img src="s1/img/nivel_dom.webp" alt=""><span><em>Sesión 1</em><b>Viajar entre tonalidades</b><small>Dos viajeros, el camino de Do mayor y el momento en que el mundo se abre.</small></span></a>
+    <a class="ses" data-ir="s2/"><img src="s2/img/D2.webp" alt=""><span><em>Sesión 2</em><b>Tres formas de viajar</b><small>El puente, la escalera y el portal: diatónica, cromática y enarmónica.</small></span></a>
+    <a class="ses prox" aria-disabled="true"><img src="s2/img/D3.webp" alt=""><span><em>Sesión 3</em><b>El método</b><small>Próximamente.</small></span></a>
+  </div>
+</main>
+<script>
+/* los enlaces llevan la cuenta (#c=…) a cada sesión */
+[].forEach.call(document.querySelectorAll('a.ses[data-ir]'), function(a){ a.href = a.getAttribute('data-ir') + location.hash; });
+</script>
+</body>
+</html>
