@@ -5,6 +5,11 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
+- 1-nov 23:10 · C1 · HECHO · S3 v2 y S2 v13 (commits tras 669f6b3 → este). S3: paso 0 obligatorio (armaduras con selector), carteles abajo junto a los botones,
+  «▶ Escuchar» siempre (las casillas vacías se iluminan sin sonar), al completar una sección suenan todos sus acordes, ratón de la demo más lento y sin
+  mancha, sonidos de botones retro (Splice), ejemplo de 8 casillas en menor (La m → Mi m), cinemática con paisaje sonoro (pájaros, agua, pasos de tierra
+  y de piedra, crujido + temblor antes del derrumbe) y solo los acordes del alumno (piano + cuerda tenida); textos en 2.ª persona del singular (S2 y S3).
+  DESHACER: volver s3/ y s2/index.html, s2/js/s2_datos.js, s2/js/s2_test.js a 669f6b3.
 - 1-nov 21:10 · C1 · HECHO · S1 v48 y S2 v11 (commits 820f5a0 → este): ajuste a pantalla calculado una vez por tamaño (js/controles.js v2), percusión orquestal en las tres cinemáticas,
   diatónica en compases de 4/2 pulsos, cromática con la continuación desde el aterrizaje (n_C_3), partituras sin música de fondo. DESHACER: volver esos ficheros a da53b87.
 - 1-nov 21:55 · C1 · HECHO · S3 «Construye el puente» (carpeta s3/ nueva, commits c60322d → 33dc4da) y S2 v12 (diatónica con los clips nuevos
