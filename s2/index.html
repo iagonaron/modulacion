@@ -419,7 +419,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   <!-- 0 · portada y repaso -->
   <section class="escena" data-e="intro">
     <div class="portada"><span class="sup">Unidad 8 · Sesión 2</span><h1 id="tituloS2" aria-label="Tres formas de viajar"></h1>
-      <p>En la sesión anterior vimos dos formas de viajar. Hoy aprendemos los caminos para ir de un reino a otro.</p></div>
+      <p>En la sesión anterior viste dos formas de viajar. Hoy aprendemos los caminos para ir de un reino a otro.</p></div>
   </section>
 
   <!-- 1 · definición -->
@@ -523,8 +523,8 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 <script>window.MOD_BASE = '../s1/';</script><script src="../s1/js/vexflow.js?v=13"></script>
 <script src="js/sonido.js?v=14"></script>
 <script src="js/pentagrama.js?v=17"></script>
-<script src="js/s2_datos.js?v=7"></script>
-<script src="js/s2_test.js?v=6"></script>
+<script src="js/s2_datos.js?v=8"></script>
+<script src="js/s2_test.js?v=7"></script>
 <script>
 (function(){
   var $ = function(i){ return document.getElementById(i); };
@@ -536,17 +536,17 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   $('tituloS2').innerHTML = 'Tres formas de viajar'.split('').map(function(ch, i){ return ch === ' ' ? ' ' : '<span class="l" aria-hidden="true" style="animation-delay:' + (0.5 + i*0.07).toFixed(2) + 's">' + ch + '</span>'; }).join('');
   /* guion de voz (subtítulos hasta que Iago lo grabe; «|» = cuadro nuevo) */
   var VOZ = {
-    intro:'En la sesión anterior vimos dos formas de viajar con dos fragmentos. El de Mozart no sale de su reino. El de Rachmaninov se va lejos y tarda en volver.|Sin modular, la música tiene sus recursos limitados a los siete acordes de su tonalidad. Es como jugar en dos dimensiones.|Modular nos expande, obras más grandes, más ricas armónicamente, con viajes, contrastes y regresos.',
+    intro:'En la sesión anterior viste dos formas de viajar con dos fragmentos. El de Mozart no sale de su reino. El de Rachmaninov se va lejos y tarda en volver.|Sin modular, la música tiene sus recursos limitados a los siete acordes de su tonalidad. Es como jugar en dos dimensiones.|Modular te expande: obras más grandes, más ricas armónicamente, con viajes, contrastes y regresos.',
     definicion:'Dicho de forma muy simple, modular es ir de una tonalidad A a una tonalidad B de forma coherente musicalmente. Coherente quiere decir que el oído tiene que aceptar el cambio.',
-    caminos:'Hoy vemos tres formas de viajar. La **diatónica**, a tonalidades cercanas, el puente. La **cromática**, cuando no hay acordes comunes pero sí parecidos, el desnivel. Y la **enarmónica**, el truco para irnos muy lejos, el portal.',
-    diaCine:'Para ir a una tonalidad cercana, con hasta dos alteraciones de diferencia en la armadura, buscamos un acorde común, un acorde que pertenece a las dos tonalidades. Ese acorde es nuestro puente.',
-    diaPart:'Es el ejemplo de los apuntes, de Do mayor a Sol mayor. Vamos paso a paso.',
-    croCine:'¿Y si queremos ir a una tonalidad lejana, que no tiene acordes en común con la nuestra? Buscamos uno parecido, que solo se diferencie por un cromatismo. Ese pequeño cambio es como saltar un desnivel.',
-    croPart:'De Do mayor a Mi bemol mayor. Fíjate en el Fa mayor, le bajamos el la y se convierte en Fa menor, el segundo grado de Mi bemol.',
-    enaCine:'La tercera es la más mágica y la menos común, la enarmónica. Una nota puede escribirse de dos maneras, la bemol es igual a sol sostenido. Si reescribimos el acorde puente, se abre un portal hacia tonalidades muy lejanas.',
-    enaPart:'De Do mayor a Fa sostenido mayor, el otro extremo del mapa. Que os suene y ya me vale.',
-    desafio:'Vamos a comprobar si sabéis viajar. Hay retos de varios tipos, marcar, ordenar, unir y encontrar el puente. ¡Suerte!',
-    cierre:'Ya conocéis los tres caminos. En la próxima sesión practicaremos la diatónica, seréis vosotros quienes construyáis el puente.'
+    caminos:'Hoy ves tres formas de viajar. La **diatónica**, a tonalidades cercanas, el puente. La **cromática**, cuando no hay acordes comunes pero sí parecidos, el desnivel. Y la **enarmónica**, el truco para irnos muy lejos, el portal.',
+    diaCine:'Para ir a una tonalidad cercana, con hasta dos alteraciones de diferencia en la armadura, buscas un acorde común, un acorde que pertenece a las dos tonalidades. Ese acorde es tu puente.',
+    diaPart:'Es el ejemplo de los apuntes, de Do mayor a Sol mayor. Míralo paso a paso.',
+    croCine:'¿Y si quieres ir a una tonalidad lejana, que no tiene acordes en común con la tuya? Buscas uno parecido, que solo se diferencie por un cromatismo. Ese pequeño cambio es como saltar un desnivel.',
+    croPart:'De Do mayor a Mi bemol mayor. Fíjate en el Fa mayor, le bajas el la y se convierte en Fa menor, el segundo grado de Mi bemol.',
+    enaCine:'La tercera es la más mágica y la menos común, la enarmónica. Una nota puede escribirse de dos maneras, la bemol es igual a sol sostenido. Si reescribes el acorde puente, se abre un portal hacia tonalidades muy lejanas.',
+    enaPart:'De Do mayor a Fa sostenido mayor, el otro extremo del mapa. Que te suene y ya me vale.',
+    desafio:'Vas a comprobar si sabes viajar. Hay retos de varios tipos, marcar, ordenar, unir y encontrar el puente. ¡Suerte!',
+    cierre:'Ya conoces los tres caminos. En la próxima sesión practicarás la diatónica: serás tú quien construya el puente.'
   };
   var vozT = null, vozTxt = '', vozN = 0, blipCtx = null;
   var CONT_EXTRA = null;   /* si la escena quiere que el último «Continuar» haga algo (p. ej. ver el vídeo después de leer) */
