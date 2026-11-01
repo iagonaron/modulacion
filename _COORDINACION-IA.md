@@ -5,6 +5,9 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
+- 1-nov 13:45 · C1 · HECHO · S1 v44 (s1/index.html + js/coral_datos, s1_coral_juego, coral, partitura, pentagrama) y S2 v4 (s2/index.html, js/pentagrama):
+  pergamino de 8 bits con esquina enrollada (sin varillas), llave del sistema entera, acorde 32 del coral = Mi mayor (V/VI).
+  DESHACER: volver esos ficheros al commit anterior a este bloque.
 - 1-nov 13:25 · C1 · HECHO · solo s1/index.html (v43) y s2/index.html (v3): voz de Iago solo en los vídeos; el resto, texto en cuadros con «Continuar ▶».
   DESHACER: volver esos dos ficheros a c454c91.
 - 1-nov 11:55 · C1 (coordinadora de Modulación) · HECHO, comprobado en vivo · ficheros NUEVOS: prueba.html, s1/ (sesión 1, v42), s2/ (sesión 2, v2).
