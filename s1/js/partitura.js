@@ -73,8 +73,8 @@
       var W = (typeof op.ancho === 'function' ? op.ancho() : op.ancho) || cont.clientWidth || 700, H = 250;
       var r = new VF.Renderer(cont, VF.Renderer.Backends.SVG); r.resize(W, H);
       var c = r.getContext(); c.setFillStyle(tinta); c.setStrokeStyle(tinta);
-      var desde = sis*porS, hasta = Math.min(D.compases.length, desde + porS), x = 10, cab = 70 + (Object.keys(arm).length*10);
-      var anchoC = (W - 20 - cab)/(hasta - desde), lig = [];
+      var desde = sis*porS, hasta = Math.min(D.compases.length, desde + porS), x = 24, cab = 70 + (Object.keys(arm).length*10);   /* x = 24: que la llave no se corte (Iago, 1-nov) */
+      var anchoC = (W - 34 - cab)/(hasta - desde), lig = [];
       for(var ci = desde; ci < hasta; ci++){
         var C = D.compases[ci], w = anchoC + (ci === desde ? cab : 0);
         var ts = new VF.Stave(x, 6, w), bs = new VF.Stave(x, 100, w);

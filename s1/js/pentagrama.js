@@ -14,7 +14,7 @@
     var c = r.getContext();
     var tinta = op.tinta || '#2a1d10', acento = op.acento || '#b5402a', tenue = op.tenue || 'rgba(42,29,16,.18)';
     c.setFillStyle(tinta); c.setStrokeStyle(tinta);
-    var x0 = 10, ancho = W - 20;
+    var x0 = 24, ancho = W - 34;   /* que la llave no se corte (Iago, 1-nov) */
     var ts = new VF.Stave(x0, Y0, ancho), bs = new VF.Stave(x0, Y0 + 90, ancho);
     ts.addClef('treble'); bs.addClef('bass');
     if(op.armadura){ ts.addKeySignature(op.armadura); bs.addKeySignature(op.armadura); }

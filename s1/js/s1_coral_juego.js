@@ -7,7 +7,7 @@
                                alSalto, alAterriza, alPaso, alAcorde(i, ac, cad), alFin({cogidos:[i…], cads:[…]})})
         → {jugar(), para(), reinicia(), auto(bool), salta()} */
 (function(){
-  var NIV = {I:0, IV:1, V:1, V7:1, II:2, VI:2, II7:2, III:3, VII6:3, 'V/V':3};   /* cuanto más arriba, más «exótico» dentro de la tonalidad */
+  var NIV = {I:0, IV:1, V:1, V7:1, II:2, VI:2, II7:2, III:3, VII6:3, 'V/V':3, 'V/VI':3};   /* V/VI (Mi mayor, c. 17): Iago 1-nov */   /* cuanto más arriba, más «exótico» dentro de la tonalidad */
   var Y = [.715, .605, .495, .385];                 /* superficie de cada altura (fracción del alto) */
   var UB = .32;                               /* distancia por pulso (en altos de pantalla) */
   var LEAD = .30;                             /* la plataforma empieza un poco antes de la insignia */
@@ -245,7 +245,7 @@
       var G = I.gemas, tt = ahora();
       N.objs.forEach(function(o){
         if(o.hecho || (o.cogido && !(o.tq > tt))) return;
-        var x = o.x*h - ox, y = (o.y + Math.sin(tt*3 + o.i)*.006)*h, r = h*.046, celda = o.a.g === 'V/V' ? 3 : [0, 0, 1, 2][o.L], col = o.a.g === 'V/V' ? 4 : o.L;
+        var x = o.x*h - ox, y = (o.y + Math.sin(tt*3 + o.i)*.006)*h, r = h*.046, celda = /^V\//.test(o.a.g) ? 3 : [0, 0, 1, 2][o.L], col = /^V\//.test(o.a.g) ? 4 : o.L;
         if(x < -r*3 || x > w + r*3) return;
         c.save(); if(o.perdido) c.globalAlpha = .35;
         if(G && G.naturalWidth){ var gw = G.naturalWidth/4, gh = r*1.7*G.naturalHeight/gw; c.drawImage(G, celda*gw, 0, gw, G.naturalHeight, x - r*.85, y - gh/2, r*1.7, gh); }

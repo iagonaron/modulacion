@@ -17,7 +17,7 @@
     var notas = {S:[], A:[], T:[], B:[]};       /* por índice de acorde, para ligaduras y textos */
     var xsAcorde = [];
     for(var s = 0; s < nS; s++){
-      var y0 = s*filaH + 10, x = 10, cab = 60, anchoC = (W - 20 - cab)/porS, porSistema = {S:[], A:[], T:[], B:[]};
+      var y0 = s*filaH + 10, x = 24, cab = 60, anchoC = (W - 34 - cab)/porS, porSistema = {S:[], A:[], T:[], B:[]};
       for(var cc = s*porS + 1; cc <= Math.min(ultimo, (s + 1)*porS); cc++){
         var w = anchoC + (cc === s*porS + 1 ? cab : 0);
         var ts = new VF.Stave(x, y0, w), bs = new VF.Stave(x, y0 + 95, w);
