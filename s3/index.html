@@ -324,7 +324,14 @@ body.sinVoz #cajaVoz{display:none}
 .ktag small{font:800 10px var(--f-texto);letter-spacing:.16em;text-transform:uppercase;color:#9bc2ff} .ktag.b small{color:#ffd98a}
 .ktag b{font:400 21px/1.1 var(--f-titulo);color:#fff4dc}
 .ktag span{font:700 12px var(--f-texto);color:#cfd8f0;min-height:15px;opacity:0;transition:opacity .5s}
-.taller.arm .ktag span{opacity:1}
+.ktag.ok span, .taller.corr .ktag span{opacity:1}
+.armSel{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;align-items:center}
+.ktag.ok .armSel{display:none}
+.armSel em{font:800 9.5px var(--f-texto);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:#cbb88a;width:100%}
+body.mundo .armSel button{min-height:28px;min-width:26px;padding:0 6px;font:700 13px var(--f-texto);text-shadow:none}
+body.mundo .armSel button.on{background-color:#c9a24a;color:#fff;border-color:#ffe7a3}
+.ktag.mal{animation:edShake .32s ease;border-color:#d9534f}
+.ktag.b .armSel{justify-content:flex-end}
 .kflujo{flex:1;text-align:center;font:700 12px var(--f-texto);letter-spacing:.12em;text-transform:uppercase;color:#cbb88a}
 .kflujo i{display:block;font-style:normal;font-size:20px;color:#ffe7a3}
 .hoja{position:relative;background:#fffaf0;border:2px solid #2a1d10;padding:4px 6px 0;overflow:hidden}
@@ -385,8 +392,11 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 .ewarn{font:700 12.5px var(--f-texto);color:#e6a417;visibility:hidden} .ewarn.show{visibility:visible}
 .editor.shake{animation:edShake .32s ease}
 @keyframes edShake{0%,100%{transform:none}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
-.pie{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;min-height:44px}
-.pie .msg{flex:1;font:700 14px var(--f-texto);color:#e6a417}
+.pie{display:flex;justify-content:flex-end;align-items:stretch;gap:10px;flex-wrap:wrap;min-height:44px}
+.pie > button{align-self:center}
+.cas.suena{box-shadow:0 0 0 3px #ffd98a,0 0 18px rgba(255,217,138,.85);transform:translateY(-3px)}
+.cas.suenaVacia{background:#f3c9c0;border-color:#c0301e;box-shadow:inset 0 0 0 3px #c0301e,0 0 12px rgba(192,48,30,.55)}
+.pie .msg{flex:0 1 auto;align-self:center;font:700 14px var(--f-texto);color:#e6a417}
 #bCorr.late, .bCorr.late{animation:contLate 1.1s steps(2) infinite}
 /* cartel del paso */
 .cartel{flex:1;align-self:stretch;z-index:8;display:flex;gap:12px;align-items:center;padding:9px 14px;
@@ -394,15 +404,13 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 .cartel[hidden]{display:none}
 .cartel.pop{animation:cartelPop .45s cubic-bezier(.3,1.5,.5,1)}
 @keyframes cartelPop{0%{transform:scale(.85);opacity:0}100%{transform:none;opacity:1}}
-.claves .cartel:not([hidden]) ~ .ktag.b{}
-.taller.conCartel .kflujo{display:none}
 .cartel .pn{flex:none;font:400 15px var(--f-titulo);color:#1a1206;background:#ffd98a;padding:4px 9px}
 .cartel .tx{flex:1;font:700 15px/1.4 var(--f-texto)} .cartel .tx b{color:#ffd98a}
 .cartel button{flex:none;min-height:36px;font-size:14px}
 /* puntero de la demostración */
-.dedo{position:absolute;z-index:9;width:30px;height:30px;pointer-events:none;transition:left .55s cubic-bezier(.4,0,.2,1), top .55s cubic-bezier(.4,0,.2,1);opacity:0}
+.dedo{position:absolute;z-index:9;width:26px;height:26px;margin:-3px 0 0 -4px;pointer-events:none;transition:left 1.05s cubic-bezier(.45,0,.25,1), top 1.05s cubic-bezier(.45,0,.25,1), opacity .3s;opacity:0}
 .dedo.on{opacity:1}
-.dedo svg{width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(0,0,0,.7))}
+.dedo svg{width:100%;height:100%;overflow:visible}
 .dedo.clic svg{transform:scale(.82)}
 /* cinemática de la corrección */
 .cineS3{display:none;flex-direction:column;gap:0}
@@ -434,7 +442,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 .mapa1{position:relative;border:2px solid var(--oro);overflow:hidden;aspect-ratio:16/7}
 .mapa1 img{width:100%;height:100%;object-fit:cover;display:block}
 .resTest{font:700 15px var(--f-texto);color:#ffd98a;letter-spacing:.04em}
-@media (max-width:760px){ .ktag{min-width:0} .claves{flex-wrap:wrap} .cartel{order:3;flex-basis:100%} }
+@media (max-width:760px){ .ktag{min-width:0} .claves{flex-wrap:wrap} .cartel{flex-basis:100%} }
 </style>
 </head>
 <body class="mundo">
@@ -492,18 +500,17 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
   <div class="taller">
     <div class="neb"></div>
     <div class="claves">
-      <div class="ktag a"><small>Tonalidad A</small><b class="kA"></b><span class="sA"></span></div>
-      <div class="kflujo">modulamos<i>→</i></div>
-      <div class="cartel" hidden><span class="pn"></span><span class="tx"></span><button class="prim bPaso" hidden>Siguiente paso ▶</button></div>
-      <div class="ktag b"><small>Tonalidad B</small><b class="kB"></b><span class="sB"></span></div>
+      <div class="ktag a"><small>Tonalidad A</small><b class="kA"></b><span class="sA"></span><div class="armSel" data-k="A"></div></div>
+      <div class="kflujo">modulas<i>→</i></div>
+      <div class="ktag b"><small>Tonalidad B</small><b class="kB"></b><span class="sB"></span><div class="armSel" data-k="B"></div></div>
     </div>
     <div class="hoja"><div class="pent"></div></div>
     <span class="cap">✦ la casilla 5 es la puerta entre las dos tonalidades ✦</span>
     <div class="fila8"></div>
     <div class="grados"></div>
     <div class="editor"></div>
-    <div class="pie"><span class="msg"></span><button class="prim bCorr" disabled>✓ Corregir</button></div>
-    <div class="dedo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 11V4.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v1.5m0 0a1.5 1.5 0 0 1 3 0V16a6 6 0 0 1-6 6h-2a6 6 0 0 1-5.2-3L5 15.5a1.5 1.5 0 0 1 2.6-1.5L9 16" fill="#fff4dc" stroke="#1a1206" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+    <div class="pie"><div class="cartel" hidden><span class="pn"></span><span class="tx"></span><button class="prim bPaso" hidden>Siguiente paso ▶</button></div><span class="msg"></span><button class="bOye" title="Escuchar lo que llevas">▶ Escuchar</button><button class="prim bCorr" disabled>✓ Corregir</button></div>
+    <div class="dedo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 2.5 L4 19.5 L8.6 15.4 L11.6 21.8 L14.7 20.4 L11.7 14.1 L17.8 14.1 Z" fill="#ffffff" stroke="#1a1206" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
   </div>
   <div class="cineS3">
     <div class="marco cine"><video playsinline muted preload="none"></video>
@@ -517,7 +524,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     <div class="taller corr arm">
       <div class="claves">
         <div class="ktag a"><small>Tonalidad A</small><b class="kA"></b><span class="sA"></span></div>
-        <div class="kflujo">modulamos<i>→</i></div>
+        <div class="kflujo">modulas<i>→</i></div>
         <div class="ktag b"><small>Tonalidad B</small><b class="kB"></b><span class="sB"></span></div>
       </div>
       <div class="hoja"><div class="pent"></div></div>
@@ -545,10 +552,10 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 </script>
 <script>window.MOD_BASE = '../s1/';</script><script src="../s1/js/vexflow.js?v=13"></script>
 <script src="js/sonido.js?v=14"></script>
-<script src="js/pentagrama.js?v=s3a"></script>
-<script src="js/s2_test.js?v=6"></script>
+<script src="js/pentagrama.js?v=s3b"></script>
+<script src="js/s2_test.js?v=7"></script>
 <script src="js/s3_motor.js?v=1"></script>
-<script src="js/orquesta.js?v=2"></script>
+<script src="js/orquesta.js?v=3"></script>
 <script>
 (function(){
   var $ = function(i){ return document.getElementById(i); };
@@ -558,12 +565,12 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
   $('tituloS3').innerHTML = 'Construye el puente'.split('').map(function(ch, i){ return ch === ' ' ? ' ' : '<span class="l" aria-hidden="true" style="animation-delay:' + (0.5 + i*0.07).toFixed(2) + 's">' + ch + '</span>'; }).join('');
   /* guion (subtítulos hasta que Iago lo grabe; «|» = cuadro nuevo) */
   var VOZ = {
-    intro:'En la sesión anterior conocimos los tres caminos para viajar de una tonalidad a otra. Hoy nos quedamos con el primero, la **modulación diatónica**, y esta vez el puente lo construís vosotros.|Primero veréis dos ejemplos resueltos, uno de **siete casillas** y otro de **ocho**. Después os toca a vosotros. Y cuidado: si algún acorde no encaja, el puente no aguantará.',
+    intro:'En la sesión anterior conociste los tres caminos para viajar de una tonalidad a otra. Hoy te quedas con el primero, la **modulación diatónica**, y esta vez el puente lo construyes tú.|Primero verás dos ejemplos resueltos, uno de **siete casillas** y otro de **ocho**. Después te toca a ti. Y cuidado: si algún acorde no encaja, el puente no aguantará.',
     repaso:'Antes de construir, un repaso rápido de la sesión anterior. Si lo tienes fresco, puedes **saltártelo**.',
-    ej7:'Primer ejemplo: de **Fa mayor** a **Do mayor**, con siete casillas. Mira cómo lo iría resolviendo un alumno, paso a paso, con las mismas casillas que vas a usar tú.',
-    ej8:'Segundo ejemplo: de **Sol mayor** a **Re mayor**. Este tiene **ocho casillas**. La casilla que añadimos va justo después del puente: en lugar de terminar con un quinto-primero, nos curramos un poco más el final y hacemos un **cuarto, quinto, primero**.',
-    tuyo:'Ahora te toca a ti. Te guío paso a paso, pero los acordes los eliges tú. Cuando termines, pulsa **Corregir**… y veremos si el puente aguanta.',
-    cierre:'Ya sabéis construir el puente. En la próxima sesión, práctica libre: ejercicios de siete y de ocho casillas, sin ayudas.'
+    ej7:'Primer ejemplo resuelto: de **Fa mayor** a **Do mayor**, con siete casillas. Fíjate en cada paso: son las mismas casillas que vas a usar tú.',
+    ej8:'Segundo ejemplo resuelto, ahora **en menor**: de **La menor** a **Mi menor**. Este tiene **ocho casillas**. La casilla que se añade va justo después del puente: en lugar de terminar con un quinto-primero, te curras un poco más el final y haces un **cuarto, quinto, primero**.',
+    tuyo:'Ahora te toca a ti. Te guío paso a paso, pero los acordes los eliges tú. Cuando termines, pulsa **Corregir**… y verás si el puente aguanta.',
+    cierre:'Ya sabes construir el puente. En la próxima sesión, práctica libre: ejercicios de siete y de ocho casillas, sin ayudas.'
   };
   var vozT = null, vozTxt = '', vozN = 0, blipCtx = null;
   var CONT_EXTRA = null;   /* si la escena quiere que el último «Continuar» haga algo (p. ej. ver el vídeo después de leer) */
@@ -732,24 +739,24 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
   var EJEMPLOS = {
     ej7: {n:7, A:['F','major'], B:['C','major'], puente:'D',
       pasos:[
-        {tit:'Paso 0', tx:'Las armaduras. <b>Fa mayor</b> tiene un bemol (si♭); <b>Do mayor</b>, ninguno. La primera y la última casilla ya vienen dadas: el I de cada tonalidad.', casillas:[]},
+        {tit:'Paso 0', tx:'Primero, las armaduras. <b>Fa mayor</b> tiene un bemol (si♭); <b>Do mayor</b>, ninguna alteración. La primera y la última casilla ya vienen dadas: el I de cada tonalidad.', casillas:[], arm:[[1,'♭'],[0,null]]},
         {tit:'Paso 1', tx:'Asentar la tonalidad A con una cadencia básica: <b>I · IV · V7 · I</b> de Fa mayor.', casillas:[1,2,3]},
-        {tit:'Paso 2', tx:'El puente: un acorde común. Evitamos el <b>si</b> (si♭ en Fa, si natural en Do). <b>Re menor</b> está en las dos: VI de Fa y II de Do.', casillas:[4], evita:true},
-        {tit:'Paso 3', tx:'Asentar Do mayor. Solo queda una casilla: <b>la dominante</b>, G7, que nos lleva al I.', casillas:[5]}
+        {tit:'Paso 2', tx:'El puente: un acorde común. Evita el <b>si</b> (si♭ en Fa, si natural en Do). <b>Re menor</b> está en las dos: VI de Fa y II de Do.', casillas:[4], evita:true},
+        {tit:'Paso 3', tx:'Asentar Do mayor. Solo queda una casilla: <b>la dominante</b>, G7, que lleva al I.', casillas:[5]}
       ]},
-    ej8: {n:8, A:['G','major'], B:['D','major'], puente:'E',
+    ej8: {n:8, A:['A','minor'], B:['E','minor'], puente:'C',   /* (Iago 1-nov 22:49) el de 8 casillas, en menor, para que les vaya sonando */
       pasos:[
-        {tit:'Paso 0', tx:'<b>Sol mayor</b>: un sostenido (fa♯). <b>Re mayor</b>: dos (fa♯ y do♯). Este tiene <b>8 casillas</b>: la que se añade va después del puente.', casillas:[]},
-        {tit:'Paso 1', tx:'Asentar Sol mayor: <b>I · IV · V7 · I</b>.', casillas:[1,2,3]},
-        {tit:'Paso 2', tx:'El puente. Evitamos el <b>do</b> (natural en Sol, sostenido en Re). <b>Mi menor</b> está en las dos: VI de Sol y II de Re.', casillas:[4], evita:true},
-        {tit:'Paso 3', tx:'Con dos casillas, un final más currado: <b>IV · V7 · I</b> de Re mayor → G · A7 · D.', casillas:[5,6]}
+        {tit:'Paso 0', tx:'Primero, las armaduras. <b>La menor</b>: ninguna alteración. <b>Mi menor</b>: un sostenido (fa♯). Este tiene <b>8 casillas</b>: la que se añade va después del puente.', casillas:[], arm:[[0,null],[1,'♯']]},
+        {tit:'Paso 1', tx:'Asentar La menor: <b>i · iv · V7 · i</b>. Ojo: la dominante siempre es mayor, E7 (con sol♯), aunque la armadura no lo diga.', casillas:[1,2,3]},
+        {tit:'Paso 2', tx:'El puente. Evita el <b>fa</b> (natural en La m, sostenido en Mi m). <b>Do mayor</b> está en las dos: III de La m y VI de Mi m.', casillas:[4], evita:true},
+        {tit:'Paso 3', tx:'Con dos casillas, un final más currado: <b>iv · V7 · i</b> de Mi menor → Am · B7 · Em.', casillas:[5,6]}
       ]}
   };
   var PASOS_GUIA = [
-    {tit:'Paso 0', tx:function(E){ return 'Las armaduras. <b>' + M.keyLabel(E.A) + '</b>: ' + M.sigLabel(E.A.sig) + (E.A.sig ? ' (' + M.sigNotas(E.A.sig) + ')' : '') + '. <b>' + M.keyLabel(E.B) + '</b>: ' + M.sigLabel(E.B.sig) + (E.B.sig ? ' (' + M.sigNotas(E.B.sig) + ')' : '') + '.' + (E.n === 8 ? ' Tiene <b>8 casillas</b>: la extra va después del puente.' : ''); }},
-    {tit:'Paso 1', tx:function(E){ return 'Asienta <b>' + M.keyLabel(E.A) + '</b>: rellena las casillas 2, 3 y 4 con <b>I · IV · V7 · I</b>. Pulsa una casilla para elegir su acorde.'; }},
+    {tit:'Paso 0', tx:function(E){ return 'Primero, las armaduras: arriba, elige cuántas alteraciones tienen <b>' + M.keyLabel(E.A) + '</b> y <b>' + M.keyLabel(E.B) + '</b>, y si son ♯ o ♭.' + (E.n === 8 ? ' Este tiene <b>8 casillas</b>: la extra va después del puente.' : ''); }},
+    {tit:'Paso 1', tx:function(E){ return 'Asienta <b>' + M.keyLabel(E.A) + '</b>: rellena las casillas 2, 3 y 4 con <b>' + (E.A.mode === 'minor' ? 'i · iv · V7 · i' : 'I · IV · V7 · I') + '</b>. Pulsa una casilla para elegir su acorde.'; }},
     {tit:'Paso 2', tx:function(E){ return 'El puente (casilla 5): un acorde que esté en las dos tonalidades. Evita la nota que no comparten: <b>' + E.evitar + '</b>.'; }, evita:true},
-    {tit:'Paso 3', tx:function(E){ return E.n === 8 ? 'Asienta <b>' + M.keyLabel(E.B) + '</b> con un final más currado: casillas 6 y 7, <b>IV · V7</b> → I.' : 'Asienta <b>' + M.keyLabel(E.B) + '</b>: solo queda una casilla, la <b>dominante</b> (V7) → I.'; }},
+    {tit:'Paso 3', tx:function(E){ return E.n === 8 ? 'Asienta <b>' + M.keyLabel(E.B) + '</b> con un final más currado: casillas 6 y 7, <b>' + (E.B.mode === 'minor' ? 'iv · V7' : 'IV · V7') + '</b> → ' + (E.B.mode === 'minor' ? 'i' : 'I') + '.' : 'Asienta <b>' + M.keyLabel(E.B) + '</b>: solo queda una casilla, la <b>dominante</b> (V7) → I.'; }},
     {tit:'¡Listo!', tx:function(){ return 'Cuando lo tengas, pulsa <b>✓ Corregir</b>… y que aguante el puente.'; }}
   ];
   var CAS_GUIA = function(E){ return [[], [1,2,3], [4], E.n === 8 ? [5,6] : [5], []]; };
@@ -768,7 +775,8 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     var tipo = sec.dataset.tipo, k = sec.dataset.e, ej = EJEMPLOS[k];
     sec.appendChild($('tTaller').content.cloneNode(true));
     var T = sec.querySelector('.taller'), fila = T.querySelector('.fila8'), gr = T.querySelector('.grados'), ed = T.querySelector('.editor');
-    var cartel = T.querySelector('.cartel'), bPaso = T.querySelector('.bPaso'), bCorr = T.querySelector('.bCorr'), msg = T.querySelector('.pie .msg'), dedo = T.querySelector('.dedo');
+    var cartel = T.querySelector('.cartel'), bPaso = T.querySelector('.bPaso'), bCorr = T.querySelector('.bCorr'), bOye = T.querySelector('.bOye'), msg = T.querySelector('.pie .msg'), dedo = T.querySelector('.dedo');
+    var armOK = {A:false, B:false}, armSel = {A:{}, B:{}}, actual = null, sonando = false;
     var EX = null, user = [], sel = null, est = {}, paso = 0, abiertas = {}, demo = tipo === 'demo', corriendo = false, xs = [], lado = 96;
     bCorr.textContent = demo ? '✓ Comprobar' : '✓ Corregir';
     function nuevoEj(){
@@ -777,6 +785,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       user = EX.sol.map(function(s){ return s.fixed ? JSON.parse(JSON.stringify(s.acc[0])) : null; });
       sel = null; est = {}; paso = 0; abiertas = {}; ed.classList.remove('show'); ed.innerHTML = ''; msg.textContent = '';
       T.classList.remove('arm', 'neb'); bCorr.disabled = true; bCorr.classList.remove('late');
+      armOK = {A:false, B:false}; armSel = {A:{}, B:{}}; [].forEach.call(T.querySelectorAll('.ktag'), function(e){ e.classList.remove('ok', 'mal'); }); pintaArm();
       [].forEach.call(sec.querySelectorAll('.kA'), function(e){ e.textContent = M.keyLabel(EX.A); });
       [].forEach.call(sec.querySelectorAll('.kB'), function(e){ e.textContent = M.keyLabel(EX.B); });
       [].forEach.call(sec.querySelectorAll('.sA'), function(e){ e.textContent = M.sigLabel(EX.A.sig) + (EX.A.sig ? ' · ' + M.sigNotas(EX.A.sig) : ''); });
@@ -784,31 +793,31 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       pinta();
     }
     /* --- partitura (acordes enlazados) y casillas debajo de su acorde --- */
-    function pintaPartitura(cont, us, colores){
+    function pintaPartitura(cont, us, colores, act){
       var V = M.voces(us), hayAlgo = V.some(Boolean);
       var acs = V.map(function(v){ return v ? {t:v.t, b:v.b} : {t:['b/4'], b:['d/3']}; });
       var ancho = Math.max(360, cont.clientWidth || T.clientWidth - 40);
-      var P = Pentagrama.pinta(cont, acs, {vis:V.map(Boolean), ancho:ancho, colores:colores, extraH:16});
+      var P = Pentagrama.pinta(cont, acs, {vis:V.map(Boolean), ancho:ancho, colores:colores, extraH:16, actual: act == null ? null : act});
       return P.xs;
     }
     function geometria(){
       var n = EX.n, paso_ = xs.length > 1 ? (xs[n - 1] - xs[0])/(n - 1) : 100;
-      lado = Math.max(62, Math.min(104, paso_*.9));
+      lado = Math.max(60, Math.min(92, paso_*.86));
       return lado;
     }
     function pinta(nuevo){
-      xs = pintaPartitura(T.querySelector('.pent'), user, null);
+      xs = pintaPartitura(T.querySelector('.pent'), user, null, actual);
       geometria(); var svg = T.querySelector('.pent svg'), W = svg ? +svg.getAttribute('width') : 800;
       fila.style.width = W + 'px'; fila.style.setProperty('--lado', lado + 'px'); gr.style.width = W + 'px';
       fila.innerHTML = '';
       EX.sol.forEach(function(d, i){
-        var b = document.createElement('div'); b.setAttribute('role', 'button'); b.tabIndex = d.fixed ? -1 : 0; b.className = 'cas' + (d.fixed ? ' fixed' : '') + (d.magic ? ' magic' : '') + (sel === i ? ' sel' : '') + (nuevo === i ? ' nueva' : '');
+        var b = document.createElement('div'); b.setAttribute('role', 'button'); b.tabIndex = d.fixed ? -1 : 0; b.className = 'cas' + (d.fixed ? ' fixed' : '') + (d.magic ? ' magic' : '') + (sel === i ? ' sel' : '') + (nuevo === i ? ' nueva' : '') + (actual === i ? (user[i] ? ' suena' : ' suenaVacia') : '');
         b.style.left = (xs[i] - lado/2).toFixed(1) + 'px'; b.dataset.i = i;
         if(!d.fixed && !demo && !abiertas[i]) b.classList.add('cerrada');
         var u = user[i];
         b.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="cif">' + (u ? M.cifrado(u) : '') + '</span>' + (d.magic ? '<span class="spark">✦</span>' : '') +
           '<span class="name' + (u ? '' : ' empty') + '">' + (u ? M.nombreAcorde(u) : 'elegir') + '</span>';
-        if(!d.fixed) b.addEventListener('click', function(){ if(!corriendo || demoClic) elige(i); });
+        if(!d.fixed) b.addEventListener('click', function(){ if(!corriendo || demoClic){ if(demo || abiertas[i]) clic('maquina'); elige(i); } });
         if(!d.fixed) b.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); b.click(); } });
         fila.appendChild(b);
       });
@@ -821,8 +830,9 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       var n = EX.n, h = '', w = lado;
       function g(i, txt, c){ return '<span class="g ' + (c || '') + '" style="left:' + (xs[i] - w/2).toFixed(1) + 'px;width:' + w.toFixed(1) + 'px">' + txt + '</span>'; }
       function lla(a, b, txt, c){ var x0 = xs[a] - w/2, x1 = xs[b] + w/2; return '<span class="lla ' + (c || '') + '" style="left:' + x0.toFixed(1) + 'px;width:' + (x1 - x0).toFixed(1) + 'px"><em>' + txt + '</em></span>'; }
-      if(gradosVis >= 1) h += ['I','IV','V7','I'].map(function(t, i){ return g(i, t); }).join('') + lla(0, 3, M.keyCorto(EX.A));
-      if(gradosVis >= 3){ var B = n === 8 ? ['IV','V7','I'] : ['V7','I']; h += B.map(function(t, j){ return g(5 + j, t, 'b'); }).join('') + lla(5, n - 1, M.keyCorto(EX.B), 'b'); }
+      function rom(i){ var a = EX.sol[i].acc[0]; return a.seventh ? 'V7' : M.romano(a.grado, a.modo); }
+      if(gradosVis >= 1) h += [0,1,2,3].map(function(i){ return g(i, rom(i)); }).join('') + lla(0, 3, M.keyCorto(EX.A));
+      if(gradosVis >= 3){ var B = []; for(var j = 5; j < n; j++) B.push(rom(j)); h += B.map(function(t, j){ return g(5 + j, t, 'b'); }).join('') + lla(5, n - 1, M.keyCorto(EX.B), 'b'); }
       if(gradosVis >= 2 && user[4]){ var c = EX.comunes.filter(function(c){ return M.igual(user[4], c); })[0]; if(c) h += g(4, c.romA + '/' + c.romB, 'p'); }
       gr.innerHTML = h;
     }
@@ -848,7 +858,10 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       if(sel == null) return;
       if(!completo() && !user[sel]){ sacude(); return; }
       var i = sel; guarda(i); sel = null; ed.classList.remove('show');
-      pinta(i); suena(i); revisa();
+      pinta(i);
+      var fs = finSeccion(i);
+      if(fs != null && !demo) oye(0, fs); else if(!demo) suena(i);
+      revisa();
     }
     function editor(i){
       var magic = EX.sol[i].magic;
@@ -859,12 +872,12 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       h += '<div class="egrp"><span>Tipo</span><div class="ebtns">' + [['Mayor','M'],['menor','m'],['dism.','dim']].map(function(x){ return '<button class="pill" data-m="' + x[1] + '">' + x[0] + '</button>'; }).join('') + '<span class="esep"></span><button class="pill" data-s="1">7ª (dominante)</button></div></div>';
       h += '</div><div class="eact"><button class="prim eHecho">Hecho</button><button class="eVacia">Vaciar casilla</button><span class="ewarn">Completa la nota y el tipo para continuar.</span></div>';
       ed.innerHTML = h;
-      [].forEach.call(ed.querySelectorAll('[data-l]'), function(b){ b.onclick = function(){ est.letter = b.dataset.l; vivo(i); }; });
-      [].forEach.call(ed.querySelectorAll('[data-a]'), function(b){ b.onclick = function(){ est.alter = +b.dataset.a; vivo(i); }; });
-      [].forEach.call(ed.querySelectorAll('[data-m]'), function(b){ b.onclick = function(){ est.modo = b.dataset.m; if(est.modo !== 'M') est.seventh = false; vivo(i); }; });
-      ed.querySelector('[data-s]').onclick = function(){ est.seventh = !est.seventh; if(est.seventh) est.modo = 'M'; vivo(i); };
-      ed.querySelector('.eHecho').onclick = function(){ if(!corriendo || demoClic) cierra(); };
-      ed.querySelector('.eVacia').onclick = function(){ if(corriendo) return; user[i] = null; sel = null; ed.classList.remove('show'); pinta(); revisa(); };
+      [].forEach.call(ed.querySelectorAll('[data-l]'), function(b){ b.onclick = function(){ clic('tecla'); est.letter = b.dataset.l; vivo(i); }; });
+      [].forEach.call(ed.querySelectorAll('[data-a]'), function(b){ b.onclick = function(){ clic('tecla'); est.alter = +b.dataset.a; vivo(i); }; });
+      [].forEach.call(ed.querySelectorAll('[data-m]'), function(b){ b.onclick = function(){ clic('tecla'); est.modo = b.dataset.m; if(est.modo !== 'M') est.seventh = false; vivo(i); }; });
+      ed.querySelector('[data-s]').onclick = function(){ clic('tecla'); est.seventh = !est.seventh; if(est.seventh) est.modo = 'M'; vivo(i); };
+      ed.querySelector('.eHecho').onclick = function(){ if(!corriendo || demoClic){ clic('boton'); cierra(); } };
+      ed.querySelector('.eVacia').onclick = function(){ if(corriendo) return; clic('boton'); user[i] = null; sel = null; ed.classList.remove('show'); pinta(); revisa(); };
       vivo(i, true);
     }
     var demoClic = false;
@@ -885,15 +898,58 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       }
       if(completo()){ guarda(i); xs = pintaPartitura(T.querySelector('.pent'), user, null); }
     }
+    /* sonidos de botones (Splice, retro): maquina = casilla, tecla = editor, boton = acciones, ding = cartel nuevo */
+    function clic(nombre){ if(!musOn) return; Orq.listo().then(function(){ Orq.fx(nombre, Orq.ahora() + .005, nombre === 'ding' ? .35 : .55); }); }
+    /* (Iago 1-nov) al completar una sección, suenan todos los acordes hasta ahí (no solo el último) */
+    function finSeccion(i){
+      var P = [[1,2,3], [4], EX.n === 8 ? [5,6] : [5]], F = [3, 4, EX.n - 1];
+      for(var s_ = 0; s_ < 3; s_++) if(P[s_].indexOf(i) >= 0) return P[s_].every(function(j){ return user[j]; }) ? F[s_] : null;
+      return null;
+    }
+    /* «▶ Escuchar»: lo que haya, en orden; las casillas vacías se iluminan pero no suenan */
+    function oye(desde, hasta, alFin){
+      if(sonando) Sonido.parar();
+      sonando = true; var q = .95, V = M.voces(user);
+      Sonido.listo().then(function(){
+        var t0 = Sonido.ahora() + .08;
+        for(var i = desde; i <= hasta; i++) (function(i, j){
+          if(V[i] && musOn) Sonido.acorde(V[i].t.concat(V[i].b), t0 + j*q, q*.97, .55);
+          despues(j*q*1000 + 80, function(){ actual = i; pinta(); });
+        })(i, i - desde);
+        despues((hasta - desde + 1)*q*1000 + 250, function(){ actual = null; sonando = false; pinta(); if(alFin) alFin(); });
+      });
+    }
+    bOye.onclick = function(){ if(corriendo && !demoClic) return; clic('boton'); oye(0, EX.n - 1); };
+    /* paso 0: elegir la armadura de A y de B (obligatorio) */
+    function pintaArm(){
+      ['A','B'].forEach(function(K){
+        var h = T.querySelector('.armSel[data-k="' + K + '"]'); if(!h) return;
+        var S = armSel[K];
+        h.innerHTML = '<em>Armadura</em>' + [0,1,2,3,4,5,6,7].map(function(n){ return '<button data-n="' + n + '" class="' + (S.n === n ? 'on' : '') + '">' + n + '</button>'; }).join('') +
+          ['♯','♭'].map(function(t){ return '<button data-t="' + t + '" class="' + (S.t === t ? 'on' : '') + '">' + t + '</button>'; }).join('');
+        [].forEach.call(h.querySelectorAll('button'), function(b){ b.onclick = function(){
+          if(corriendo && !demoClic) return; if(!demo && paso !== 0) return;
+          clic('tecla'); if(b.dataset.n != null) S.n = +b.dataset.n; else S.t = b.dataset.t;
+          pintaArm(); compruebaArm(K); }; });
+      });
+    }
+    function compruebaArm(K){
+      var S = armSel[K]; if(S.n == null || (S.n > 0 && !S.t)) return;
+      var sig = S.n === 0 ? 0 : S.n*(S.t === '♯' ? 1 : -1), tag = T.querySelector('.ktag.' + K.toLowerCase());
+      if(sig === EX[K].sig){ armOK[K] = true; tag.classList.add('ok'); clic('boton'); }
+      else { tag.classList.remove('mal'); void tag.offsetWidth; tag.classList.add('mal'); armSel[K] = {}; pintaArm();
+        msg.textContent = 'Esa no es la armadura de ' + M.keyLabel(EX[K]) + '. Prueba otra vez.'; despues(2600, function(){ msg.textContent = ''; }); }
+      revisa();
+    }
     function suena(i){
       var V = M.voces(user), v = V[i]; if(!v || !musOn) return;
       Sonido.listo().then(function(){ Sonido.acorde(v.t.concat(v.b), Sonido.ahora() + .03, 1.1, .5); });
     }
     /* --- pasos y carteles --- */
     function cartelPon(tit, tx, conBoton){
-      cartel.hidden = false; T.classList.add('conCartel'); cartel.querySelector('.pn').textContent = tit; cartel.querySelector('.tx').innerHTML = tx;
+      cartel.hidden = false; cartel.querySelector('.pn').textContent = tit; cartel.querySelector('.tx').innerHTML = tx;
       bPaso.hidden = !conBoton; cartel.classList.remove('pop'); void cartel.offsetWidth; cartel.classList.add('pop');
-      if(musOn) Orq.listo().then(function(){ Orq.fx('gema', Orq.ahora() + .02, .35); });
+      clic('ding');
     }
     function pasoVisual(p){
       if(p >= 0) T.classList.add('arm');
@@ -907,24 +963,24 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       paso = p; var E = EX, cas = CAS_GUIA(E)[p] || [];
       cas.forEach(function(i){ abiertas[i] = true; });
       pasoVisual(p);
-      cartelPon(PASOS_GUIA[p].tit, PASOS_GUIA[p].tx(E), p === 0);
+      cartelPon(PASOS_GUIA[p].tit, PASOS_GUIA[p].tx(E), false);
       revisa();
     }
     function revisa(){
       if(demo) return;
       var cas = CAS_GUIA(EX)[paso] || [], llenas = cas.every(function(i){ return user[i]; });
+      if(paso === 0){ bPaso.hidden = !(armOK.A && armOK.B); bPaso.textContent = 'Siguiente paso ▶'; }
       if(paso >= 1 && paso <= 3){ bPaso.hidden = !llenas; if(llenas){ bPaso.textContent = paso === 3 ? 'Terminar ▶' : 'Siguiente paso ▶'; } }
       var todas = EX.sol.every(function(s, i){ return s.fixed || user[i]; });
       bCorr.disabled = !todas; bCorr.classList.toggle('late', todas && paso >= 4);
     }
-    bPaso.onclick = function(){ if(sel != null){ cierra(); if(sel != null) return; } guiaPaso(Math.min(4, paso + 1)); };
+    bPaso.onclick = function(){ clic('boton'); if(sel != null){ cierra(); if(sel != null) return; } guiaPaso(Math.min(4, paso + 1)); };
     /* demostración: el «alumno fantasma» pulsa casilla, nota, alteración, tipo, 7ª y Hecho */
     function dedoA(el, alFin){
       var r = el.getBoundingClientRect(), R = T.getBoundingClientRect();
       dedo.classList.add('on'); dedo.style.left = (r.left - R.left + r.width*.55) + 'px'; dedo.style.top = (r.top - R.top + r.height*.45) + 'px';
-      despues(620, function(){ if(!enEscena(sec)) return; dedo.classList.add('clic'); el.classList.add('pulsa'); demoClic = true; el.click(); demoClic = false;
-        if(musOn && window.Sonido && Sonido.ctx){ try{ var c = Sonido.ctx, o = c.createOscillator(), g = c.createGain(); o.frequency.value = 1500; g.gain.setValueAtTime(.05, c.currentTime); g.gain.exponentialRampToValueAtTime(.0005, c.currentTime + .03); o.connect(g); g.connect(Sonido.salida); o.start(); o.stop(c.currentTime + .04); }catch(e){} }
-        despues(160, function(){ dedo.classList.remove('clic'); el.classList.remove('pulsa'); if(alFin) despues(220, alFin); }); });
+      despues(1250, function(){ if(!enEscena(sec)) return; dedo.classList.add('clic'); el.classList.add('pulsa'); demoClic = true; el.click(); demoClic = false;
+        despues(260, function(){ dedo.classList.remove('clic'); el.classList.remove('pulsa'); if(alFin) despues(650, alFin); }); });
     }
     function demoAcorde(i, a, alFin){
       var q = [function(){ return fila.querySelector('.cas[data-i="' + i + '"]'); },
@@ -944,8 +1000,16 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
           cartelPon('¡Listo!', 'Todas las casillas llenas. Pulsa <b>✓ Comprobar</b> para cruzar el puente.', false);
           bCorr.disabled = false; bCorr.classList.add('late'); return; }
         pasoVisual(p); cartelPon(P[p].tit, P[p].tx, false);
-        despues(p === 0 ? 4200 : 3000, function(){
-          (function cas(j){ if(!enEscena(sec)) return; if(j >= P[p].casillas.length){ pasoVisual(p); despues(1600, function(){ hazPaso(p + 1); }); return; }
+        despues(3600, function(){
+          if(P[p].arm){   /* el «alumno fantasma» elige las armaduras */
+            var cl = [];
+            ['A','B'].forEach(function(K, x){ var a = P[p].arm[x]; cl.push('.armSel[data-k="' + K + '"] [data-n="' + a[0] + '"]'); if(a[1]) cl.push('.armSel[data-k="' + K + '"] [data-t="' + a[1] + '"]'); });
+            (function va(j){ if(!enEscena(sec)) return; if(j >= cl.length){ dedo.classList.remove('on'); despues(1400, function(){ hazPaso(p + 1); }); return; }
+              dedoA(T.querySelector(cl[j]), function(){ va(j + 1); }); })(0);
+            return;
+          }
+          (function cas(j){ if(!enEscena(sec)) return; if(j >= P[p].casillas.length){ pasoVisual(p);
+              var fin = p === 1 ? 3 : p === 2 ? 4 : EX.n - 1; oye(0, fin, function(){ despues(1300, function(){ hazPaso(p + 1); }); }); return; }
             var i = P[p].casillas[j]; demoAcorde(i, sol[i], function(){ dedo.classList.remove('on'); despues(350, function(){ cas(j + 1); }); }); })(0);
         });
       })(0);
@@ -954,15 +1018,16 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     var CS = sec.querySelector('.cineS3'), vid = CS.querySelector('video'), cen = CS.querySelector('.centro'), bCine = CS.querySelector('.bCine'), verd = CS.querySelector('.veredicto'), hud = CS.querySelector('.hud');
     var RS = sec.querySelector('.resul'), resultado = null;
     bCorr.onclick = function(){
+      clic('boton');
       if(sel != null){ cierra(); if(sel != null) return; }
       var vac = EX.sol.map(function(s, i){ return !s.fixed && !user[i] ? i + 1 : 0; }).filter(Boolean);
       if(vac.length){ msg.textContent = 'Faltan casillas por completar: ' + vac.join(', ') + '.'; return; }
-      msg.textContent = ''; cartel.hidden = true; T.classList.remove('conCartel');
+      msg.textContent = ''; cartel.hidden = true;
       var V = EX.sol.map(function(s, i){ return M.veredicto(EX, user, i); });
       resultado = {V:V, exito: !V.some(function(v){ return v.cls === 'bad'; }), amber: V.some(function(v){ return v.cls === 'amber'; })};
       cinematica();
     };
-    var SRC = {exito:'video/s3_exito.mp4?v=1', caida:'video/s3_caida.mp4?v=1'};
+    var SRC = {exito:'video/s3_exito.mp4?v=2', caida:'video/s3_caida.mp4?v=2'};
     function para(){ timers.forEach(clearTimeout); timers = []; if(raf) cancelAnimationFrame(raf); raf = null; vid.pause(); Orq.parar(); }
     function cinematica(){
       para(); sec.classList.remove('vResul'); sec.classList.add('vCine');
@@ -985,10 +1050,11 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     }
     function arranca(tt, slots){
       para(); cen.hidden = true; verd.classList.remove('va');
-      vid.currentTime = 0; vid.muted = true;
+      vid.currentTime = 0; vid.muted = !musOn; vid.volume = .9;   /* el vídeo trae su paisaje sonoro (pájaros, agua, pasos, derrumbe) */
       var p = vid.play(); if(p && p.catch) p.catch(function(){ cen.hidden = false; });
-      var t0 = Orq.ahora() + .08;   /* el vídeo y la música arrancan juntos */
-      if(musOn) musica(t0, tt, resultado.exito);
+      vid.addEventListener('playing', function una(){ vid.removeEventListener('playing', una);
+        var t0 = Orq.ahora() - vid.currentTime + .03;   /* los acordes, cosidos al reloj del vídeo */
+        if(musOn) musica(t0, tt, resultado.exito); });
       var n = user.length;
       (function bucle(){ var t = vid.currentTime, act = -1;
         tt.forEach(function(x, i){ if(t >= x) act = i; });
@@ -1034,42 +1100,20 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     }
     RS.querySelector('.bOtra').onclick = function(){ cinematica(); };
     RS.querySelector('.bNuevo').onclick = function(){ entra(true); };
-    /* --- música de la cinemática: los acordes del alumno, con orquesta --- */
+    /* --- acordes de la cinemática: SOLO los del alumno (piano + cuerda tenida debajo para que no haya huecos) --- */
     function musica(t0, tt, exito){
-      var V = M.voces(user), n = user.length, fin = exito ? FIN : ROTURA;
-      var I = V[0];
-      /* entrada libre (2 compases de 2): arpa sobre el I de A y redoble de timbal que crece */
-      [0,1,2,1,0,1,2,3].forEach(function(j, k){ var m = I.midi.slice(0, 3).concat([I.midi[0] + 12]); Orq.nota('ar', m[j], t0 + .05 + k*Q/2, .9, .32); });
-      var tI = 36 + (I.midi[3] % 12); if(tI < 40) tI += 12; if(tI > 54) tI -= 12;
-      for(var r = 0; r < 10; r++) Orq.nota('ti', tI, t0 + 1.25 + r*.125, .2, .05 + r*.018);
-      Orq.fx('swell', t0 + .1, .18, 2.4);
+      var V = M.voces(user), fin = exito ? FIN - .4 : ROTURA;
       tt.forEach(function(ti, i){
         var v = V[i]; if(!v) return;
-        var ini = t0 + ti, d = (i + 1 < tt.length ? tt[i + 1] : fin) - ti, puente = i === 4, ult = exito && i === n - 1;
+        var ini = t0 + ti, d = (i + 1 < tt.length ? tt[i + 1] : fin) - ti;
         if(!exito && i === 4) d = ROTURA - ti;
-        var vol = ult ? .5 : .36;
-        v.midi.slice(0, 3).forEach(function(m){ Orq.nota('cu', m, ini, d - .05, vol*.55, .06); });
-        Orq.nota('cu', v.midi[3] + 12, ini, d - .05, vol*.45, .06);
-        Orq.nota('cb', v.midi[3] - 12 >= 28 ? v.midi[3] - 12 : v.midi[3], ini, d - .05, vol*.8, .03);
-        /* arpa: arpegio en corcheas */
-        var arp = [v.midi[3] + 12].concat(v.midi.slice(0, 3)).concat([v.midi[0] + 12]), pas = Math.max(1, Math.round(d/(Q/2)));
-        for(var k2 = 0; k2 < Math.min(pas, 8); k2++) Orq.nota('ar', arp[k2 % arp.length], ini + k2*Q/2, .8, .22);
-        /* timbal en la fundamental, más fuerte en el puente y al llegar */
-        var raiz = 36 + ((v.midi[3] % 12) + 12) % 12; if(raiz < 40) raiz += 12;
-        Orq.nota('ti', raiz > 54 ? raiz - 12 : raiz, ini, .9, puente || ult ? .6 : .32);
-        if(puente){ Orq.nota('co', v.midi[2], ini, d, .3, .25); Orq.nota('co', v.midi[1], ini, d, .22, .25); Orq.nota('tr', v.midi[2], ini, d - .1, .25, .2); Orq.fx('brillo', ini, .3); }
-        if(ult){ Orq.nota('tr', v.midi[2], ini, d, .32, .1); Orq.nota('tr', v.midi[0], ini, d, .26, .1); Orq.nota('co', v.midi[2], ini, d, .3, .2);
-          Orq.fx('revela', ini, .4); for(var r2 = 0; r2 < 12; r2++) Orq.nota('ti', raiz > 54 ? raiz - 12 : raiz, ini - 1.25 + r2*.104, .15, .04 + r2*.02); }
+        Sonido.acorde(v.t.concat(v.b), ini, Math.min(d, 2.4), .5);
+        v.midi.forEach(function(m){ Orq.nota('cu', m, ini, d - .04, .085, .12); });   /* la cuerda mantiene el acorde hasta el siguiente */
       });
-      if(!exito) despues(Math.max(0, (t0 + ROTURA - Orq.ahora() - .03)*1000), function(){
-        Orq.corta(Orq.ahora(), .05);
-        var tr = Orq.ahora() + .04;
-        Orq.fx('crash', tr, .7); Orq.fx('boom', tr + .05, .8); Orq.fx('cae', tr + .35, .55);
-        [0, .22, .5].forEach(function(dt, k3){ Orq.nota('ti', 36 + k3, tr + dt, 1.2, .7 - k3*.15); });
-      });
+      if(!exito) despues(Math.max(0, (t0 + ROTURA - Orq.ahora() - .02)*1000), function(){ Orq.corta(Orq.ahora(), .03); Sonido.parar(); });   /* el puente se rompe: se cortan los acordes */
     }
     function entra(otro){
-      limpia(); sec.classList.remove('vCine', 'vResul'); cartel.hidden = true; T.classList.remove('conCartel'); dedo.classList.remove('on'); corriendo = false; gradosVis = 0; evitaOn = false;
+      limpia(); sec.classList.remove('vCine', 'vResul'); cartel.hidden = true; dedo.classList.remove('on'); actual = null; sonando = false; corriendo = false; gradosVis = 0; evitaOn = false;
       if(!EX || otro || tipo === 'demo') nuevoEj();
       else pinta();
       if(otro) document.body.classList.remove('lectura');
@@ -1127,7 +1171,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     R[4],
     { tipo: 'unica', titulo: 'La casilla extra', enunciado: 'En un ejercicio de 8 casillas, ¿dónde va la casilla que se añade?',
       opciones: ['Justo después del puente: IV · V7 · I de la tonalidad B', 'Al principio, antes del I de la tonalidad A', 'Justo antes del puente', 'Al final, después del I de B'],
-      correcta: 0, pista: 'Va después del puente: en vez de V7 · I, hacemos IV · V7 · I.' }];
+      correcta: 0, pista: 'Va después del puente: en vez de V7 · I, haces IV · V7 · I.' }];
   PISTA_EN.repaso = {fin: function(){
     if(!document.body.classList.contains('lectura')) return;
     $('bSig').hidden = true; $('bSig').classList.remove('llama');
