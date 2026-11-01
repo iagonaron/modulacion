@@ -5,8 +5,9 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
-- 1-nov 14:55 · C1 · EN CURSO · S2 v8: cinemáticas nuevas (s2/video/*.mp4.1-2, música exacta acorde a acorde), s2/index.html, s2/js/s2_datos.js y s2_test.js,
-  s2/css/s2_test.css, s2/img (C1 C2 D1-3 E1-3) y prueba.html («desnivel»). Antes, sin apuntar: a3b3c6e (S1 v46) y aaafe45 (S2 v7), ambos de C1.
+- 1-nov 15:05 · C1 · HECHO · S2 v8, commits 862c692 → 618f0f8: cinemáticas nuevas (s2/video/*.mp4.1-2, música orquestal exacta, un acorde por compás
+  con su casilla), s2/index.html, s2/js/s2_datos.js y s2_test.js, s2/css/s2_test.css, s2/img (C1 C2 D1-3 E1-3) y prueba.html («desnivel»).
+  Antes, sin apuntar: a3b3c6e (S1 v46) y aaafe45 (S2 v7), ambos de C1. DESHACER: volver esos ficheros a aaafe45.
 - 1-nov 13:45 · C1 · HECHO · S1 v45 (s1/index.html, video/wow.mp4.1-2 = wow v13: escalada a 30 fps y sin paradita en la puerta; ♯/♭ dorados;
   «Continuar» en el hueco de «Siguiente»; Mozart como fragmento) y S2 v6 (s2/index.html, js/s2_test.js; sin «pegotes»). DESHACER: volver esos ficheros al commit anterior.
 - 1-nov 13:45 · C1 · HECHO · S1 v44 (s1/index.html + js/coral_datos, s1_coral_juego, coral, partitura, pentagrama) y S2 v4 (s2/index.html, js/pentagrama):
