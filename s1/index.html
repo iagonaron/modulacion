@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
+<script>window.TROZOS = {"video/wow.mp4": 2};</script>
+<title>Modulación · Sesión 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&family=DotGothic16&display=swap">
+<style>
+/* Sesión 1 · «Viajar entre tonalidades».
+   Dos estados de una misma interfaz (mismas formas, contornos nítidos):
+   · NEUTRO (al empezar: voz, Mozart, Rachmaninov): noche azul lisa, pergamino, un pentagrama tenue de fondo. No se revela el juego.
+   · MUNDO (desde «esto es como un videojuego»): el pentagrama se vuelve el puente del mundo 2D, aparece el fondo, partículas y música;
+     botones y marcos se visten con la piedra y el oro de la imagen. */
+:root{
+  --noche:#0a0f1f; --tinta-clara:#eef1fb; --tenue:#a3aecb;
+  --pergamino:#efe2c2; --perg-borde:#5a3b14; --tinta:#2a1d10; --tinta-suave:#6b5537;
+  --casa:#3f6fd8; --nueva:#c8781e; --acento:#b5402a; --oro:#e8c46a; --oro-o:#7a5418;
+  --linea:#8f9bc4; --panel:rgba(13,19,40,.88);
+  --f-titulo:"Marcellus SC", Georgia, serif;
+  --f-texto:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mando:var(--f-texto);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--noche);color:var(--tinta-clara);font-family:var(--f-texto);
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+/* capas de fondo */
+#mundoFondo{position:fixed;inset:0;z-index:-3;background:#22448a url(img/mundo_fondo.webp) center top/cover no-repeat;opacity:0;transition:opacity 2.4s ease}
+#mundoVelo{position:fixed;inset:0;z-index:-2;background:rgba(6,10,26,.38);opacity:0;transition:opacity 2.4s ease}
+#cielo{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:0;transition:opacity 2.4s ease}
+#lineas{position:fixed;left:0;right:0;top:50%;height:120px;margin-top:-60px;z-index:-1;pointer-events:none;opacity:.10;transition:opacity 2.4s ease, transform 2.4s ease;
+  background:repeating-linear-gradient(to bottom, var(--linea) 0 1px, transparent 1px 30px);background-size:100% 30px;height:121px}
+body.mundo #mundoFondo, body.mundo #mundoVelo, body.mundo #cielo{opacity:1}
+body.mundo #lineas{opacity:0;transform:translateY(160px) scaleY(.6)}
+#lineas.brilla{--linea:#ffd77a;opacity:.75;transition:opacity .5s ease}
+.app{max-width:1280px;margin:0 auto;padding-block:12px 18px;display:flex;flex-direction:column;gap:12px}
+.cab{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.marca{font-family:var(--f-titulo);font-size:clamp(18px,2.2vw,23px);letter-spacing:.06em;text-shadow:0 2px 0 #000}
+.marca small{font-family:var(--f-texto);color:var(--tenue);font-size:13px;letter-spacing:0;margin-left:8px}
+.puntos{display:flex;gap:7px;align-items:center}
+.puntos i{width:9px;height:9px;background:#26304f;outline:1px solid #46557f;transition:background .4s, transform .4s}
+.puntos i.ya{background:var(--casa)} .puntos i.ahora{background:var(--oro)}
+body.mundo .puntos i{transform:rotate(45deg)}
+body.mundo .puntos i.ahora{box-shadow:0 0 10px var(--oro)}
+/* mandos: rectángulos nítidos, borde de 1-2 px, sin difuminados */
+button{font:700 15px/1 var(--f-mando);letter-spacing:.02em;color:var(--tinta-clara);background:#18213f;border:1px solid #8090c4;border-radius:2px;cursor:pointer;min-height:42px;padding:0 15px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 2px 0 #000;transition:background .2s, border-color 1.2s, transform .05s}
+button:hover{background:#22305c}
+button:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(0,0,0,.3)}
+button:disabled{opacity:.6;cursor:default}
+button:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
+.prim{background:#c8781e;border-color:#ffd08a;color:#fff8e8;text-shadow:0 1px 0 rgba(70,30,0,.6)}
+.prim:hover{background:#d6862a}
+.sel{display:flex;gap:4px}
+.sel button{font-size:13px;min-height:36px;background:#141b33;color:var(--tenue)}
+.sel button[aria-pressed="true"]{background:#2b3f86;color:#fff;border-color:var(--oro)}
+.mute{min-width:42px;padding:0;font-size:17px}
+.mute[hidden]{display:none}
+/* textos */
+.escena{display:none;flex-direction:column;gap:12px}
+.escena.on{display:flex;animation:entra .5s ease}
+@keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-family:var(--f-titulo);font-weight:400;font-size:clamp(22px,3vw,32px);margin:2px 0 0;letter-spacing:.03em;color:#fff4dc;text-shadow:0 2px 0 #000}
+.lead{color:var(--tenue);margin:0;max-width:70ch;line-height:1.5}
+.portada{padding:min(9vh,80px) 6px 10px;display:flex;flex-direction:column;gap:14px}
+.portada .sup{font:700 13px var(--f-texto);letter-spacing:.3em;text-transform:uppercase;color:var(--oro)}
+.portada h1{font-family:var(--f-titulo);font-weight:400;font-size:clamp(44px,8vw,86px);margin:0;line-height:1;letter-spacing:.04em;text-shadow:0 3px 0 #000}
+.portada p{margin:0;color:var(--tenue);font-size:clamp(16px,2vw,19px);max-width:52ch;line-height:1.55}
+/* marcos: contorno nítido; en el mundo, piedra y oro */
+.marco{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#000;border:2px solid #8090c4;border-radius:2px;box-shadow:0 0 0 1px #000, 0 10px 28px rgba(0,0,0,.5);transition:border-color 1.2s}
+.marco img,.marco video,.marco canvas{width:100%;height:100%;object-fit:cover;display:block}
+.marco .velo{position:absolute;inset:auto 0 0 0;padding:16px 20px;background:rgba(5,8,20,.74);border-top:1px solid rgba(232,196,106,.5)}
+.marco .velo b{font-family:var(--f-titulo);font-weight:400;font-size:clamp(22px,3.4vw,40px);display:block;text-shadow:0 2px 0 #000}
+.marco .centro{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(5,8,20,.55);text-align:center;padding:16px}
+.marco .centro[hidden]{display:none}
+.marco.intro img{animation:acerca 24s ease-in-out infinite alternate;transform-origin:45% 70%}
+@keyframes acerca{from{transform:scale(1)}to{transform:scale(1.07)}}
+.marco canvas.chispas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.voz{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:1px solid #6a78a8;border-radius:2px;padding:11px 15px;line-height:1.5;box-shadow:0 2px 0 #000;transition:border-color 1.2s, background 1.2s}
+.voz .mic{font-size:13px;color:var(--oro);white-space:nowrap;font-weight:700;padding-top:2px}
+.voz p{margin:0}
+.nav{display:flex;justify-content:space-between;gap:10px}
+/* pergamino de videojuego (también en el arranque neutro): papel, borde oscuro nítido y dos varillas */
+.pergamino{position:relative;background:var(--pergamino) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  color:var(--tinta);border:2px solid var(--perg-borde);border-radius:1px;padding:16px 14px 14px;margin:12px 4px;box-shadow:inset 0 0 0 3px #e3cfa0, inset 0 0 34px rgba(110,70,20,.22), 0 3px 0 #000;overflow-x:auto}
+.pergamino::before,.pergamino::after{content:"";position:absolute;left:-8px;right:-8px;height:10px;background:#6b4416;border:2px solid #2b1906;box-shadow:inset 0 2px 0 #9a6a2c;z-index:2}
+.pergamino::before{top:-11px} .pergamino::after{bottom:-11px}
+.pergamino .tit{font-family:var(--f-titulo);font-size:15px;color:var(--tinta-suave);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.pergamino button:not(.prim){background:#f6ecd2;color:var(--tinta);border-color:var(--perg-borde);box-shadow:0 2px 0 var(--perg-borde)}
+.pergamino .prim{background:#a85a16;border-color:#2b1906;box-shadow:inset 0 1px 0 rgba(255,220,160,.4), 0 2px 0 #2b1906}
+.pergamino svg{display:block}
+/* ▶ flotante: moneda dorada en la esquina del pergamino, sin ocupar sitio */
+.pergamino{padding-top:14px;overflow:visible} .pergamino > div[id]{overflow-x:auto}
+.pergamino .tit{padding-right:64px}
+.pergamino .tit .prim.flota{position:absolute;right:-16px;top:-22px;z-index:4;width:62px;height:62px;border-radius:50%;padding:0;font-size:0;
+  background:radial-gradient(circle at 35% 30%, #ffe9a8, #e0a83a 45%, #8a5a12 100%);border:3px solid #2b1906;box-shadow:0 0 0 2px #f4d58a inset, 0 4px 0 #2b1906, 0 0 22px rgba(255,200,90,.55);cursor:pointer;transition:transform .15s}
+.pergamino .tit .prim.flota::before{content:"";display:block;margin:0 auto 0 23px;width:0;height:0;border-left:19px solid #3a2208;border-top:12px solid transparent;border-bottom:12px solid transparent}
+.pergamino .tit .prim.flota.pausa::before{margin-left:21px;width:6px;height:22px;border:0;border-left:6px solid #3a2208;border-right:6px solid #3a2208;box-sizing:content-box;width:6px}
+.pergamino .tit .prim.flota.otra::before{content:"↺";border:0;margin:0;width:auto;height:auto;font:700 30px/56px var(--f-texto);color:#3a2208;text-align:center}
+.pergamino .tit .prim.flota:hover{transform:scale(1.07)}
+/* cronómetro de videojuego: Mozart contra Rachmaninov */
+.crono{display:flex;flex-direction:column;gap:6px;background:rgba(6,10,26,.78);border:2px solid #f4d58a;border-radius:6px;padding:8px 12px;box-shadow:0 0 0 2px #2b1906, 0 0 18px rgba(255,200,90,.25);font-family:"Pixelify Sans", var(--f-texto)}
+.crono .fila2{display:grid;grid-template-columns:120px 1fr 92px;gap:10px;align-items:center;font-size:15px;color:#dfe5f7}
+.crono .barra{height:12px;background:rgba(255,255,255,.08);border:1px solid rgba(244,213,138,.5);border-radius:2px;overflow:hidden}
+.crono .barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f1c24a,#ffe39a);box-shadow:0 0 8px #f1c24a}
+.crono .fila2.r .barra i{background:linear-gradient(90deg,#b27cff,#ff8a6e);box-shadow:0 0 8px #b27cff}
+.crono b{font-size:22px;color:#ffe39a;text-align:right;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.crono .fila2.r b{color:#ffb39a}
+.fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.leyenda{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--tenue)}
+.leyenda span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--c);transform:rotate(45deg) scale(.85)}
+.analisis{position:absolute;left:0;right:0;bottom:0;padding:6px 10px;background:rgba(239,226,194,.95);color:var(--tinta);border-top:2px solid var(--perg-borde)}
+.analisis[hidden]{display:none}
+video.oscuro{filter:brightness(.38) saturate(.8)}
+.chip{font-size:12px;color:var(--oro);border:1px solid rgba(232,196,106,.6);border-radius:2px;padding:3px 9px}
+/* ===== MUNDO: piedra y oro de la imagen ===== */
+body.mundo{--f-mando:"Pixelify Sans", var(--f-texto)}
+body.mundo .marca{font-family:"Pixelify Sans", var(--f-titulo);font-weight:700;letter-spacing:.05em}
+body.mundo button{border:2px solid var(--oro);background:#b9c5ee url(img/piedra.webp) 0 0/192px;background-blend-mode:multiply;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.14), inset 0 -3px 0 rgba(0,0,0,.4), 0 2px 0 #000;text-shadow:0 2px 0 #000;font-size:15px}
+body.mundo button:hover{background-color:#e2e9ff}
+body.mundo .sel button{background-color:#8592c4}
+body.mundo .sel button[aria-pressed="true"]{background-color:#c9a24a;color:#fff}
+body.mundo .prim{background:#c8781e;border-color:#ffe2a0;box-shadow:inset 0 2px 0 rgba(255,240,190,.35), inset 0 -3px 0 rgba(90,40,0,.45), 0 2px 0 #000}
+body.mundo .prim:hover{background:#d6862a}
+body.mundo .marco{border-color:var(--oro)}
+body.mundo .voz{border:2px solid var(--oro);background:#56628f url(img/piedra.webp) 0 0/192px;background-blend-mode:multiply}
+body.mundo .voz p{text-shadow:0 1px 0 #000}
+body.mundo .pergamino button:not(.prim){background:#f6ecd2;text-shadow:none;border-color:var(--perg-borde);box-shadow:0 2px 0 var(--perg-borde)}
+body.mundo .pergamino .prim{background:#a85a16;border-color:#2b1906}
+/* cartel de inicio del juego */
+.marco .centro .cartel{display:flex;flex-direction:column;gap:10px;align-items:center;max-width:640px;background:linear-gradient(180deg, rgba(20,28,66,.94), rgba(10,14,38,.94));border:3px double #f4d58a;border-radius:8px;padding:16px 22px;box-shadow:0 0 0 2px #1a1206, 0 8px 26px rgba(0,0,0,.6);color:#f3f0ff;font-size:clamp(13px,1.35vw,16px);line-height:1.45}
+.marco .centro .cartel .t{font-family:var(--f-titulo);font-weight:400;font-size:clamp(20px,2.6vw,30px);color:#ffe9b0}
+.alturas{display:flex;flex-direction:column;gap:3px;width:100%;max-width:470px;text-align:left}
+.alturas i{font-style:normal;color:#f4d58a;text-align:center;margin-bottom:2px}
+.alturas span{display:flex;gap:10px;align-items:baseline;padding:3px 8px;border-left:4px solid var(--c);background:rgba(255,255,255,.05);transition:background .35s, transform .35s}
+.alturas span.brilla{background:color-mix(in srgb, var(--c) 30%, transparent);transform:translateX(6px)}
+.alturas em{font-style:normal;font-weight:700;width:128px;flex:none;color:var(--c)}
+.alturas .a3{--c:#b27cff} .alturas .a2{--c:#bcd2ff} .alturas .a1{--c:#ffd98a} .alturas .a0{--c:#f1c24a}
+.marco .centro.pixel{background:transparent}
+.marco .centro.pixel .cartel{display:none}
+/* el wow: cada acorde de la orquesta aparece en pantalla; las llegadas a una tonalidad, a lo grande */
+.acWow{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.voz[hidden]{display:none}
+/* Iago 1-nov: subtítulo tipo terminal, letras en crudo y cursor _ parpadeando (ancho 0: no mueve el texto) */
+#voz{font-family:'IBM Plex Mono', ui-monospace, monospace;font-weight:300;font-size:clamp(16px,1.55vw,19px);line-height:1.5;color:#fff;letter-spacing:0}
+.nav button, .sel button{font-family:'IBM Plex Mono', ui-monospace, monospace;font-weight:500;letter-spacing:0}
+/* ===== RETRO 8/16 bits (Iago 1-nov): desde la portada hasta el wow todo en píxel; desde el wow, la tipografía de siempre ===== */
+/* desde el wow: vuelve la tipografía del título (no la de píxel del mundo) */
+body.mundo:not(.retro){--f-mando:var(--f-texto)} body.mundo:not(.retro) .marca{font-family:var(--f-titulo);font-weight:400;letter-spacing:.06em}
+body.retro{--f-texto:"Pixelify Sans", monospace; --f-mando:"Pixelify Sans", monospace}
+body.retro .marca, body.retro .marca small, body.retro h2, body.retro .pergamino .tit, body.retro .marco .velo b, body.retro .marco .centro .cartel .t, body.retro .voz .mic{font-family:"Pixelify Sans", monospace;font-weight:500}
+body.retro #voz, body.retro .nav button, body.retro .sel button{font-family:"DotGothic16", monospace;font-weight:400}
+body.retro button, body.retro .voz, body.retro .voz .mic, body.retro .crono{border-radius:0}
+body.retro .voz .mic{background:#e0a83a}
+/* pergamino de píxeles, limpio: papel liso, contorno de píxel con esquinas escalonadas, luz arriba-izquierda y sombra abajo-derecha, varillas de píxel */
+body.retro .pergamino, body.retro.perg-real .pergamino{background:#f3e6c4;border:0;border-image:none;border-radius:0;padding:16px 18px 12px;margin:22px 8px;
+  box-shadow:0 -4px 0 0 #3a2410, 0 4px 0 0 #3a2410, -4px 0 0 0 #3a2410, 4px 0 0 0 #3a2410, inset 4px 4px 0 #fff8e2, inset -4px -4px 0 #d8bf88}
+body.retro .pergamino::before, body.retro .pergamino::after, body.retro.perg-real .pergamino::before, body.retro.perg-real .pergamino::after{display:block;content:"";position:absolute;left:-16px;right:-16px;height:12px;background:#8a5a22;border:0;border-radius:0;z-index:2;
+  box-shadow:0 -4px 0 0 #2b1906, 0 4px 0 0 #2b1906, -4px 0 0 0 #2b1906, 4px 0 0 0 #2b1906, inset 0 4px 0 #b07a36, inset 0 -4px 0 #5e3a12}
+body.retro .pergamino::before, body.retro.perg-real .pergamino::before{top:-20px} body.retro .pergamino::after, body.retro.perg-real .pergamino::after{bottom:-20px}
+body.retro .pergamino .tit .prim.flota, body.retro.perg-real .pergamino .tit .prim.flota{border-radius:0;right:-16px;top:-22px}
+#voz .cur{display:inline-block;width:0;overflow:visible;animation:cursorT 1s steps(1) infinite}
+@keyframes cursorT{50%{opacity:0}}
+/* pantalla de inicio, como en un videojuego: «pulsa para empezar» */
+#inicio{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:pointer;text-align:center;
+  background:radial-gradient(ellipse at 50% 60%, rgba(30,40,90,.55), rgba(3,5,14,.96) 70%), url(img/mundo_fondo.webp) center/cover;color:#fff;user-select:none}
+#inicio .sup{font:700 clamp(13px,1.5vw,18px) "Pixelify Sans", var(--f-texto);letter-spacing:.35em;color:#ffd98a;text-transform:uppercase;opacity:0;animation:aparece .8s .3s forwards}
+#inicio h1{margin:0;font:400 clamp(54px,10vw,140px)/1 var(--f-titulo);letter-spacing:.04em;text-shadow:0 4px 0 #000, 0 0 30px rgba(255,200,100,.35);opacity:0;animation:aparece 1.1s .6s forwards}
+#inicio .sub{font:400 clamp(16px,2vw,24px) var(--f-titulo);color:#d9e2ff;opacity:0;animation:aparece .9s 1.1s forwards}
+#inicio .start{margin-top:5vh;font:700 clamp(18px,2.2vw,28px) "Pixelify Sans", var(--f-texto);letter-spacing:.22em;color:#fff;text-shadow:0 3px 0 #000;opacity:0;animation:aparece .6s 1.6s forwards, parpadea 1.1s 2.2s steps(2) infinite}
+#inicio .pista{font:500 13px "Pixelify Sans", var(--f-texto);color:rgba(255,255,255,.55);letter-spacing:.12em;opacity:0;animation:aparece .6s 2s forwards}
+#inicio.va .start{animation:pulsado .12s steps(2) 6}
+#inicio.sale{animation:saleInicio 1.7s .5s cubic-bezier(.5,0,.3,1) forwards}
+@keyframes aparece{from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
+@keyframes parpadea{50%{opacity:0}}
+@keyframes pulsado{50%{opacity:0;color:#ffd98a}}
+@keyframes saleInicio{0%{opacity:1;filter:none} 30%{opacity:1;filter:brightness(2.2)} 100%{opacity:0;filter:brightness(3) blur(6px);transform:scale(1.08);visibility:hidden}}
+#bSig.llama{animation:llama 1.1s ease-in-out infinite}
+@keyframes llama{50%{box-shadow:0 0 0 3px #ffd98a, 0 0 18px rgba(255,217,138,.8)}}
+.acWow .pauta{position:absolute;left:0;right:0;bottom:15%;height:58px;opacity:0;transition:opacity 1s;
+  background:repeating-linear-gradient(to bottom, rgba(255,226,150,.38) 0 1.5px, transparent 1.5px 13px);filter:drop-shadow(0 0 6px rgba(255,210,120,.5))}
+.acWow.on .pauta{opacity:0}
+.acWow .tira{position:absolute;left:0;right:0;bottom:5%;height:44px}
+.acWow .ac{position:absolute;bottom:0;transform:translateX(-50%);font:400 clamp(38px,5.4vw,74px)/1 var(--f-titulo);transform-origin:50% 100%;color:#fff4d4;letter-spacing:.02em;
+  text-shadow:0 0 14px rgba(255,200,90,.95), 0 0 34px rgba(255,170,60,.6), 0 3px 0 #000;animation:acEntra .55s cubic-bezier(.2,.9,.3,1.4) forwards;transition:left 1.1s ease, opacity 1.1s ease, transform 1.1s ease}
+.acWow .ac.viejo{opacity:.42;transform:translateX(-50%) scale(.52)}
+.acWow .ac.pnl{font:inherit;text-shadow:none;background:none;border:0;padding:0;text-align:center}
+/* para que la partitura se lea: el vídeo se oscurece suavemente por abajo mientras hay acordes (sin cajas) */
+.acWow::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s ease;
+  background:linear-gradient(to top, rgba(3,5,14,.9) 0%, rgba(3,5,14,.78) 26%, rgba(3,5,14,.4) 38%, rgba(3,5,14,0) 50%)}
+/* pentagrama continuo abajo: los acordes se van añadiendo, el último con ataque */
+.acWow .banda{position:absolute;left:1%;right:1%;bottom:2%;height:36%;opacity:0;transition:opacity .8s}
+.acWow.on .banda{opacity:1}
+.acWow .banda svg{display:block;width:100%;height:100%}
+.acWow .banda .chispa{position:absolute;top:-10%;width:22%;height:120%;transform:translateX(-50%);pointer-events:none;opacity:0}
+.acWow .banda .chispa.va{animation:chispa .9s ease-out forwards}
+@keyframes chispa{0%{opacity:1;transform:translateX(-50%) scale(.4)} 30%{opacity:.95} 100%{opacity:0;transform:translateX(-50%) scale(1.25)}}
+.acWow.on::before{opacity:0}
+/* barra de habilidades bajo el vídeo (Iago 1-nov): una casilla por acorde; el vídeo queda limpio */
+.hud{display:flex;gap:6px;align-items:stretch;justify-content:center;padding:9px 10px 10px;margin-top:-2px;background:linear-gradient(180deg,#232738,#0c0e17);border:2px solid var(--oro);border-top-width:3px;box-shadow:inset 0 2px 0 #3d4360, 0 10px 24px rgba(0,0,0,.5)}
+.hud .slot{position:relative;flex:1 1 0;max-width:78px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#10121c;border:2px solid #3b4058;box-shadow:inset 0 0 0 2px #070810;color:transparent;font:400 clamp(14px,1.9vw,26px)/1 var(--f-titulo);letter-spacing:.01em}
+.hud .slot small{font:700 clamp(9px,.85vw,11px)/1 'Atkinson Hyperlegible', sans-serif;white-space:nowrap;margin-top:5px;color:transparent}
+.hud .slot.ya{border-color:#8a7440;color:#e9cf8f;background:#1a1710} .hud .slot.ya small{color:#a99566}
+.hud .slot.act{border-color:#fff;color:#fff;background:#2c2615;animation:slotPop .24s ease-out} .hud .slot.act small{color:#ffe3a0}
+.hud .slot.azul.ya{border-color:#5f7bc4} .hud .slot.rojo.ya{border-color:#c4566c;color:#ffc2cd} .hud .slot.oro.ya{border-color:#f0c35a;color:#ffe6a6}
+.hud .slot.rojo.act{border-color:#ff8fa3} .hud .slot.oro.act{border-color:#ffe08a}
+.hud .sep{flex:0 0 3px;background:#5a4a28;margin:4px 1px} .hud .sep.ya{background:#ffd98a}
+@keyframes slotPop{0%{transform:scale(1.25)} 60%{transform:scale(.95)} 100%{transform:none}}
+.acWow .ac.pnl b{display:block;font:400 clamp(20px,2.4vw,32px)/1 var(--f-titulo);color:#ffd98a;margin-bottom:2px}
+.acWow .ac.pnl svg{display:block;height:clamp(120px,22vh,230px);width:auto}
+.acWow .ac.pnl img{display:block;height:clamp(120px,22vh,230px);width:auto}
+.acWow .ac.pnl.viejo{animation:none}
+.acWow .ac.pnl.menor b{color:#ffc4d0}
+.acWow .ac.muere{opacity:0}
+.acWow .ac.menor{color:#ffd6e0;text-shadow:0 0 14px rgba(255,90,120,.9), 0 0 30px rgba(220,40,80,.55), 0 3px 0 #000}
+@keyframes acEntra{from{opacity:0;transform:translateX(-50%) translateY(18px) scale(1.6);filter:blur(6px)} to{opacity:1;transform:translateX(-50%);filter:none}}
+.acWow .llegada{position:absolute;left:0;right:0;top:22%;text-align:center;opacity:0}
+.acWow .llegada b{display:block;font:400 clamp(48px,8vw,110px)/1 var(--f-titulo);letter-spacing:.03em;color:#fff}
+.acWow .llegada span{display:inline-block;margin-top:10px;padding:4px 14px;background:rgba(5,8,20,.55);border-radius:4px;font:700 clamp(17px,2vw,26px) "Pixelify Sans", var(--f-texto);letter-spacing:.16em;text-transform:uppercase;text-shadow:0 2px 0 #000}
+.acWow .llegada.va{animation:llega 3.6s ease forwards}
+.acWow .llegada.rojo b{text-shadow:0 0 24px #ff3355, 0 0 70px #ff1744, 0 4px 0 #000} .acWow .llegada.rojo span{color:#ffb3c1}
+.acWow .llegada.oro b{text-shadow:0 0 24px #ffd166, 0 0 80px #ffb703, 0 4px 0 #000} .acWow .llegada.oro span{color:#ffe7a3}
+.acWow .llegada.azul b{text-shadow:0 0 22px #8fb8ff, 0 0 60px #4d7cff, 0 4px 0 #000} .acWow .llegada.azul span{color:#cfe0ff}
+@keyframes llega{0%{opacity:0;transform:scale(2.4);filter:blur(14px)} 12%{opacity:1;transform:scale(1);filter:none} 75%{opacity:1;transform:scale(1.04)} 100%{opacity:0;transform:scale(1.08) translateY(-10px)}}
+.acWow .hype{position:absolute;left:0;right:0;top:8%;text-align:center;opacity:0;transition:opacity .5s ease, letter-spacing 2.6s ease;letter-spacing:.14em;
+  font:700 clamp(18px,2.3vw,32px) "Pixelify Sans", var(--f-texto);color:#fff;text-transform:uppercase;text-shadow:0 0 18px rgba(0,0,0,.9), 0 2px 0 #000}
+.acWow .hype.va{opacity:1;letter-spacing:.24em}
+.acWow .hype:not(.fin){padding:12px 0;background:linear-gradient(to bottom, transparent, rgba(5,8,20,.5) 25%, rgba(5,8,20,.5) 75%, transparent)}
+.acWow .hype.fin{top:30%}
+.acWow .hype.fin b{display:block;font:400 clamp(56px,10vw,140px)/1 var(--f-titulo);letter-spacing:.04em;text-transform:none;text-shadow:0 0 26px #ffd166, 0 0 80px #ffb703, 0 4px 0 #000}
+.acWow .hype.fin span{display:inline-block;margin-top:14px;padding:4px 16px;border-radius:4px;background:rgba(5,8,20,.6);font-size:clamp(16px,1.9vw,26px)}
+.acWow .destello{position:absolute;inset:0;opacity:0}
+.acWow .destello.va{animation:flash 1.4s ease-out forwards}
+@keyframes flash{0%{opacity:.95} 100%{opacity:0}}
+.marco.tiembla{animation:tiembla .5s ease}
+@keyframes tiembla{20%{transform:translate(-6px,3px)} 40%{transform:translate(5px,-4px)} 60%{transform:translate(-3px,2px)} 80%{transform:translate(2px,-1px)}}
+/* pergamino real (imagen de ChatGPT) cuando está disponible */
+body.perg-real .pergamino{background:none;box-shadow:none;border-style:solid;border-width:clamp(40px,4.6vw,62px) clamp(56px,6.6vw,86px) clamp(34px,3.8vw,50px);border-image:url(img/pergamino.webp) 170 250 140 250 fill / 1 / 0 stretch;padding:4px 6px;margin:8px 0}
+body.perg-real .pergamino::before, body.perg-real .pergamino::after{display:none}
+body.perg-real .pergamino .tit .prim.flota{right:-30px;top:-52px}
+/* espíritus de luz: Mozart y Rachmaninov aparecen junto a su partitura */
+.escena{position:relative}
+.espiritu{position:absolute;right:150px;top:-12px;height:min(22vh,165px);pointer-events:none;z-index:3;opacity:0;filter:drop-shadow(0 0 22px rgba(255,214,120,.55));transform:translateY(16px) scale(.96);transition:opacity 1.6s ease, transform 1.6s ease}
+.espiritu.r{filter:drop-shadow(0 0 22px rgba(170,170,255,.55))}
+.escena.on .espiritu{animation:espiritu 1.8s ease .3s forwards, flota 5s ease-in-out 2.1s infinite alternate}
+@keyframes espiritu{from{opacity:0;transform:translateY(16px) scale(.96);filter:blur(8px) drop-shadow(0 0 22px rgba(255,214,120,.55))} to{opacity:.95;transform:none}}
+@keyframes flota{from{opacity:.95;transform:none} to{opacity:.95;transform:translateY(-10px)}}
+.escena h2{position:relative;z-index:4}
+/* fondo VIVO desde el primer segundo: el mundo, desenfocado y en penumbra, deriva despacio; partículas siempre */
+body:not(.mundo) #mundoFondo{opacity:.62;filter:blur(7px) brightness(.5) saturate(.85)}
+#mundoFondo{transition:opacity 2.4s ease, filter 2.6s ease;animation:deriva 60s ease-in-out infinite alternate}
+@keyframes deriva{from{background-position:center top;transform:scale(1.08)} to{background-position:center 30%;transform:scale(1.14) translateX(-1.5%)}}
+body:not(.mundo) #cielo{opacity:.75}
+/* título que se forma letra a letra, con brillo dorado */
+.portada h1 .l{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(18px) scale(1.2);animation:letra .9s cubic-bezier(.2,.8,.2,1) forwards;text-shadow:0 0 18px rgba(255,214,120,.0)}
+@keyframes letra{60%{opacity:1;filter:blur(0);transform:none;text-shadow:0 0 26px rgba(255,214,120,.95), 0 3px 0 #000;color:#fff3cf} to{opacity:1;filter:blur(0);transform:none;text-shadow:0 0 10px rgba(255,214,120,.35), 0 3px 0 #000}}
+.portada .sup, .portada p{opacity:0;animation:aparece 1.2s ease forwards}
+.portada .sup{animation-delay:.2s} .portada p{animation-delay:1.9s}
+@keyframes aparece{to{opacity:1}}
+/* caja de diálogo de RPG: la voz de Iago se escribe letra a letra */
+.voz{position:relative;display:block;margin-top:14px;background:linear-gradient(180deg, rgba(20,28,66,.94), rgba(10,14,38,.94));border:3px double #f4d58a;border-radius:8px;
+  padding:18px 22px 16px;box-shadow:0 0 0 2px #1a1206, 0 6px 22px rgba(0,0,0,.55), inset 0 0 24px rgba(120,150,255,.12);font-size:clamp(16px,1.6vw,19px);line-height:1.55;min-height:86px;cursor:pointer}
+.voz .mic{position:absolute;top:-15px;left:18px;font:400 15px var(--f-titulo);color:#2b1906;background:linear-gradient(#ffe9a8,#e0a83a);border:2px solid #2b1906;border-radius:4px;padding:2px 10px;letter-spacing:.06em}
+.voz p{margin:0;color:#f3f0ff;text-shadow:0 1px 0 #000}
+.voz .sigue{position:absolute;right:14px;bottom:8px;color:#f4d58a;font-size:14px;opacity:0;animation:none}
+.voz.lista .sigue{opacity:1;animation:bota .8s ease-in-out infinite alternate}
+@keyframes bota{to{transform:translateY(4px)}}
+body.mundo .voz{border:3px double #f4d58a;background:linear-gradient(180deg, rgba(20,28,66,.94), rgba(10,14,38,.94))}
+@media (prefers-reduced-motion: reduce){ #mundoFondo{animation:none} .portada h1 .l, .portada .sup, .portada p{animation:none;opacity:1;filter:none;transform:none} }
+@media (max-width:760px){ .analisis{position:static} .marco:has(.analisis:not([hidden])){aspect-ratio:auto} }
+@media (max-width:640px){ .marca small{display:none} .nav button{flex:1} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="mundoFondo" aria-hidden="true"></div><div id="mundoVelo" aria-hidden="true"></div><div id="lineas" aria-hidden="true"></div><canvas id="cielo" aria-hidden="true"></canvas>
+<audio id="musica" loop preload="none"></audio><audio id="arpa" src="mus/arpa_gliss.mp3" preload="auto"></audio><audio id="ambiente" src="sfx/ambiente_noche.mp3" loop preload="none"></audio><audio id="foley" src="sfx/foley_wow.mp3" preload="none"></audio>
+<div id="inicio" role="button" tabindex="0" aria-label="Pulsa para empezar la sesión">
+  <span class="sup">Unidad 8 · Sesión 1</span><h1>Modulación</h1><span class="sub">Viajar entre tonalidades</span>
+  <span class="start">▶ Pulsa para empezar</span><span class="pista">clic o cualquier tecla</span></div>
+<div class="app">
+  <div class="cab">
+    <div class="marca">Modulación · Sesión 1<small>Viajar entre tonalidades</small></div>
+    <div class="puntos" id="puntos" aria-hidden="true"></div>
+    <div class="fila"><button class="mute" id="bMus" hidden title="Música de fondo" aria-label="Música de fondo">♪</button><div class="sel" role="group" aria-label="Modo">
+      <button id="mJ" aria-pressed="true" title="En casa: el alumno juega">Jugable</button><button id="mV" aria-pressed="false" title="En el aula: todo se reproduce solo">Aula · vídeo</button>
+    </div></div>
+  </div>
+
+  <!-- 0 · portada neutra -->
+  <section class="escena" data-e="intro">
+    <div class="portada"><span class="sup">Unidad 8 · Sesión 1</span><h1 aria-label="Modulación"><span class="l" aria-hidden="true" style="animation-delay:0.50s">M</span><span class="l" aria-hidden="true" style="animation-delay:0.61s">o</span><span class="l" aria-hidden="true" style="animation-delay:0.72s">d</span><span class="l" aria-hidden="true" style="animation-delay:0.83s">u</span><span class="l" aria-hidden="true" style="animation-delay:0.94s">l</span><span class="l" aria-hidden="true" style="animation-delay:1.05s">a</span><span class="l" aria-hidden="true" style="animation-delay:1.16s">c</span><span class="l" aria-hidden="true" style="animation-delay:1.27s">i</span><span class="l" aria-hidden="true" style="animation-delay:1.38s">ó</span><span class="l" aria-hidden="true" style="animation-delay:1.49s">n</span></h1>
+      <p>Cada tonalidad es un reino. Hoy conocerás a dos viajeros: uno que no sale de casa y otro que se va muy lejos.</p></div>
+  </section>
+
+  <!-- 1 · Mozart -->
+  <section class="escena" data-e="mozart">
+    <h2>Una frase que apenas sale de casa</h2>
+    <img class="espiritu m" src="img/espiritu_mozart.webp" alt="" aria-hidden="true" onerror="this.remove()">
+    <div class="pergamino"><div class="tit"><span id="tMoz"></span><button id="pMoz" class="prim flota" aria-label="Escuchar">▶ Escuchar</button></div><div id="sMoz"></div></div>
+    <div class="crono" aria-live="off"><div class="fila2 m"><span>⏱ Mozart</span><span class="barra"><i></i></span><b>0,0 s</b></div><div class="fila2 r"><span>⏱ Rachmaninov</span><span class="barra"><i></i></span><b>—</b></div></div>
+  </section>
+
+  <!-- 5 · Rachmaninov -->
+  <section class="escena" data-e="rach">
+    <h2>…y una que se va de viaje</h2>
+    <img class="espiritu r" src="img/espiritu_rachmaninov.webp" alt="" aria-hidden="true" onerror="this.remove()">
+    <div class="pergamino"><div class="tit"><span id="tRach"></span><button id="pRach" class="prim flota" aria-label="Escuchar">▶ Escuchar</button></div><div id="sRach"></div></div>
+    <div class="crono" aria-live="off"><div class="fila2 m"><span>⏱ Mozart</span><span class="barra"><i></i></span><b>0,0 s</b></div><div class="fila2 r"><span>⏱ Rachmaninov</span><span class="barra"><i></i></span><b>—</b></div></div>
+    <div class="leyenda"><span style="--c:#3f6fd8">Cifrado de la armonía, pulso a pulso</span><span class="chip" id="regRach">re menor</span></div>
+  </section>
+
+  <!-- 2 · el minijuego -->
+  <section class="escena" data-e="juego">
+    <h2>El camino de Do mayor</h2>
+    <div class="marco"><canvas id="lienzo" aria-label="Minijuego: el viajero corre y salta para recoger acordes"></canvas>
+      <div class="centro" id="cJuego"><div class="cartel">
+        <b class="t">Como en un videojuego</b>
+        <span>Cada tonalidad es una región del mapa. Empezamos en <b>Do mayor</b>: salta (<b>espacio</b> o <b>toca la pantalla</b>) para recoger cada acorde justo cuando suena.</span>
+        <div class="alturas"><i>Cuanto más arriba, más «exótico» dentro de la tonalidad</i>
+          <span class="a3"><em>III · VII · V/V</em> lo más lejano</span>
+          <span class="a2"><em>II · VI</em> un poco de juego</span>
+          <span class="a1"><em>IV · V</em> grados tonales, los de los dictados</span>
+          <span class="a0"><em>I</em> la tónica, en el suelo</span></div>
+        <button class="prim" id="bJugar">▶ Empezar</button></div></div></div>
+    <div class="leyenda"><span style="--c:#f1c24a">I suelo</span><span style="--c:#ffd98a">IV · V 1.ª altura</span><span style="--c:#bcd2ff">II · VI 2.ª</span><span style="--c:#b27cff">III · VII 3.ª</span><span style="--c:#ff5a4e">V/V 3.ª</span></div>
+  </section>
+
+  <!-- 3 · resumen en partitura -->
+  <section class="escena" data-e="resumen">
+    <h2>Lo que has tocado, en partitura</h2>
+    <div class="pergamino"><div class="tit"><span id="tRes">Bajo en clave de fa · acorde en clave de sol · voces enlazadas</span><button id="pRes" class="prim">▶ Escuchar</button></div><div id="sRes"></div></div>
+  </section>
+
+  <!-- 4 · reflexión -->
+  <section class="escena" data-e="reflexion">
+    <h2>Siempre con las notas de la escala…</h2>
+    <div class="pergamino"><div class="tit"><span>Los siete acordes de Do mayor nacen de sus siete notas</span><span class="fila"><button id="pRef" class="prim">▶ Construir</button><button id="pRe">¿Y el Re mayor?</button></span></div><div id="sRef"></div></div>
+  </section>
+
+
+  <!-- 6 · el momento wow -->
+  <section class="escena" data-e="wow">
+    <div class="marco"><video id="vWow" playsinline preload="auto" src="video/wow.mp4?v=12" poster="img/wow_poster.webp"></video>
+      <div class="acWow" id="acWow" aria-live="polite"><div class="pauta"></div><div class="tira" id="tiraWow"></div><div class="banda" id="bandaWow"></div><div class="llegada" id="llegaWow"><b></b><span></span></div><div class="destello" id="flashWow"></div><div class="hype" id="hypeWow"></div></div>
+      <div class="centro" id="cWow"><button class="prim" id="bWow">▶ Ver</button></div></div>
+    <div class="hud" id="hudWow" aria-label="Acordes del viaje"></div>
+    <div class="fila"><span class="lead" id="nWow"></span></div>
+  </section>
+
+  <!-- 6b · el mismo viaje, en coral (para compararlo con el coral sin modular) -->
+  <section class="escena" data-e="coralmod">
+    <h2>El viaje, en partitura</h2>
+    <div class="pergamino"><div class="tit"><span id="tMod">El coral que modula: Do mayor → La menor → Mi♭ mayor</span><span class="fila"><button id="pMod" class="prim">▶ Escuchar</button><button id="bCmp">Ver el coral sin modular</button></span></div><div id="sMod"></div></div>
+  </section>
+
+  <!-- 7 · cierre -->
+  <section class="escena" data-e="cierre">
+    <div class="marco"><video id="vCierre" playsinline preload="auto" src="video/cierre.mp4?v=4" poster="img/cierre_poster.webp"></video>
+      <div class="acWow"><div class="hype fin" id="tCierre"><b>Modulación</b><span>Sesión 1 · el viaje empieza hoy</span></div></div>
+      <div class="centro" id="cCierre"><button class="prim" id="bCierre">▶ Ver</button></div></div>
+  </section>
+
+  <div class="voz" aria-live="polite" id="cajaVoz"><span class="mic">Iago</span><p id="voz"></p><span class="sigue" aria-hidden="true">▼</span></div>
+  <div class="nav"><button id="bAnt">◀ Anterior</button><button id="bSig" class="prim">Siguiente ▶</button></div>
+</div>
+
+<script>
+/* fantasía ambiental: estrellas que titilan y motas doradas que suben; muy ligero para el ordenador del aula */
+(function(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function capa(lienzo, n, dorado){
+    var c = lienzo.getContext('2d'), P = [], w = 0, h = 0;
+    function ajusta(){ var r = lienzo.getBoundingClientRect(); w = lienzo.width = Math.max(1, r.width|0); h = lienzo.height = Math.max(1, r.height|0); }
+    function nueva(y){ return {x:Math.random()*w, y: y == null ? Math.random()*h : y, r:.6 + Math.random()*(dorado ? 2.2 : 1.3), v:.08 + Math.random()*.35, f:Math.random()*6.3, d:dorado && Math.random() < .55}; }
+    ajusta(); for(var i = 0; i < n; i++) P.push(nueva());
+    window.addEventListener('resize', ajusta);
+    var ult = 0;
+    return function(ms){
+      if(ms - ult < 33) return; ult = ms;
+      if(lienzo.clientWidth && Math.abs(lienzo.clientWidth - w) > 2){ ajusta(); P = []; for(var j = 0; j < n; j++) P.push(nueva()); } if(!document.body.classList.contains('mundo') && lienzo.id !== 'cielo') return; if(!lienzo.offsetParent && lienzo.id !== 'cielo') return;
+      c.clearRect(0, 0, w, h);
+      P.forEach(function(p, i){
+        p.f += .04; if(p.d){ p.y -= p.v; p.x += Math.sin(p.f)*.25; if(p.y < -5) P[i] = nueva(h + 5); }
+        var a = p.d ? .35 + .45*Math.abs(Math.sin(p.f)) : .25 + .5*Math.abs(Math.sin(p.f*.7));
+        c.globalAlpha = a; c.fillStyle = p.d ? '#ffd76a' : '#cfe0ff';
+        c.beginPath(); c.arc(p.x, p.y, p.r, 0, 6.3); c.fill();
+        if(p.d && p.r > 1.6){ c.globalAlpha = a*.25; c.beginPath(); c.arc(p.x, p.y, p.r*3, 0, 6.3); c.fill(); }
+      });
+      c.globalAlpha = 1;
+    };
+  }
+  window.addEventListener('DOMContentLoaded', function(){
+    var capas = [capa(document.getElementById('cielo'), 45, true)];
+    var ch = document.querySelector('.marco.intro .chispas'); if(ch) capas.push(capa(ch, 35, true));
+    (function bucle(ms){ if(!document.hidden) capas.forEach(function(f){ f(ms || 0); }); requestAnimationFrame(bucle); })();
+  });
+})();
+</script>
+<script src="js/vexflow.js?v=13"></script>
+<script src="js/sonido.js?v=14"></script>
+<script src="js/pentagrama.js?v=15"></script>
+<script src="js/partitura.js?v=15"></script>
+<script src="js/enlace.js?v=13"></script>
+<script src="js/s1_datos.js?v=19"></script>
+<script src="js/s1_runner.js?v=13"></script>
+<script src="js/coral_datos.js?v=13"></script>
+<script src="js/coral.js?v=18"></script><script src="js/coral_mod_datos.js?v=17"></script>
+<script src="js/s1_coral_juego.js?v=24"></script>
+<script>
+(function(){
+  var $ = function(i){ return document.getElementById(i); };
+  window.fuenteCifra = function(){ return document.body.classList.contains('retro') ? '"DotGothic16", monospace' : 'Atkinson Hyperlegible, sans-serif'; };
+  var AULA = false, idx = 0, raf = null, timers = [];
+  var ESC = [].slice.call(document.querySelectorAll('.escena'));
+  /* guion de voz (subtítulos hasta que Iago lo grabe) */
+  (function(){ var im = new Image(); im.onload = function(){ document.body.classList.add('perg-real'); }; im.src = 'img/pergamino.webp'; })();
+  var VOZ = {
+    intro:'Hoy empieza una aventura nueva, la modulación. Lo vamos a explicar utilizando símiles del mundo de los videojuegos, que, por cierto, será la última unidad que veremos en el curso, si nos da tiempo.|Imagina que cada tonalidad es un reino, con sus caminos y sus caminos pequeños, los forman los acordes.|Antes de explicar nada, vamos a conocer a dos viajeros muy distintos. Fíjate en hasta dónde llega cada uno.',
+    mozart:'El primero es Mozart. Sigue la partitura mientras suena. Do, sol siete, do, fa… y enseguida vuelve a casa. Nos gusta, suena bien, pero, digamos, no sale de su reino, siguiendo la metáfora. Mira el cronómetro, en ocho segundos ya ha terminado la frase.',
+    juego:'Ahora entremos en lo que es el videojuego. Cada acorde lo verás como una especie de piedra preciosa. Empezamos aquí, en Do mayor, salta para recoger cada acorde justo cuando suena. Abajo, la tónica. Un escalón más arriba, los otros grados tonales, el cuarto y el quinto, los míticos que escuchamos al principio de los dictados. Y cuanto más arriba, más exótico, por así decirlo, dentro de lo que es estar en el mismo reino. Si recoges los dos acordes de una cadencia, ¡logro conseguido!',
+    resumen:'Pues bien, esto es lo que has tocado en tu partida, un coral a cuatro voces, bajo, tenor, contralto, soprano. Lo que no recogiste sale en gris. Fíjate en las cadencias, la auténtica cierra, la semicadencia deja en suspenso y la rota como que nos engaña.',
+    reflexion:'Fíjate en una cosa, todos estos acordes están saliendo de las siete notas de la escala de Do mayor.',
+    reflexion_b:'Hubo un acorde de Re mayor que, si te fijas, aparece con el fa sostenido, y digamos que fue uno de los primeros amagos de los compositores para ir a otra tonalidad, en este caso pivotando momentáneamente hacia la dominante. Por eso ese acorde se llama dominante de la dominante, simplemente, para que te suene.',
+    rach:'El segundo viajero es Rachmaninov. Su melodía es larguísima, sale de re menor, se asoma a do menor y a si bemol, pasa por sol menor… y tarda casi un minuto en volver a casa y terminar esa frase. Mira cuántos acordes distintos se encuentra por el camino. Ese viaje de un reino a otro es lo que llamamos modular. Y con lo que quiero que te quedes es con la capacidad expansiva que tenemos a nivel musical.',
+    wow:'Volviendo al símil de los videojuegos, no modular implicaría jugar a un videojuego como este, en dos dimensiones, en el que solo podemos avanzar hacia adelante, dar saltos, cambiando algunas posibilidades, pero sin salirnos de nuestra tonalidad.|Pero si conoces los secretos de la modulación, es como descubrir el mundo tridimensional. Fíjate.|Tienes muchas más posibilidades a tu alrededor. Estamos rodeados de recursos que nos permiten ir a distintos lugares.|Subir a tonalidades con más sostenidos. Sumergirnos en las profundidades de los bemoles.|Adentrarnos siempre que queramos en nuestro relativo menor.|E incluso existen formas de modular que, con un simple movimiento bien calculado, podemos teletransportarnos a tonalidades muy lejanas.',
+    coralmod:'',
+    cierre:'Esto es modulación. Y es solo el principio. En la próxima sesión aprenderemos las tres formas de viajar entre tonalidades.'
+  };
+  /* la voz se escribe letra a letra, como en un RPG (clic en la caja: se completa) */
+  var vozT = null, vozTxt = '', vozN = 0, blipCtx = null;
+  function blip(){
+    if(!musOn || !window.Sonido) return;
+    try{ var c = Sonido.ctx, o = c.createOscillator(), g = c.createGain(); o.type = 'square'; o.frequency.value = 880 + Math.random()*60;
+      g.gain.setValueAtTime(.05, c.currentTime); g.gain.exponentialRampToValueAtTime(.0005, c.currentTime + .045);   /* Iago 1-nov: más alto (antes .018) */ o.connect(g); g.connect(Sonido.salida); o.start(); o.stop(c.currentTime + .05); }catch(e){}
+  }
+  function vozCompleta(){ clearInterval(vozT); vozT = null; pintaVoz(vozTxt.length); $('cajaVoz').classList.add('lista'); }
+  /* el texto que falta ya ocupa su sitio (invisible): así ninguna palabra salta de renglón a medio escribir */
+  function pintaVoz(n){
+    var b = $('voz'); b.innerHTML = '';
+    b.appendChild(document.createTextNode(vozTxt.slice(0, Math.max(0, n - 1))));
+    if(n > 0) b.appendChild(document.createTextNode(vozTxt[n-1]));
+    var cu = document.createElement('span'); cu.className = 'cur'; cu.textContent = '_'; b.appendChild(cu);
+    var r = document.createElement('span'); r.style.visibility = 'hidden'; r.textContent = vozTxt.slice(n); b.appendChild(r);
+  }
+  /* una palabra empezada se termina entera */
+  function finPalabra(n){ if(n <= 0) return 0; var m = vozTxt.slice(n).search(/[\s]/); return m < 0 ? vozTxt.length : n + m; }
+  /* voz grabada de Iago: VOZA[k] = {src, dur, pistas:[[segundo, nombre]]}; PISTA_EN[k][nombre]() hace que la pantalla reaccione a lo que dice */
+  var VOZA = {
+    intro:{src:'voz/intro.mp3?v=5', dur:24.43, pag:[0, 11.3, 18.1], hab:[[0.24, 1.52], [1.8, 2.6], [3.32, 6.56], [7.2, 10.82], [11.54, 14.5], [14.96, 16.2], [16.7, 17.62], [18.32, 21.68], [22.06, 24.04]]},
+    mozart:{src:'voz/mozart.mp3?v=5', dur:18.28, hab:[[0.18, 1.14], [1.68, 3.04], [3.56, 3.96], [4.26, 5.08], [5.5, 5.94], [6.2, 6.48], [7.08, 7.62], [7.9, 8.58], [9.2, 10.14], [10.7, 13.66], [14.24, 15.14], [15.74, 16.48], [16.88, 17.86]]},
+    rach:{src:'voz/rach.mp3?v=5', dur:24.81, hab:[[0.24, 1.88], [2.52, 4.02], [4.32, 5.34], [5.62, 8.72], [9.16, 11.76], [12.42, 15.0], [15.6, 17.48], [17.78, 18.84], [19.44, 20.8], [21.44, 24.4]]},
+    juego:{src:'voz/juego.mp3?v=5', dur:28.38, hab:[[0.22, 2.0], [2.56, 4.8], [5.12, 5.96], [6.6, 7.76], [8.26, 10.74], [11.1, 12.2], [12.72, 13.64], [13.94, 18.58], [19.24, 24.72], [24.98, 26.86], [27.14, 27.98]], pistas:[[11.1,'a0'], [12.72,'a1'], [19.24,'a23']]},
+    resumen:{src:'voz/resumen.mp3?v=5', dur:15.11, hab:[[0.26, 3.76], [4.44, 5.98], [6.58, 13.22], [13.46, 14.7]]},
+    reflexion:{src:'voz/reflexion_a.mp3?v=5', dur:5.44, hab:[[0.24, 1.04], [1.5, 5.04]]},
+    reflexion_b:{src:'voz/reflexion_b.mp3?v=5', dur:18.93, hab:[[0.26, 3.48], [4.08, 4.98], [5.62, 7.98], [8.64, 12.54], [12.98, 15.24], [15.64, 18.54]]}
+,
+    wow:{vid:'vWow', dur:67.2, pag:[0, 13.95, 24.8, 35.0, 42.9, 46.3], hab:[[0.9, 13.69], [14.1, 18.84], [19.2, 19.8], [25.0, 27.42], [27.75, 31.01], [35.2, 37.09], [38.2, 40.46], [43.05, 46.22], [46.4, 53.64]]},   /* locución del wow (1-nov), dentro del vídeo */
+    cierre:{vid:'vCierre', dur:15, hab:[[2.84, 3.96], [4.55, 5.54], [6.09, 10.68]]}   /* su voz va dentro del vídeo: el texto sigue el reloj del vídeo */
+  }, PISTA_EN = {}, vozAu = new Audio(), vozCue = null, vozK = null, vozEspera = false;
+  vozAu.preload = 'auto';
+  function vozSigue(){ vozEspera = false; var p = vozAu.play(); if(p && p.catch) p.catch(function(){}); }
+  function vozPara(){ vozEspera = false; clearInterval(vozCue); vozCue = null; if(!vozAu.paused) vozAu.pause(); if(vozK && musOn) fundido(VOLM[vozK] || 0); vozK = null; }
+  function vozHabla(k){
+    var A = VOZA[k]; if(!A || !musOn) return false;
+    if(A.vid) return 'vid';
+    vozK = k; vozAu.src = A.src; vozAu.currentTime = 0;
+    var hechas = {}, p = vozAu.play();
+    if(p && p.catch) p.catch(function(){ vozK = null; });
+    var cama = (VOLM[k] || 0) > 0 ? VOLM[k]*.35 : (LECHO[k] || 0); if(cama > 0) fundido(cama);   /* la música baja mientras habla; donde no hay música, una cama suave solo bajo la voz */
+    vozEspera = false;
+    vozCue = setInterval(function(){
+      if(vozEspera) return;                                    /* la voz se ha parado a propósito mientras la pantalla enseña algo */
+      var t = vozAu.currentTime;
+      (A.pistas || []).forEach(function(c, i){ if(!hechas[i] && t >= c[0]){ hechas[i] = true; var f = PISTA_EN[k] && PISTA_EN[k][c[1]]; if(f) f(); } });
+      if(!vozEspera && (vozAu.ended || (vozAu.paused && t > 0))){ clearInterval(vozCue); vozCue = null; if(vozK === k && musOn) fundido(VOLM[k] || 0); vozK = null; if(PISTA_EN[k] && PISTA_EN[k].fin) PISTA_EN[k].fin(); }
+    }, 40);
+    return true;
+  }
+  function voz(k){
+    vozPara();
+    var habla = vozHabla(k);
+    /* «|» parte el texto en cuadros (páginas); VOZA[k].pag = segundo en que empieza cada cuadro */
+    var partes = (VOZ[k] || '').split('|').map(function(x){ return x.trim(); }), pi = 0;
+    vozTxt = habla ? partes[0] : partes.join(' '); vozN = 0; clearInterval(vozT); $('cajaVoz').classList.remove('lista'); $('voz').textContent = '';
+    var reducido = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('cajaVoz').hidden = !vozTxt;
+    if(vozTxt) pintaVoz(0);   /* la caja toma ya su tamaño final (texto invisible) y muestra el cursor: nada salta al escribir la 1.ª letra */
+    if(reducido || !vozTxt){ vozTxt = partes[partes.length - 1]; vozCompleta(); return; }
+    var acc = 0, ultBlip = 0;
+    if(habla){                                   /* las letras salen sólo mientras Iago habla, repartidas a su ritmo */
+      var A = VOZA[k], HT = A.hab || [[0, A.dur]], P = (A.pag || [0]).concat([1e9]);
+      var reloj = habla === 'vid' ? $(A.vid) : vozAu;
+      var tramos = function(n){ return HT.map(function(x){ return [Math.max(x[0], P[n]), Math.min(x[1], P[n+1])]; }).filter(function(x){ return x[1] > x[0]; }); };
+      var H = tramos(0), tot = H.reduce(function(a, x){ return a + x[1] - x[0]; }, 0) || 1;
+      vozT = setInterval(function(){
+        var t = reloj.currentTime, hecho = 0;
+        /* ¿toca ya el cuadro siguiente? si el actual no ha terminado, se acaba deprisa y luego se pasa */
+        if(pi < partes.length - 1 && t >= P[pi+1]){
+          if(vozN >= vozTxt.length){ pi++; vozTxt = partes[pi]; vozN = 0; H = tramos(pi); tot = H.reduce(function(a, x){ return a + x[1] - x[0]; }, 0) || 1; pintaVoz(0); return; }
+          hecho = tot;
+        } else H.forEach(function(x){ if(t >= x[1]) hecho += x[1] - x[0]; else if(t > x[0]) hecho += t - x[0]; });
+        var meta = Math.min(vozTxt.length, Math.round(vozTxt.length*hecho/tot));
+        var aMedias = vozN > 0 && vozN < vozTxt.length && !/\s/.test(vozTxt[vozN-1]) && !/\s/.test(vozTxt[vozN]);
+        if(aMedias) meta = Math.max(meta, finPalabra(vozN));
+        if(vozN < meta){ vozN++; if(meta - vozN > 14) vozN++;   /* si va muy por detrás, recupera de 2 en 2 */
+          pintaVoz(vozN);
+          /* varios pitidos por palabra: la 1.ª letra y luego cada 2, nunca a menos de 70 ms */
+          var ini = vozTxt.slice(0, vozN).search(/\S+$/), enPal = ini < 0 ? -1 : vozN - 1 - ini, ms = performance.now();
+          if(enPal >= 0 && enPal % 2 === 0 && ms - ultBlip > 70){ blip(); ultBlip = ms; } }
+        var ultimo = pi === partes.length - 1;
+        if((ultimo && vozN >= vozTxt.length) || (reloj.ended && !vozEspera)){ vozTxt = partes[partes.length - 1]; vozCompleta(); }
+      }, 50);   /* Iago 1-nov: letra a letra, que se vea escribir cada palabra */
+    } else
+    vozT = setInterval(function(){ acc += 2; vozN = Math.floor(acc); pintaVoz(vozN); if(vozN % 6 === 0) blip(); if(vozN >= vozTxt.length) vozCompleta(); }, 45);
+  }
+  $('cajaVoz').addEventListener('click', vozCompleta);
+  document.addEventListener('pointerdown', function primero(){ document.removeEventListener('pointerdown', primero); if(musOn && MUS.paused && (VOLM[ESC[idx].dataset.e] || 0) > 0) tema(ESC[idx].dataset.e); });
+  function limpia(){ timers.forEach(clearTimeout); timers = []; if(raf) cancelAnimationFrame(raf); raf = null;
+    [].forEach.call(document.querySelectorAll('audio,video'), function(m){ if(m !== MUS && m !== AMB) m.pause(); }); if(typeof pasos === 'function') pasos(false); if(window.Sonido) Sonido.parar(); if(R) R.para(); }
+  var ENTRA = {};
+  /* ---------- efectos de sonido ---------- */
+  var SFX = {};
+  function efecto(n, vol){
+    if(!musOn) return;
+    var a = SFX[n] = SFX[n] || [];
+    var e = a.find(function(x){ return x.paused || x.ended; });
+    if(!e){ if(a.length > 3) return; e = new Audio('sfx/' + n + '.mp3'); a.push(e); }
+    e.currentTime = 0; e.volume = vol == null ? .6 : vol; var p = e.play(); if(p && p.catch) p.catch(function(){});
+  }
+  var PASOS = new Audio('sfx/pasos.mp3'); PASOS.loop = true; PASOS.volume = .5;
+  function pasos(on){ if(on && musOn){ var p = PASOS.play(); if(p && p.catch) p.catch(function(){}); } else PASOS.pause(); }
+  var AMB = $('ambiente'), ambRaf = null;
+  function ambiente(objetivo){
+    cancelAnimationFrame(ambRaf);
+    if(objetivo > 0 && AMB.paused){ AMB.preload = 'auto'; AMB.volume = 0; var p = AMB.play(); if(p && p.catch) p.catch(function(){}); }
+    (function paso(){ var v = AMB.volume, d = objetivo - v;
+      if(Math.abs(d) < .02){ AMB.volume = objetivo; if(objetivo === 0) AMB.pause(); return; }
+      AMB.volume = Math.max(0, Math.min(1, v + Math.sign(d)*.015)); ambRaf = requestAnimationFrame(paso); })();
+  }
+
+  /* ---------- neutro → mundo, y música de fondo ---------- */
+  var MUS = $('musica'), musOn = true, musVol = 0, musRaf = null;
+  var VOLM = {intro:.5, mozart:.32, rach:.32, juego:.5, resumen:0, reflexion:0, wow:.45, coralmod:0, cierre:0};
+  var LECHO = {resumen:.2, reflexion:.2, coralmod:.2};   /* Iago 31-oct: bajo su voz siempre debe sonar música */
+  var VOLA = {juego:0, resumen:0, reflexion:0, wow:0, coralmod:0, cierre:0};   /* Iago 1-nov: el siseo del ambiente nocturno molesta → fuera */   /* ambiente de naturaleza */   /* donde suenan acordes al piano, la música calla */
+  /* 16 bits (Do mayor) hasta el wow; después del wow, la orquesta */
+  var PISTA = {intro:'mus/mundo.mp3', mozart:'mus/mundo.mp3', rach:'mus/mundo.mp3', juego:'mus/mundo.mp3', resumen:'mus/mundo.mp3', reflexion:'mus/mundo.mp3', wow:'mus/mundo.mp3', coralmod:'mus/mundo_orq.mp3', cierre:'mus/mundo_orq.mp3'};
+  function pista(k){ var src = PISTA[k]; if(src && MUS.getAttribute('src') !== src){ MUS.pause(); MUS.setAttribute('src', src); MUS.volume = 0; } }
+  function fundido(objetivo){
+    cancelAnimationFrame(musRaf);
+    if(objetivo > 0 && MUS.paused){ MUS.preload = 'auto'; MUS.volume = 0; var p = MUS.play(); if(p && p.catch) p.catch(function(){}); }
+    (function paso(){ var v = MUS.volume, d = objetivo - v;
+      if(Math.abs(d) < .02){ MUS.volume = objetivo; if(objetivo === 0) MUS.pause(); return; }
+      MUS.volume = Math.max(0, Math.min(1, v + Math.sign(d)*.02)); musRaf = requestAnimationFrame(paso); })();
+  }
+  /* la revelación: el pentagrama del fondo brilla, el mundo aparece «despixelándose» y entra la música */
+  var revelado = false;
+  function revelar(listo){
+    revelado = true;
+    var reducido = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reducido){ listo(); return; }
+    $('lineas').classList.add('brilla'); efecto('revelacion', .7);
+    var cv = document.createElement('canvas'), c = cv.getContext('2d'), im = new Image(), t0 = null, D = 2600;
+    cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none';
+    document.body.appendChild(cv);
+    var W = cv.width = innerWidth, H = cv.height = innerHeight, peq = document.createElement('canvas'), pc = peq.getContext('2d');
+    function cuadro(ms){
+      if(t0 == null) t0 = ms; var u = (ms - t0)/D;
+      c.clearRect(0, 0, W, H);
+      if(im.naturalWidth){
+        var res = Math.round(6 * Math.pow(2, Math.min(7.5, Math.max(0, (u - .18)*11))));   /* 6 → ~1100 px de ancho */
+        var esc = Math.max(W/im.naturalWidth, H/im.naturalHeight), dw = im.naturalWidth*esc, dh = im.naturalHeight*esc;
+        peq.width = Math.max(2, res); peq.height = Math.max(2, Math.round(res*dh/dw));
+        pc.imageSmoothingEnabled = true; pc.drawImage(im, 0, 0, peq.width, peq.height);
+        c.imageSmoothingEnabled = false;
+        c.globalAlpha = Math.min(1, u*3.2) * (u > .78 ? Math.max(0, 1 - (u - .78)/.22) : 1);
+        c.drawImage(peq, (W - dw)/2, 0, dw, dh);
+        c.globalAlpha = 1;
+      }
+      if(u > .55 && !document.body.classList.contains('mundo')) listo();
+      if(u < 1) requestAnimationFrame(cuadro); else { cv.remove(); $('lineas').classList.remove('brilla'); }
+    }
+    im.onload = function(){ requestAnimationFrame(cuadro); }; im.onerror = function(){ cv.remove(); listo(); };
+    im.src = 'img/mundo_fondo.webp';
+  }
+  /* viento nocturno en bucle mientras se está en el camino de Do mayor */
+  var VIENTO = new Audio('sfx/viento.mp3?v=1'); VIENTO.loop = true; VIENTO.volume = .55; VIENTO.preload = 'none';
+  function viento(on){ VIENTO.pause(); }   /* Iago 31-oct: el soplido de fondo molesta → fuera (para recuperarlo, volver a llamar a VIENTO.play()) */
+  function tema(k){
+    var iMeta = ESC.findIndex(function(e){ return e.dataset.e === 'juego'; });
+    var mundo = idx >= iMeta;
+    function aplica(){
+      /* la música del mundo suena desde la portada; el ambiente de naturaleza, solo dentro del mundo */
+      document.body.classList.toggle('mundo', mundo); $('bMus').hidden = false; pista(k);
+      fundido(musOn ? (VOLM[k] || 0)*(vozK === k ? .35 : 1) : 0);
+      ambiente(mundo && musOn ? (VOLA[k] || 0) : 0);
+      viento(k === 'juego' && musOn);
+    }
+    if(mundo && !revelado && k === 'juego'){ revelar(aplica); pixelaJuego(); }
+    else { if(mundo) revelado = true; aplica(); }
+  }
+  $('bMus').onclick = function(){ musOn = !musOn; $('bMus').textContent = musOn ? '♪' : '✕'; tema(ESC[idx].dataset.e); };
+  function ve(i){
+    limpia(); idx = Math.max(0, Math.min(ESC.length - 1, i));
+    document.body.classList.toggle('retro', idx < ESC.findIndex(function(e){ return e.dataset.e === 'wow'; }));   /* 8/16 bits hasta el wow */
+    ESC.forEach(function(e, k){ e.classList.toggle('on', k === idx); });
+    $('puntos').innerHTML = ESC.map(function(e, k){ return '<i class="'+(k < idx ? 'ya' : (k === idx ? 'ahora' : ''))+'"></i>'; }).join('');
+    var k = ESC[idx].dataset.e;
+    if(!arrancado){ if(ENTRA[k]) ENTRA[k](); return; }      /* hasta pulsar «empezar» no suena nada */
+    tema(k); voz(k);
+    $('bAnt').disabled = idx === 0; $('bSig').textContent = idx === ESC.length - 1 ? 'Fin' : (ESC[idx + 1].dataset.e === 'cierre' ? 'Terminar la sesión 1 ▶' : 'Siguiente ▶');
+    if(ENTRA[k]) ENTRA[k]();
+    window.scrollTo(0, 0);
+  }
+  $('bAnt').onclick = function(){ ve(idx - 1); };
+  $('bSig').onclick = function(){ if(ESC[idx].dataset.e === 'reflexion' && rePendiente){ muestraRe(); return; } ve(idx + 1); };
+  function modo(v){ AULA = v; $('mJ').setAttribute('aria-pressed', !v); $('mV').setAttribute('aria-pressed', v); if(R) R.auto(v); }
+  $('mJ').onclick = function(){ modo(false); }; $('mV').onclick = function(){ modo(true); };
+  function despues(ms, f){ timers.push(setTimeout(f, ms)); }
+
+  /* ---------- partituras que suenan (Mozart y Rachmaninov) ---------- */
+  /* cronómetro: cuánto dura la frase de cada uno (de la primera nota al final) */
+  var CRONO = {m:null, r:null}, MAXC = 60;
+  function pintaCrono(){
+    [].forEach.call(document.querySelectorAll('.crono'), function(cr){
+      ['m','r'].forEach(function(k){ var v = CRONO[k], f = cr.querySelector('.fila2.' + k);
+        f.querySelector('b').textContent = v == null ? '—' : v.toFixed(1).replace('.', ',') + ' s';
+        f.querySelector('i').style.width = v == null ? '0' : Math.min(100, v/MAXC*100) + '%'; });
+    });
+  }
+  function lector(audioSrc, datos, cont, boton, titulo, alT, clave){
+    $(titulo).textContent = datos.titulo;
+    var au = new Audio(audioSrc); au.preload = 'auto';
+    var P = Partitura.monta($(cont), datos, {ancho: function(){ return Math.max(640, $(cont).clientWidth || 1100); }});
+    var ini = datos.anclas[0][1];
+    function estado(e){ var b = $(boton); b.classList.remove('pausa', 'otra'); if(e) b.classList.add(e); b.setAttribute('aria-label', e === 'pausa' ? 'Pausa' : e === 'otra' ? 'Otra vez' : 'Escuchar'); }
+    function bucle(){
+      P.pinta(au.currentTime); if(alT) alT(au.currentTime);
+      if(au.currentTime >= ini){ CRONO[clave] = Math.min(P.fin, au.currentTime) - ini; pintaCrono(); }
+      if(!au.paused) raf = requestAnimationFrame(bucle);
+    }
+    au.addEventListener('ended', function(){ CRONO[clave] = P.fin - ini; pintaCrono(); estado('otra'); if(musOn) fundido(VOLM[ESC[idx].dataset.e] || 0); if(AULA) despues(1500, function(){ ve(idx + 1); }); });
+    $(boton).onclick = function(){
+      vozPara();
+      if(!au.paused){ au.pause(); estado(''); if(musOn) fundido(VOLM[ESC[idx].dataset.e] || 0); return; }
+      if(au.ended || au.currentTime > P.fin + .5){ au.currentTime = 0; }
+      if(au.currentTime < ini){ CRONO[clave] = null; pintaCrono(); }
+      fundido(0); au.volume = 1; au.muted = false;
+      var pr = au.play(); if(pr && pr.catch) pr.catch(function(err){ estado(''); console.warn('No se pudo reproducir', audioSrc, err); });
+      estado('pausa'); bucle();
+    };
+    return {au:au, entra:function(){ P.reinicia(); $(cont).style.minHeight = '250px'; P.pinta(au.currentTime || 0); estado(''); au.currentTime = 0; pintaCrono(); if(AULA && !vozK) despues(900, function(){ $(boton).click(); }); }, P:P};
+  }
+  var LM = lector('mus/mozart.mp3', S1Datos.MOZART, 'sMoz', 'pMoz', 'tMoz', null, 'm');
+  var REG = [[0,'introducción de la orquesta…'],[4.9,'re menor'],[24.02,'se asoma a do menor y si bemol'],[32.79,'sol menor'],[42.32,'vuelve a re menor'],[56.37,'re menor: ¡por fin en casa!']];   /* inicio de c. 3, 12, 16, 20 y 27 según las anclas v3 (31-oct 23:25) */
+  var LR = lector('mus/rachmaninov.mp3', S1Datos.RACH, 'sRach', 'pRach', 'tRach', function(t){
+    var s = REG[0][1]; REG.forEach(function(r){ if(t >= r[0]) s = r[1]; }); $('regRach').textContent = s; }, 'r');
+  ENTRA.mozart = LM.entra; ENTRA.rach = LR.entra;
+  PISTA_EN.mozart = {fin:function(){ if(AULA && ESC[idx].dataset.e === 'mozart') despues(700, function(){ $('pMoz').click(); }); }};
+  PISTA_EN.rach = {fin:function(){ if(AULA && ESC[idx].dataset.e === 'rach') despues(700, function(){ $('pRach').click(); }); }};
+
+  /* ---------- acordes y enlace ---------- */
+  var NOTAS = {C:['c','e','g'], F:['f','a','c'], G:['g','b','d'], G7:['g','b','d','f'], Dm:['d','f','a'], Am:['a','c','e'], Em:['e','g','b'], 'B°':['b','d','f'],
+               D:['d','f#','a'], E:['e','g#','b'], E7:['e','g#','b','d'], Fm:['f','ab','c'], 'B♭7':['bb','d','f','ab'], 'E♭':['eb','g','bb']};
+  function suena(v, t, d, vol){ Sonido.acorde(v.b.concat(v.t), t, d, vol || .5); }
+  var CORTA = {'Cadencia auténtica':'auténtica', 'Cadencia plagal':'plagal', 'Cadencia rota':'rota', 'Semicadencia':'semicadencia', '¡Dominante de la dominante!':'V/V → V'};
+
+  /* ---------- minijuego: el coral de Do mayor a compás (♩ = 72) ---------- */
+  var R = null, JUEGO = null;
+  var SPR = {img:'img/sprites_viajero4.webp?v=1', celdaW:273, celdaH:329, pie:317, alto:.21, cols:20, andar:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], sube:15, baja:17, aterriza:18, parado:19};   /* corre (Kling sobre croma, 14 fotogramas) */
+  function montaJuego(){
+    if(R) return;
+    R = S1Coral.monta($('lienzo'), {D:CORAL, bpm:87.1, musica:{src:'mus/coral_suno16_87.mp3?v=1', inicio:2.8555, vol:.8}, fin:{left:0, alto:1.2, top:.002, puerta:1.12}, img:{fondo:'img/fondo_runner.webp', suelo:'img/suelo_tile.webp', sprites:SPR.img, plataforma:'img/plataforma.png', gemas:'img/gemas.png', fin:'img/fin_nivel.webp'},
+      spr:SPR, auto: AULA,
+      alSalto: function(){ efecto('salto', .4); }, alAterriza: function(){ efecto('aterriza', .5); }, alPaso: function(){ efecto('pasos1', .25); },
+      alAcorde: function(i, a, cad){ efecto('gema', .25); },
+      alFin: function(res){ JUEGO = res; despues(1800, function(){ ve(idx + 1); }); }});
+  }
+  /* la propia ventana del juego aparece de bloques gruesos a nítida (a la vez que el mundo de fondo) y queda lista para jugar */
+  function pixelaJuego(){
+    var lz = $('lienzo'), marco = lz.parentNode, cJ = $('cJuego');
+    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    cJ.classList.add('pixel');
+    setTimeout(function(){
+      var foto = document.createElement('canvas'); foto.width = lz.width; foto.height = lz.height;
+      try{ foto.getContext('2d').drawImage(lz, 0, 0); }catch(e){ cJ.classList.remove('pixel'); return; }
+      var cv = document.createElement('canvas'); cv.width = lz.width; cv.height = lz.height;
+      cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none';
+      marco.appendChild(cv); var c = cv.getContext('2d'), peq = document.createElement('canvas'), pc = peq.getContext('2d'), t0 = null, Dm = 2400;
+      (function cuadro(ms){
+        if(t0 == null) t0 = ms; var u = Math.min(1, (ms - t0)/Dm);
+        var res = Math.round(8*Math.pow(2, Math.min(7.5, u*8.5)));
+        peq.width = Math.max(2, res); peq.height = Math.max(2, Math.round(res*cv.height/cv.width));
+        pc.imageSmoothingEnabled = true; pc.drawImage(foto, 0, 0, peq.width, peq.height);
+        c.clearRect(0, 0, cv.width, cv.height); c.globalAlpha = Math.min(1, u*4); c.imageSmoothingEnabled = false; c.drawImage(peq, 0, 0, cv.width, cv.height);
+        if(u < 1) requestAnimationFrame(cuadro); else { cv.remove(); cJ.classList.remove('pixel'); }
+      })(performance.now());
+    }, 450);
+  }
+  function brillaAltura(){ var cl = [].slice.call(arguments); [].forEach.call(document.querySelectorAll('.alturas span'), function(e){ e.classList.toggle('brilla', cl.some(function(c){ return e.classList.contains(c); })); }); }
+  PISTA_EN.juego = {a0:function(){ brillaAltura('a0'); }, a1:function(){ brillaAltura('a1'); }, a23:function(){ brillaAltura('a2', 'a3'); }, fin:function(){ brillaAltura(); if(AULA && ESC[idx].dataset.e === 'juego') despues(800, function(){ $('bJugar').click(); }); }};
+  ENTRA.juego = function(){
+    montaJuego(); R.auto(AULA); R.reinicia(); $('cJuego').hidden = false;
+    if(AULA && vozK !== 'juego') despues(1200, function(){ $('bJugar').click(); });
+  };
+  $('bJugar').onclick = function(){ vozPara(); $('cJuego').hidden = true; fundido(0); R.reinicia(); R.jugar(); };
+
+  /* ---------- resumen: el coral entero en partitura; lo que no recogiste, apagado ---------- */
+  var CADCOL = {'semicadencia':'#2f6a8a', 'auténtica':'#b5402a', 'rota':'#7a3fb5', 'plagal':'#3d7a3a', 'dominante de la dominante':'#c0392b'};
+  function pintaResumen(actual){
+    var cog = JUEGO ? JUEGO.cogidos : null, apag = {}, logr = {};
+    if(cog) CORAL.acordes.forEach(function(a, i){ if(cog.indexOf(i) < 0) apag[i] = true; });
+    if(JUEGO) JUEGO.cads.forEach(function(c){ logr[c.i] = true; });
+    var marcas = CORAL.cadencias.map(function(c){ return {i:c.i, txt:c.tipo + (JUEGO ? (logr[c.i] ? ' ✓' : '') : ''), color: (!JUEGO || logr[c.i]) ? CADCOL[c.tipo] : 'rgba(42,29,16,.35)'}; });
+    Coral.pinta($('sRes'), CORAL.acordes, {porSistema: $('sRes').clientWidth < 700 ? 2 : 4, actual:actual, apagados:apag, marcas:marcas, ancho: Math.max(330, $('sRes').clientWidth - 4)});
+  }
+  function tocaResumen(){
+    Sonido.listo().then(function(){
+      var q = 60/80, t0 = Sonido.ahora() + .25, ult = -1;
+      CORAL.acordes.forEach(function(a, i){
+        Sonido.acorde([a.B, a.T, a.A, a.S], t0 + a.pos*q, a.d*q*.97, .5);
+        despues((a.pos*q + .25)*1000, function(){ pintaResumen(i); var e = $('sRes').querySelectorAll('svg')[0]; });
+      });
+      var fin = CORAL.acordes[CORAL.acordes.length - 1]; despues(((fin.pos + fin.d)*q + .6)*1000, function(){ pintaResumen(null); if(AULA) despues(1500, function(){ ve(idx + 1); }); });
+    });
+  }
+  ENTRA.resumen = function(){
+    var n = JUEGO ? JUEGO.cogidos.length : 0, nc = JUEGO ? JUEGO.cads.length : 0;
+    $('tRes').textContent = JUEGO ? ('Has recogido ' + n + ' de ' + CORAL.acordes.length + ' acordes y ' + nc + ' de ' + CORAL.cadencias.length + ' cadencias · lo que no recogiste, en gris') : 'El coral del camino de Do mayor · soprano, contralto, tenor y bajo';
+    pintaResumen(null); if(AULA && vozK !== 'resumen') despues(700, tocaResumen);   /* en modo jugable solo se ve: se escucha con ▶ */
+  };
+  $('pRes').onclick = function(){ vozPara(); limpia(); tocaResumen(); };
+
+  /* ---------- reflexión: la escala y sus siete acordes ---------- */
+  var REF = [
+    {t:['c/4','e/4','g/4'], c:'C', g:'I'}, {t:['d/4','f/4','a/4'], c:'Dm', g:'II'}, {t:['e/4','g/4','b/4'], c:'Em', g:'III'}, {t:['f/4','a/4','c/5'], c:'F', g:'IV'},
+    {t:['g/4','b/4','d/5'], c:'G', g:'V'}, {t:['a/4','c/5','e/5'], c:'Am', g:'VI'}, {t:['b/4','d/5','f/5'], c:'B°', g:'VII'}, {t:['d/4','f#/4','a/4'], c:'D', g:'V/V ¡fa♯!'}];
+  function pintaRef(hasta, n, actual){
+    var A = REF.slice(0, n).map(function(a){ return {t:a.t, b:[]}; });
+    Pentagrama.pinta($('sRef'), A, {ancho: Math.max(620, $('sRef').clientWidth || 900), hasta:hasta, actual:actual, cifras:REF.slice(0, n).map(function(a){ return a.c; }),
+      grados:REF.slice(0, n).map(function(a){ return a.g; }), puente: n === 8 && hasta === 7 ? 7 : null, colGrado:'#3f6fd8'});
+  }
+  /* primero las notas de la escala, que se escriben mientras suenan; después, sobre cada nota, su acorde */
+  var NOMBRES = ['Do','Re','Mi','Fa','Sol','La','Si'];
+  function pintaNotas(hasta, actual){
+    Pentagrama.pinta($('sRef'), REF.slice(0, 7).map(function(a){ return {t:[a.t[0]], b:[]}; }), {ancho: Math.max(620, $('sRef').clientWidth || 900), hasta:hasta, actual:actual, cifras:NOMBRES, colGrado:'#3f6fd8'});
+  }
+  function construye(alAcabar, sinLimpiar){
+    if(sinLimpiar !== true) limpia();
+    pintaNotas(-1, null);
+    Sonido.listo().then(function(){
+      var dn = 520, t1 = 300 + 7*dn + 600;
+      for(var i = 0; i < 7; i++) (function(i){
+        despues(300 + i*dn, function(){ pintaNotas(i, i); Sonido.nota(REF[i].t[0], Sonido.ahora() + .01, .45, .55); });
+        despues(t1 + i*760, function(){ pintaRef(i, 7, i); Sonido.acorde(REF[i].t, null, .65, .5); });
+      })(i);
+      despues(t1 + 7*760 + 300, function(){ pintaRef(6, 7, null); if(typeof alAcabar === 'function') alAcabar(); else if(AULA) despues(900, re); });
+    });
+  }
+  function re(sinLimpiar){
+    if(sinLimpiar !== true) limpia(); pintaRef(7, 8, 7);
+    Sonido.listo().then(function(){ Sonido.acorde(['d/4','f#/4','a/4'], null, 1.2, .55); despues(1300, function(){ Sonido.acorde(['g/3','g/4','b/4','d/5'], null, 1.4, .5); }); });
+    if(AULA && sinLimpiar !== true) despues(4000, function(){ ve(idx + 1); });
+  }
+  /* con la voz de Iago: tras su primera frase se para, suena y se escribe la escala, y sigue; el Re mayor aparece cuando lo nombra */
+  var rePendiente = false;
+  function acabaEscala(){ rePendiente = true; $('bSig').classList.add('llama'); if(AULA) despues(1200, muestraRe); }
+  function muestraRe(){ rePendiente = false; $('bSig').classList.remove('llama'); re(true); voz('reflexion_b'); }
+  PISTA_EN.reflexion = { fin: function(){ if(ESC[idx].dataset.e === 'reflexion') construye(acabaEscala, true); } };
+  PISTA_EN.reflexion_b = { fin: function(){ if(AULA && ESC[idx].dataset.e === 'reflexion') despues(2500, function(){ ve(idx + 1); }); } };
+  ENTRA.reflexion = function(){ rePendiente = false; pintaNotas(-1, null); if(vozK !== 'reflexion') despues(600, function(){ construye(acabaEscala); }); };
+  $('pRef').onclick = function(){ vozPara(); construye(acabaEscala); }; $('pRe').onclick = function(){ vozPara(); re(); };
+
+  /* ---------- el momento wow ---------- */
+  /* armonía del wow (música de Suno «S1 wow v3 compás», ♩ = 92, editada a 49 s): segundo en que entra cada acorde */
+  var WOW = ['C','G7','C','Am','F','G','G7','E','E7','Am','Dm','E','Am','F','Fm','B♭7','E♭'];
+  var WT  = [16.88, 19.53, 22.20, 24.87, 27.49, 30.14, 32.11, 32.76, 35.41, 38.04, 40.68, 41.98, 43.31, 45.93, 47.92, 49.88, 56.42];   /* +16,72 s: el preámbulo es el propio minijuego, alargado 5,5 s (v12, 1-nov) */
+  var WG  = ['I','V7','I','VI','IV','V','V7','V/VI','V7/VI','VI = i','iv','V','i','IV','iv','V7','I'];
+  var WFIN = 66.4;
+  var WV = Enlace.realiza(WOW.map(function(c){ return {n:NOTAS[c]}; }));
+  var WM = [{i:2, txt:'auténtica'}, {i:9, txt:'V7 → i en La-'}, {i:12, txt:'auténtica en La-'}, {i:14, txt:'la → la♭', color:'#7a3fb5'}, {i:16, txt:'¡auténtica en Mi♭!'}];
+  var vW = $('vWow'), wowAnalisis = false, wActual = -1;
+  /* carteles de acordes sobre el vídeo: el que suena, grande; los anteriores se apartan a la izquierda y se apagan */
+  var LLEGADAS = {2:['Do mayor','entramos en el mundo','azul'], 12:['La menor','¡nueva tonalidad!','rojo'], 16:['Mi♭ mayor','¡nueva tonalidad!','oro']};
+  /* rótulos de tráiler (solo en el visionado, no en el análisis): [desde, hasta, texto] */
+  var HYPE = [];   /* rótulos: se decidirán con la locución nueva de Iago */
+  var hypeA = -1;
+  function pintaHype(t){
+    var k = -1; if(!wowAnalisis) HYPE.forEach(function(x, i){ if(t >= x[0] && t < x[1]) k = i; });
+    if(k === hypeA) return; hypeA = k; var e = $('hypeWow');
+    if(k < 0){ e.classList.remove('va'); return; }
+    e.className = 'hype'; e.innerHTML = HYPE[k][2]; void e.offsetWidth; e.classList.add('va');
+  }
+  var tiraN = [];
+  function limpiaCarteles(){ hypeA = -1; $('bandaWow').innerHTML = ''; pintaHud(-1); $('hypeWow').className = 'hype'; $('tiraWow').innerHTML = ''; tiraN = []; $('acWow').classList.remove('on'); ['llegaWow','flashWow'].forEach(function(id){ $(id).className = id === 'llegaWow' ? 'llegada' : 'destello'; }); }
+  /* partituras vectoriales de cada acorde: se «dibujan» al aparecer (líneas que se trazan, figuras que van entrando) */
+  var SVGW = {};
+  function urlAc(i){ return 'img/acordes_wow/ac' + (i < 10 ? '0' : '') + i + '.svg?v=3'; }
+  WOW.forEach(function(c, i){ fetch(urlAc(i)).then(function(r){ return r.text(); }).then(function(t){ if(/^<svg/.test(t)) SVGW[i] = t; }).catch(function(){}); });
+  function dibuja(e){
+    var svg = e.querySelector('svg'); if(!svg || !svg.animate) return;
+    var ps = [].slice.call(svg.querySelectorAll('path,rect')), k = 0;
+    ps.forEach(function(p){
+      var linea = p.getAttribute('fill') === 'none';
+      if(linea && p.getTotalLength){ var L = p.getTotalLength(); p.style.strokeDasharray = L; p.animate([{strokeDashoffset:L}, {strokeDashoffset:0}], {duration:420, delay:Math.min(260, k*18), easing:'ease-out', fill:'both'}); }
+      else p.animate([{opacity:0, transform:'translateY(-3px)'}, {opacity:1, transform:'none'}], {duration:220, delay:240 + Math.min(500, k*14), easing:'ease-out', fill:'both'});
+      k++;
+    });
+  }
+  var B0 = 2, BW = 1040, BH = 240, ORO = '#ffd98a', BLANCO = '#fffaf0', NADA = 'rgba(0,0,0,0)';
+  function pintaBanda(a){
+    var cont = $('bandaWow'), VF = Vex.Flow; cont.innerHTML = '';
+    var r = new VF.Renderer(cont, VF.Renderer.Backends.SVG); r.resize(BW, BH);
+    var svg = cont.querySelector('svg'); svg.setAttribute('viewBox', '0 0 ' + BW + ' ' + BH); svg.setAttribute('preserveAspectRatio', 'xMidYMax meet'); svg.removeAttribute('width'); svg.removeAttribute('height'); svg.style.width = ''; svg.style.height = '';
+    var c = r.getContext(); c.setFillStyle(ORO); c.setStrokeStyle(ORO);
+    var ts = new VF.Stave(10, 40, BW - 20), bs = new VF.Stave(10, 135, BW - 20);
+    ts.addClef('treble'); bs.addClef('bass');
+    [ts, bs].forEach(function(s){ s.setStyle({fillStyle:ORO, strokeStyle:ORO}); s.setContext(c).draw(); });
+    [['brace'], ['singleLeft'], ['singleRight']].forEach(function(t){ var k = new VF.StaveConnector(ts, bs).setType(t[0]); k.setContext(c).draw(); });
+    var T = [], Bq = [], notas = [];
+    for(var i = B0; i < WOW.length; i++){
+      var ve_ = i <= a, col = !ve_ ? NADA : (i === a ? BLANCO : ORO);
+      [['t','treble',T], ['b','bass',Bq]].forEach(function(v){
+        var n = new VF.StaveNote({keys:WV[i][v[0]], duration:'w', clef:v[1]});
+        WV[i][v[0]].forEach(function(k, j){ var m = /^[a-g](#|b)/.exec(k); if(m) n.addModifier(new VF.Accidental(m[1]), j); });
+        n.setStyle({fillStyle:col, strokeStyle:col}); v[2].push(n); if(v[0] === 't') notas[i] = n; else notas[i + 100] = n;
+      });
+      if(i < WOW.length - 1){ var tipo = LLEGADAS[i + 1] ? VF.BarlineType.DOUBLE : VF.BarlineType.SINGLE;
+        [T, Bq].forEach(function(L){ var bn = new VF.BarNote(tipo); bn.setStyle({fillStyle: i < a ? 'rgba(255,217,138,.55)' : NADA, strokeStyle: i < a ? 'rgba(255,217,138,.55)' : NADA}); L.push(bn); }); }
+    }
+    var vt = new VF.Voice({num_beats:4, beat_value:4}).setStrict(false).addTickables(T), vb = new VF.Voice({num_beats:4, beat_value:4}).setStrict(false).addTickables(Bq);
+    new VF.Formatter().joinVoices([vt]).joinVoices([vb]).format([vt, vb], BW - 20 - (ts.getNoteStartX() - 10) - 30);
+    vt.draw(c, ts); vb.draw(c, bs);
+    /* cifrado americano encima de cada acorde */
+    var fuente = (getComputedStyle(document.documentElement).getPropertyValue('--f-titulo') || 'serif').trim();
+    for(var j = B0; j <= a; j++){
+      var x = notas[j].getAbsoluteX() + 8, t = window.menor ? menor(WOW[j]) : WOW[j];
+      c.save(); c.setFont(fuente, j === a ? 30 : 24, 'normal'); c.setFillStyle(j === a ? BLANCO : ORO);
+      var w = c.measureText ? c.measureText(t).width : t.length*16; c.fillText(t, x - w/2, 30); c.restore();
+    }
+    /* el acorde que acaba de sonar entra con ataque */
+    [notas[a], notas[a + 100]].forEach(function(n){
+      var el = n && document.getElementById('vf-' + n.getAttribute('id'));
+      if(el && el.animate){ el.style.transformBox = 'fill-box'; el.style.transformOrigin = 'center';
+        el.animate([{transform:'scale(1.7)', opacity:0}, {transform:'scale(.94)', opacity:1, offset:.6}, {transform:'scale(1)', opacity:1}], {duration:190, easing:'ease-out'}); }
+    });
+    return notas[a] ? (notas[a].getAbsoluteX() + 8)/BW : .5;
+  }
+  /* casillas: región tonal de cada acorde (azul Do mayor · rojo La menor · oro Mi♭ mayor) */
+  function pintaHud(a){
+    var h = $('hudWow'), html = '', reg = 'azul';
+    for(var i = B0; i < WOW.length; i++){
+      if(LLEGADAS[i]){ reg = LLEGADAS[i][2]; if(i > B0) html += '<i class="sep' + (i <= a ? ' ya' : '') + '"></i>'; }
+      var cl = 'slot ' + reg + (i < a ? ' ya' : (i === a ? ' ya act' : ''));
+      html += '<div class="' + cl + '">' + (window.menor ? menor(WOW[i]) : WOW[i]) + '<small>' + WG[i] + '</small></div>';
+    }
+    h.innerHTML = html;
+  }
+  function cartelAcorde(i){
+    if(i < B0) return;                   /* en la parte de 16 bits (el puente 2D) no hay acordes: aparecen al entrar en 3D */
+    var acW = $('acWow'); acW.classList.add('on');
+    pintaHud(i); var xr = .5;
+    var L = LLEGADAS[i];
+    if(L){                               /* llegada a una tonalidad: destello detrás del acorde, que apoya el golpe */
+      var ch = document.createElement('div'); ch.className = 'chispa';
+      ch.style.left = (xr*100) + '%';
+      ch.style.background = 'radial-gradient(closest-side, ' + (L[2] === 'rojo' ? 'rgba(255,80,110,.95)' : (L[2] === 'oro' ? 'rgba(255,236,170,1)' : 'rgba(190,215,255,.9)')) + ', transparent)';
+    }
+    if(L){
+      var ll = $('llegaWow'), fl = $('flashWow'); ll.className = 'llegada'; fl.className = 'destello'; void ll.offsetWidth;
+      ll.querySelector('b').textContent = L[0]; ll.querySelector('span').textContent = L[1]; ll.className = 'llegada va ' + L[2];
+      fl.style.background = L[2] === 'rojo' ? 'radial-gradient(circle at 70% 45%, rgba(255,60,90,.95), rgba(255,0,60,.35) 45%, transparent 75%)' : (L[2] === 'oro' ? 'radial-gradient(circle at 50% 45%, rgba(255,240,180,1), rgba(255,190,60,.45) 45%, transparent 80%)' : 'radial-gradient(circle at 50% 50%, rgba(200,220,255,.8), transparent 70%)');
+      fl.className = 'destello va';
+      if(i !== 2){ var m = vW.parentNode; m.classList.remove('tiembla'); void m.offsetWidth; m.classList.add('tiembla'); }
+    }
+  }
+  /* precarga completa: el aula tiene poco procesador pero buena pantalla → el vídeo (1080p) se descarga entero antes de reproducirse */
+  var PRE = {};
+  function precarga(src, alProgreso){
+    if(PRE[src]) return PRE[src];
+    var base = src.split('?')[0], q = src.indexOf('?') >= 0 ? src.slice(src.indexOf('?')) : '', n = (window.TROZOS || {})[base] || 0;
+    function baja(url, alP){ return fetch(url).then(function(r){
+      var total = +r.headers.get('content-length') || 0;
+      if(!r.body || !total) return r.blob();
+      var lector = r.body.getReader(), trozos = [], recibido = 0;
+      return (function lee(){ return lector.read().then(function(x){
+        if(x.done) return new Blob(trozos, {type:'video/mp4'});
+        trozos.push(x.value); recibido += x.value.length; if(alP) alP(recibido/total); return lee(); }); })(); }); }
+    var p;
+    if(n){ var hechos = []; for(var i = 0; i < n; i++) hechos.push(0);
+      var partes = []; for(var j = 0; j < n; j++) (function(j){ partes.push(baja(base + '.' + (j+1) + q, function(f){ hechos[j] = f; if(alProgreso) alProgreso(hechos.reduce(function(a, b){ return a + b; }, 0)/n); })); })(j);
+      p = Promise.all(partes).then(function(bs){ return new Blob(bs, {type:'video/mp4'}); });   /* vídeo partido en trozos (subida por la web de GitHub) */
+    } else p = baja(src, alProgreso);
+    PRE[src] = p.then(function(b){ return URL.createObjectURL(b); }).catch(function(){ delete PRE[src]; return src; });
+    return PRE[src];
+  }
+  var SRC_WOW = vW.getAttribute('src'); vW.removeAttribute('src'); vW.preload = 'none';
+  function progresoWow(p){ var b = $('bWow'); if(b && !vW.src) b.textContent = p >= 1 ? '▶ Ver' : 'Cargando vídeo… ' + Math.round(p*100) + ' %'; }
+  precarga(SRC_WOW, progresoWow);   /* empieza a bajar en cuanto se abre la sesión */
+  function tocaWow(analisis){
+    limpia(); analisis = false; wowAnalisis = false; wActual = -1; limpiaCarteles();
+    $('cWow').hidden = false; $('bWow').disabled = true;
+    precarga(SRC_WOW, progresoWow).then(function(url){
+      if(vW.src !== url) vW.src = url;
+      $('bWow').disabled = false; $('cWow').hidden = true;
+      vW.currentTime = 0;
+      return Sonido.listo();
+    }).then(function(){
+      /* la música (Suno, editada a 49 s) va dentro del vídeo: suena siempre a tiempo. En el análisis, más baja y con el pentagrama */
+      fundido(0); vW.muted = !musOn; vW.volume = analisis ? .55 : 1;
+      voz('wow');                                           /* subtítulos al ritmo de su voz, dentro del vídeo */
+      return vW.play();
+    }).then(function(){
+      (function bucle(){ var t = vW.currentTime, a = -1; WT.forEach(function(x, i){ if(t >= x) a = i; });
+        if(a !== wActual){ for(var q = wActual + 1; q <= a; q++) if(q >= 0 && (a - q) < 2) cartelAcorde(q); wActual = a; }
+        if(t >= WFIN + .2) $('acWow').classList.remove('on');
+        pintaHype(t);
+        if(!vW.paused && !vW.ended) raf = requestAnimationFrame(bucle); })();
+    });
+  }
+  vW.addEventListener('ended', function(){
+    if(AULA) despues(2500, function(){ ve(idx + 1); });
+    else { $('cWow').hidden = false; $('bWow').textContent = '↺ Ver de nuevo'; }
+  });
+  $('bWow').onclick = function(){ vozPara(); tocaWow(false); };
+  ENTRA.wow = function(){ $('nWow').textContent = 'Música: «S1 wow v3» (Suno), ♩ = 92 · Do mayor → La menor → Mi♭ mayor.'; $('cWow').hidden = false; $('bWow').textContent = '▶ Ver'; vW.currentTime = 0; if(AULA) despues(800, function(){ tocaWow(false); }); };
+
+  /* ---------- el mismo viaje, en coral: comparar con el coral sin modular ---------- */
+  var MOD = window.CORAL_MOD, verSin = false;
+  var REGCOL = ['#3f6fd8', '#b5402a', '#a8740f'];
+  function pintaMod(actual){
+    var cont = $('sMod'), por = cont.clientWidth < 700 ? 2 : 5;
+    if(verSin){
+      $('tMod').textContent = 'El coral del camino de Do mayor (sin modular) · todo dentro de la escala';
+      Coral.pinta(cont, CORAL.acordes, {porSistema: cont.clientWidth < 700 ? 2 : 4, actual:actual, marcas:CORAL.cadencias.map(function(c){ return {i:c.i, txt:c.tipo, color:CADCOL[c.tipo]}; }), ancho: Math.max(330, cont.clientWidth - 4)});
+      return;
+    }
+    $('tMod').textContent = 'El coral que modula: Do mayor → La menor → Mi♭ mayor';
+    Coral.pinta(cont, MOD.acordes, {porSistema:por, actual:actual, ancho: Math.max(330, cont.clientWidth - 4),
+      marcas: MOD.cadencias.map(function(c, k){ return {i:c.i, txt:c.tipo, color: k === 2 ? '#7a3fb5' : (k === 3 ? '#a8740f' : '#b5402a')}; }),
+      regiones: MOD.regiones.map(function(r, k){ return {i:r.i, txt:r.txt, color:REGCOL[k]}; })});
+  }
+  function tocaMod(){
+    limpia();
+    var D = verSin ? CORAL.acordes : MOD.acordes;
+    Sonido.listo().then(function(){
+      var q = 60/(verSin ? 80 : 66), t0 = Sonido.ahora() + .25;
+      D.forEach(function(a, i){
+        Sonido.acorde([a.B, a.T, a.A, a.S], t0 + a.pos*q, a.d*q*.97, .5);
+        despues((a.pos*q + .25)*1000, function(){ pintaMod(i); });
+      });
+      var fin = D[D.length - 1]; despues(((fin.pos + fin.d)*q + .6)*1000, function(){ pintaMod(null); });
+    });
+  }
+  $('pMod').onclick = function(){ vozPara(); tocaMod(); };
+  $('bCmp').onclick = function(){ limpia(); verSin = !verSin; $('bCmp').textContent = verSin ? 'Ver el coral que modula' : 'Ver el coral sin modular'; pintaMod(null); };
+  ENTRA.coralmod = function(){ verSin = false; $('bCmp').textContent = 'Ver el coral sin modular'; pintaMod(null); };
+
+  /* ---------- cierre: vídeo final con la frase de Iago ---------- */
+  var vC = $('vCierre');
+  function tocaCierre(){
+    limpia(); $('cCierre').hidden = true; $('tCierre').classList.remove('va'); fundido(0);
+    vC.currentTime = 0; vC.muted = false; voz('cierre'); var p = vC.play(); if(p && p.catch) p.catch(function(){ $('cCierre').hidden = false; });
+    (function bucle(){ if(vC.currentTime >= (vC.duration || 99) - 4.6) $('tCierre').classList.add('va'); if(!vC.paused && !vC.ended) raf = requestAnimationFrame(bucle); })();
+  }
+  vC.addEventListener('ended', function(){ $('cCierre').hidden = false; $('bCierre').textContent = '↺ Ver de nuevo'; });
+  $('bCierre').onclick = tocaCierre;
+  ENTRA.cierre = function(){ $('bCierre').textContent = '▶ Ver'; $('tCierre').classList.remove('va'); despues(400, tocaCierre); };
+
+  ENTRA.intro = function(){ if(AULA && vozK !== 'intro') despues(8000, function(){ ve(idx + 1); }); };
+  PISTA_EN.intro = {fin:function(){ if(AULA && ESC[idx].dataset.e === 'intro') despues(1500, function(){ ve(idx + 1); }); }};
+  PISTA_EN.resumen = {fin:function(){ if(AULA && ESC[idx].dataset.e === 'resumen') despues(600, tocaResumen); }};
+  window.addEventListener('resize', function(){ var k = ESC[idx].dataset.e;
+    if(k === 'resumen' && RES) pintaResumen(null); if(k === 'mozart') { LM.P.reinicia(); } if(k === 'rach'){ LR.P.reinicia(); } });
+  /* atajos para revisar: #e=3 abre la escena 3; #aula arranca en modo aula */
+  var h = location.hash; if(/aula/.test(h)) modo(true);
+  var m = /e=(\d)/.exec(h);
+  /* pantalla de inicio: con el clic (o una tecla) suena la sintonía de «empezar partida» y entra la portada; tu voz llega después */
+  var arrancado = false;
+  function sintonia(){
+    try{ Sonido.listo(); var c = Sonido.ctx, t = c.currentTime + .05, g0 = c.createGain(); g0.gain.value = .22; g0.connect(Sonido.salida);
+      function tono(f, a, d, tipo, v){ var o = c.createOscillator(), g = c.createGain(); o.type = tipo || 'square'; o.frequency.setValueAtTime(f, a);
+        g.gain.setValueAtTime(0, a); g.gain.linearRampToValueAtTime(v || .5, a + .008); g.gain.exponentialRampToValueAtTime(.001, a + d); o.connect(g); g.connect(g0); o.start(a); o.stop(a + d + .05); }
+      tono(988, t, .09); tono(1319, t + .08, .32);                                   /* «moneda» */
+      [523, 659, 784, 1047, 1319, 1568].forEach(function(f, i){ tono(f, t + .42 + i*.065, .16); });  /* arpegio que sube */
+      [1047, 1319, 1568, 2093].forEach(function(f){ tono(f, t + .85, 1.1, 'square', .18); tono(f/2, t + .85, 1.1, 'triangle', .3); });
+    }catch(e){}
+  }
+  function empezar(){
+    if(arrancado) return; arrancado = true;
+    var ini = $('inicio'); ini.classList.add('va'); sintonia();
+    setTimeout(function(){ ini.classList.add('sale'); }, 300);
+    setTimeout(function(){ ini.remove(); }, 2800);
+    var k = ESC[idx].dataset.e; tema(k); setTimeout(function(){ if(ESC[idx].dataset.e === k) voz(k); }, 3300);
+  }
+  $('inicio').addEventListener('click', empezar);
+  document.addEventListener('keydown', function tecla(e){ if(!arrancado){ e.preventDefault(); empezar(); } });
+  ve(m ? +m[1] : 0);
+  window.S1 = {lm:LM, lr:LR, voz:function(){ return {k:vozK, t:vozAu.currentTime, p:vozAu.paused}; }, ve:ve, modo:modo, cartel:function(i){ cartelAcorde(i); }, banda:function(i){ $('acWow').classList.add('on'); return pintaBanda(i); }};
+})();
+</script>
+</body>
+</html>
