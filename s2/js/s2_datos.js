@@ -14,7 +14,7 @@ window.S2_EJ = {
       {t:['b/3','d/4','g/4'],  b:['g/2'], cif:'G',   g:'I',      r:'B'}
     ],
     puente: 4,
-    cine: [0.556, 2.778, 5.0, 7.222, 9.444, 11.667, 13.889],   /* segundo del vídeo en que SUENA cada acorde y se enciende su casilla (diatónica a 108 bpm: compás de 2,22 s) */
+    cine: [0.4, 2.3, 4.2, 6.1, 8.0, 10.4, 12.3],   /* segundo del vídeo en que SUENA cada acorde y se enciende su casilla (la música se adapta al vídeo, que va a velocidad constante) */
     /* pasos del libro: qué casillas se ven en cada uno */
     pasos: [
       {vis:[1,0,0,0,0,0,1], tit:'Paso 0 · Las armaduras', txt:'Do mayor no tiene alteraciones. Sol mayor tiene un sostenido, fa♯.'},
@@ -36,7 +36,7 @@ window.S2_EJ = {
       {t:['g/3','bb/3','eb/4'], b:['eb/2'], cif:'E♭',    g:'I',  r:'B'}
     ],
     puente: 2,
-    cine: [5.333, 8.0, 10.667, 13.333, 14.667, 16.0, 17.333, 18.667],   /* tras el salto, medio compás por acorde */
+    cine: [5.12, 7.68, 10.24, 12.8, 14.08, 15.36, 16.64, 17.92],   /* tras el salto, medio compás por acorde */
     marcas: [{i:2, txt:'la → la♭ · el desnivel'}],
     pasos: [
       {hasta:1, tit:'Estamos en Do mayor', txt:'I y IV: C y F.'},
@@ -58,7 +58,7 @@ window.S2_EJ = {
       {t:['c#/4','f#/4'], b:['f#/3','a#/3'],cif:'F♯',   g:'I',   r:'B'}
     ],
     puente: 5, igual: [4, 5],
-    cine: [0.667, 3.333, 6.0, 8.667, 11.333, 14.0, 16.667, 19.333],
+    cine: [0.44, 2.84, 5.24, 7.64, 10.04, 13.24, 15.64, 18.04],
     marcas: [{i:5, txt:'la♭ = sol♯ · fa = mi♯'}],
     pasos: [
       {hasta:3, tit:'Estamos en Do mayor', txt:'Cadencia: I · IV · V7 · I.'},
