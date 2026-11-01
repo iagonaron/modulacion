@@ -14,7 +14,7 @@ window.S2_EJ = {
       {t:['b/3','d/4','g/4'],  b:['g/2'], cif:'G',   g:'I',      r:'B'}
     ],
     puente: 4,
-    cine: [1.5, 3.4, 5.3, 7.2, 10.6, 16.0, 21.0],   /* segundo del vídeo en que se enciende cada casilla de la barra */
+    cine: [2.667, 5.333, 8.0, 10.667, 13.333, 16.0, 18.667],   /* segundo del vídeo en que SUENA cada acorde (1 compás = 2,667 s a 90 bpm) y se enciende su casilla */
     /* pasos del libro: qué casillas se ven en cada uno */
     pasos: [
       {vis:[1,0,0,0,0,0,1], tit:'Paso 0 · Las armaduras', txt:'Do mayor no tiene alteraciones. Sol mayor tiene un sostenido, fa♯.'},
@@ -36,11 +36,11 @@ window.S2_EJ = {
       {t:['g/3','bb/3','eb/4'], b:['eb/2'], cif:'E♭',    g:'I',  r:'B'}
     ],
     puente: 2,
-    cine: [2.0, 5.5, 12.0, 15.0, 18.5, 21.0, 23.5, 26.0],
-    marcas: [{i:2, txt:'la → la♭ · un escalón'}],
+    cine: [5.333, 8.0, 10.667, 13.333, 16.0, 18.667, 21.333, 24.0],
+    marcas: [{i:2, txt:'la → la♭ · el desnivel'}],
     pasos: [
       {hasta:1, tit:'Estamos en Do mayor', txt:'I y IV: C y F.'},
-      {hasta:2, tit:'El escalón cromático', txt:'Al Fa mayor le bajamos el la a la♭: se convierte en Fa menor.'},
+      {hasta:2, tit:'El desnivel cromático', txt:'Al Fa mayor le bajamos el la a la♭: se convierte en Fa menor.'},
       {pu:1, hasta:2, tit:'El acorde puente', txt:'Fa menor no existe en Do mayor, pero es el II de Mi♭ mayor. Por ahí cruzamos.'},
       {pu:1, hasta:7, tit:'Ya en Mi♭ mayor', txt:'La asentamos: V · I · IV · V7 · I.'}
     ]
@@ -58,7 +58,7 @@ window.S2_EJ = {
       {t:['c#/4','f#/4'], b:['f#/3','a#/3'],cif:'F♯',   g:'I',   r:'B'}
     ],
     puente: 5, igual: [4, 5],
-    cine: [0.8, 1.6, 2.4, 3.2, 4.6, 13.5, 16.5, 19.5],
+    cine: [2.667, 5.333, 8.0, 10.667, 13.333, 16.0, 18.667, 21.333],
     marcas: [{i:5, txt:'la♭ = sol♯ · fa = mi♯'}],
     pasos: [
       {hasta:3, tit:'Estamos en Do mayor', txt:'Cadencia: I · IV · V7 · I.'},

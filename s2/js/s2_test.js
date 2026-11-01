@@ -38,32 +38,23 @@
       pista: 'Sin modular, solo tenemos los acordes de una tonalidad.' },
     { tipo: 'unir', titulo: 'Tres formas de viajar', enunciado: 'Une cada tipo de modulación con su imagen',
       pares: [['Diatónica', 'Un puente entre reinos parecidos'],
-              ['Cromática', 'Una escalera: un semitono que cambia'],
+              ['Cromática', 'Un desnivel: un semitono que cambia'],
               ['Enarmónica', 'Un portal a un mundo muy lejano']],
-      pista: 'Puente, escalera y portal.' },
+      pista: 'Puente, desnivel y portal.' },
     { tipo: 'puente', titulo: 'Encuentra el puente', enunciado: 'Encuentra los acordes comunes',
       a: { nombre: 'Do mayor', color: '#6f8fe0', acordes: ['C', 'Dm', 'Em', 'F', 'G', 'Am', 'B°'] },
       b: { nombre: 'Sol mayor', color: '#7cc96a', acordes: ['G', 'Am', 'Bm', 'C', 'D', 'Em', 'F♯°'] },
       comunes: ['C', 'Em', 'G', 'Am'],
       pista: 'Evita los acordes con fa natural o con fa♯: el fa es la nota que no comparten.' },
-    { tipo: 'unica', titulo: 'El acorde puente', enunciado: 'En el ejemplo de los apuntes (Do M → Sol M), ¿qué acorde hace de puente?',
-      opciones: ['E- (III en Do, VI en Sol)', 'F (IV en Do)', 'D7 (V7 en Sol)', 'B°'],
-      correcta: 0, pista: 'Mi menor está en las dos tonalidades.' },
-    { tipo: 'ordenar', titulo: 'Modulación diatónica', enunciado: 'Ordena la modulación diatónica del libro',
-      orden: ['C', 'F', 'G7', 'C', 'Em', 'D7', 'G'],
-      pista: 'Primero asentamos Do (I-IV-V7-I), luego el puente, luego la dominante de Sol.' },
     { tipo: 'vf', titulo: 'La dominante', enunciado: 'Verdadero o falso: ¡tienes 10 segundos!',
       afirmacion: 'La dominante siempre es un acorde mayor, aunque la armadura diga lo contrario',
       verdadero: true, segundos: 10,
       pista: 'Por definición la dominante es mayor (y la ponemos con 7ª).' },
-    { tipo: 'unica', titulo: 'El escalón cromático', enunciado: 'En la modulación cromática del libro, F pasa a F-. ¿Qué nota cambia?',
+    { tipo: 'unica', titulo: 'El desnivel cromático', enunciado: 'En la modulación cromática del libro, F pasa a F-. ¿Qué nota cambia?',
       opciones: ['la → la♭', 'fa → fa♯', 'do → do♯', 'si → si♭'],
       correcta: 0, pista: 'Un solo cromatismo: el la baja medio tono.' },
     { tipo: 'unica', titulo: 'Rumbo a Mi♭ mayor', enunciado: 'F- es el acorde puente hacia Mi♭ mayor. ¿Qué grado es en Mi♭?',
       opciones: ['II', 'IV', 'VI', 'V'], correcta: 0, pista: 'Mi♭–Fa: segundo grado.' },
-    { tipo: 'ordenar', titulo: 'Modulación cromática', enunciado: 'Ordena la modulación cromática',
-      orden: ['C', 'F', 'Fm', 'B♭/D', 'E♭', 'A♭', 'B♭7', 'E♭'],
-      pista: 'Do mayor, el escalón (F → F-) y asentamos Mi♭.' },
     { tipo: 'vf', titulo: 'La enarmonía', enunciado: 'Verdadero o falso: ¡tienes 10 segundos!',
       afirmacion: 'En la modulación enarmónica, la♭ y sol♯ suenan igual pero se escriben distinto',
       verdadero: true, segundos: 10,
@@ -121,7 +112,7 @@
         if (ctx.bloqueado()) return;
         sel = o;
         tiles.forEach(function (t) { var on = t.o === o; t.b.classList.toggle('s2t-sel', on); t.b.setAttribute('aria-checked', on); });
-        ctx.avisa();
+        ctx.auto(b);   /* (Iago, 1-nov) sin botón «Comprobar»: se corrige al pulsar */
       };
       tiles.push({ b: b, o: o }); wrap.appendChild(b);
     });
@@ -428,7 +419,7 @@
       var b = el('button', 's2t-vfb ' + cls, txt); b.type = 'button'; b.setAttribute('role', 'radio');
       b.onclick = function () {
         if (ctx.bloqueado()) return;
-        resp = val; bV.classList.toggle('s2t-sel', val === true); bF.classList.toggle('s2t-sel', val === false); ctx.avisa();
+        resp = val; bV.classList.toggle('s2t-sel', val === true); bF.classList.toggle('s2t-sel', val === false); parar(); ctx.auto(val ? bV : bF);
       };
       return b;
     }
@@ -532,7 +523,12 @@
     var ctx = {
       raiz: raiz,
       avisa: function () { bChk.disabled = !(ctrl && ctrl.listo()); },
-      bloqueado: function () { return S.comprobado; },
+      auto: function (b) {   /* comprobación inmediata: un destello de «comprobando» y el veredicto */
+        if (S.comprobado || S.auto) return; S.auto = true; area.classList.add('s2t-lock');
+        if (b) b.classList.add('s2t-chk');
+        espera(function () { if (b) b.classList.remove('s2t-chk'); comprueba(false); }, 520);
+      },
+      bloqueado: function () { return S.comprobado || S.auto; },
       escala: function () { return (raiz.offsetWidth ? raiz.getBoundingClientRect().width / raiz.offsetWidth : 1) || 1; },
       tiempoAgotado: function () { comprueba(true); }
     };
@@ -568,15 +564,16 @@
     }
     function muestra(k) {
       if (ctrl && ctrl.destruir) ctrl.destruir();
-      S.i = k; S.comprobado = false;
+      S.i = k; S.comprobado = false; S.auto = false;
       var r = retos[k];
       titulo.textContent = r.titulo || ('Reto ' + (k + 1));
       enun.textContent = r.enunciado || '';
       modo.textContent = r.modo || MODOS[r.tipo] || '';
       area.className = 's2t-area s2t-t-' + r.tipo; area.innerHTML = '';
       ctrl = TIPOS[r.tipo](r, ctx); area.appendChild(ctrl.el);
-      pista.className = 's2t-pista s2t-vacia'; pista.textContent = 'Responde y pulsa «Comprobar». Si te equivocas, perderás un corazón.';
-      bChk.hidden = false; bChk.disabled = true; bSig.hidden = true;
+      var auto = r.tipo === 'unica' || r.tipo === 'vf';
+      pista.className = 's2t-pista s2t-vacia'; pista.textContent = auto ? 'Pulsa tu respuesta: se corrige al momento. Si fallas, pierdes un corazón.' : 'Responde y pulsa «Comprobar». Si te equivocas, perderás un corazón.';
+      bChk.hidden = auto; bChk.disabled = true; bSig.hidden = true;
       bSig.textContent = k === total - 1 ? 'Ver resultado ▶' : 'Siguiente ▶';
       hud(); area.scrollTop = 0;
       if (ctrl.iniciar) ctrl.iniciar();
@@ -612,7 +609,7 @@
       var seg = Math.round((Date.now() - S.t0) / 1000), a = S.aciertos, rel = a / total;
       var t = rel >= 10 / 12 ? '¡Maestro del viaje!' : rel >= 7 / 12 ? '¡Buen viaje!' : 'Sigue explorando';
       var est = rel >= 10 / 12 ? 3 : rel >= 7 / 12 ? 2 : 1;
-      var sub = est === 3 ? 'Dominas el puente, la escalera y el portal.' :
+      var sub = est === 3 ? 'Dominas el puente, el desnivel y el portal.' :
                 est === 2 ? 'Ya sabes cruzar entre tonalidades. Repasa los fallos y vuelve.' :
                 'Repasa los apuntes de modulación y vuelve a intentarlo.';
       fin.innerHTML = '';
