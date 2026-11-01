@@ -5,7 +5,8 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
-- 1-nov 16:30 · C1 · EN CURSO · S2 v10: cinemáticas a velocidad constante (la música se adapta), letrero fijo en cada vídeo, texto del desafío en el centro. Ficheros: s2/index.html, s2/js/s2_datos.js, s2/video/*.
+- 1-nov 16:35 · C1 · HECHO · S2 v10: cinemáticas a velocidad constante (la música se adapta: diatónica 126 bpm, cromática 94, enarmónica 100), letrero fijo en cada vídeo, texto del desafío en el centro.
+  Ficheros: s2/index.html, s2/js/s2_datos.js, s2/video/*. DESHACER: volver esos ficheros a cd583e5.
 - 1-nov 16:10 · C1 · HECHO · solo s2/index.html: música de fondo casi inaudible en las partituras (0,012) y acordes algo más fuertes. DESHACER: volver s2/index.html al commit anterior.
 - 1-nov 15:45 · C1 · HECHO · S1 v47 y S2 v9, commits b82f48b → 2454b3e: controles arriba (s1/js/controles.js y s2/js/controles.js: volver, pausa, pantalla completa; cada escena cabe sin scroll),
   texto antes de cada cinemática, cinemáticas rehechas (flauta, sin cámara lenta, portal continuo; la diatónica va en un solo fichero video/diatonica.mp4 y sus .1/.2 viejos ya no se usan),
