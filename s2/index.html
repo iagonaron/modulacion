@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
+<script>window.TROZOS = {"video/cromatica.mp4": 2, "video/diatonica.mp4": 2, "video/enarmonica.mp4": 2};</script>
+<title>Modulación · Sesión 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="css/s2_test.css?v=1">
+<style>
+/* Sesión 2 · «Tres formas de viajar». Misma interfaz que la S1 desde el wow (piedra, oro y pergamino), sin la etapa retro. */
+:root{
+  --noche:#0a0f1f; --tinta-clara:#eef1fb; --tenue:#a3aecb;
+  --pergamino:#efe2c2; --perg-borde:#5a3b14; --tinta:#2a1d10; --tinta-suave:#6b5537;
+  --casa:#3f6fd8; --nueva:#c8781e; --acento:#b5402a; --oro:#e8c46a; --oro-o:#7a5418;
+  --linea:#8f9bc4; --panel:rgba(13,19,40,.88);
+  --f-titulo:"Marcellus SC", Georgia, serif;
+  --f-texto:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mando:var(--f-texto);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--noche);color:var(--tinta-clara);font-family:var(--f-texto);
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+/* capas de fondo */
+#mundoFondo{position:fixed;inset:0;z-index:-3;background:#22448a url(img/mundo_fondo.webp) center top/cover no-repeat;opacity:0;transition:opacity 2.4s ease}
+#mundoVelo{position:fixed;inset:0;z-index:-2;background:rgba(6,10,26,.38);opacity:0;transition:opacity 2.4s ease}
+#cielo{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;opacity:0;transition:opacity 2.4s ease}
+#lineas{position:fixed;left:0;right:0;top:50%;height:120px;margin-top:-60px;z-index:-1;pointer-events:none;opacity:.10;transition:opacity 2.4s ease, transform 2.4s ease;
+  background:repeating-linear-gradient(to bottom, var(--linea) 0 1px, transparent 1px 30px);background-size:100% 30px;height:121px}
+body.mundo #mundoFondo, body.mundo #mundoVelo, body.mundo #cielo{opacity:1}
+body.mundo #lineas{opacity:0;transform:translateY(160px) scaleY(.6)}
+#lineas.brilla{--linea:#ffd77a;opacity:.75;transition:opacity .5s ease}
+.app{max-width:1280px;margin:0 auto;padding-block:12px 18px;display:flex;flex-direction:column;gap:12px}
+.cab{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.marca{font-family:var(--f-titulo);font-size:clamp(18px,2.2vw,23px);letter-spacing:.06em;text-shadow:0 2px 0 #000}
+.marca small{font-family:var(--f-texto);color:var(--tenue);font-size:13px;letter-spacing:0;margin-left:8px}
+.puntos{display:flex;gap:7px;align-items:center}
+.puntos i{width:9px;height:9px;background:#26304f;outline:1px solid #46557f;transition:background .4s, transform .4s}
+.puntos i.ya{background:var(--casa)} .puntos i.ahora{background:var(--oro)}
+body.mundo .puntos i{transform:rotate(45deg)}
+body.mundo .puntos i.ahora{box-shadow:0 0 10px var(--oro)}
+/* mandos: rectángulos nítidos, borde de 1-2 px, sin difuminados */
+button{font:700 15px/1 var(--f-mando);letter-spacing:.02em;color:var(--tinta-clara);background:#18213f;border:1px solid #8090c4;border-radius:2px;cursor:pointer;min-height:42px;padding:0 15px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 2px 0 #000;transition:background .2s, border-color 1.2s, transform .05s}
+button:hover{background:#22305c}
+button:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(0,0,0,.3)}
+button:disabled{opacity:.6;cursor:default}
+button:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
+.prim{background:#c8781e;border-color:#ffd08a;color:#fff8e8;text-shadow:0 1px 0 rgba(70,30,0,.6)}
+.prim:hover{background:#d6862a}
+.sel{display:flex;gap:4px}
+.sel button{font-size:13px;min-height:36px;background:#141b33;color:var(--tenue)}
+.sel button[aria-pressed="true"]{background:#2b3f86;color:#fff;border-color:var(--oro)}
+.mute{min-width:42px;padding:0;font-size:17px}
+.mute[hidden]{display:none}
+/* textos */
+.escena{display:none;flex-direction:column;gap:12px}
+.escena.on{display:flex;animation:entra .5s ease}
+@keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-family:var(--f-titulo);font-weight:400;font-size:clamp(22px,3vw,32px);margin:2px 0 0;letter-spacing:.03em;color:#fff4dc;text-shadow:0 2px 0 #000}
+.lead{color:var(--tenue);margin:0;max-width:70ch;line-height:1.5}
+.portada{padding:min(9vh,80px) 6px 10px;display:flex;flex-direction:column;gap:14px}
+.portada .sup{font:700 13px var(--f-texto);letter-spacing:.3em;text-transform:uppercase;color:var(--oro)}
+.portada h1{font-family:var(--f-titulo);font-weight:400;font-size:clamp(44px,8vw,86px);margin:0;line-height:1;letter-spacing:.04em;text-shadow:0 3px 0 #000}
+.portada p{margin:0;color:var(--tenue);font-size:clamp(16px,2vw,19px);max-width:52ch;line-height:1.55}
+/* marcos: contorno nítido; en el mundo, piedra y oro */
+.marco{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#000;border:2px solid #8090c4;border-radius:2px;box-shadow:0 0 0 1px #000, 0 10px 28px rgba(0,0,0,.5);transition:border-color 1.2s}
+.marco img,.marco video,.marco canvas{width:100%;height:100%;object-fit:cover;display:block}
+.marco .velo{position:absolute;inset:auto 0 0 0;padding:16px 20px;background:rgba(5,8,20,.74);border-top:1px solid rgba(232,196,106,.5)}
+.marco .velo b{font-family:var(--f-titulo);font-weight:400;font-size:clamp(22px,3.4vw,40px);display:block;text-shadow:0 2px 0 #000}
+.marco .centro{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(5,8,20,.55);text-align:center;padding:16px}
+.marco .centro[hidden]{display:none}
+.marco.intro img{animation:acerca 24s ease-in-out infinite alternate;transform-origin:45% 70%}
+@keyframes acerca{from{transform:scale(1)}to{transform:scale(1.07)}}
+.marco canvas.chispas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.voz{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:1px solid #6a78a8;border-radius:2px;padding:11px 15px;line-height:1.5;box-shadow:0 2px 0 #000;transition:border-color 1.2s, background 1.2s}
+.voz .mic{font-size:13px;color:var(--oro);white-space:nowrap;font-weight:700;padding-top:2px}
+.voz p{margin:0}
+.nav{display:flex;justify-content:space-between;gap:10px}
+/* pergamino de videojuego (también en el arranque neutro): papel, borde oscuro nítido y dos varillas */
+.pergamino{position:relative;background:var(--pergamino) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  color:var(--tinta);border:2px solid var(--perg-borde);border-radius:1px;padding:16px 14px 14px;margin:12px 4px;box-shadow:inset 0 0 0 3px #e3cfa0, inset 0 0 34px rgba(110,70,20,.22), 0 3px 0 #000;overflow-x:auto}
+.pergamino::before,.pergamino::after{content:"";position:absolute;left:-8px;right:-8px;height:10px;background:#6b4416;border:2px solid #2b1906;box-shadow:inset 0 2px 0 #9a6a2c;z-index:2}
+.pergamino::before{top:-11px} .pergamino::after{bottom:-11px}
+.pergamino .tit{font-family:var(--f-titulo);font-size:15px;color:var(--tinta-suave);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.pergamino button:not(.prim){background:#f6ecd2;color:var(--tinta);border-color:var(--perg-borde);box-shadow:0 2px 0 var(--perg-borde)}
+.pergamino .prim{background:#a85a16;border-color:#2b1906;box-shadow:inset 0 1px 0 rgba(255,220,160,.4), 0 2px 0 #2b1906}
+.pergamino svg{display:block}
+/* ▶ flotante: moneda dorada en la esquina del pergamino, sin ocupar sitio */
+.pergamino{padding-top:14px;overflow:visible} .pergamino > div[id]{overflow-x:auto}
+.pergamino .tit{padding-right:64px}
+.pergamino .tit .prim.flota{position:absolute;right:-16px;top:-22px;z-index:4;width:62px;height:62px;border-radius:50%;padding:0;font-size:0;
+  background:radial-gradient(circle at 35% 30%, #ffe9a8, #e0a83a 45%, #8a5a12 100%);border:3px solid #2b1906;box-shadow:0 0 0 2px #f4d58a inset, 0 4px 0 #2b1906, 0 0 22px rgba(255,200,90,.55);cursor:pointer;transition:transform .15s}
+.pergamino .tit .prim.flota::before{content:"";display:block;margin:0 auto 0 23px;width:0;height:0;border-left:19px solid #3a2208;border-top:12px solid transparent;border-bottom:12px solid transparent}
+.pergamino .tit .prim.flota.pausa::before{margin-left:21px;width:6px;height:22px;border:0;border-left:6px solid #3a2208;border-right:6px solid #3a2208;box-sizing:content-box;width:6px}
+.pergamino .tit .prim.flota.otra::before{content:"↺";border:0;margin:0;width:auto;height:auto;font:700 30px/56px var(--f-texto);color:#3a2208;text-align:center}
+.pergamino .tit .prim.flota:hover{transform:scale(1.07)}
+/* cronómetro de videojuego: Mozart contra Rachmaninov */
+.crono{display:flex;flex-direction:column;gap:6px;background:rgba(6,10,26,.78);border:2px solid #f4d58a;border-radius:6px;padding:8px 12px;box-shadow:0 0 0 2px #2b1906, 0 0 18px rgba(255,200,90,.25);font-family:"Pixelify Sans", var(--f-texto)}
+.crono .fila2{display:grid;grid-template-columns:120px 1fr 92px;gap:10px;align-items:center;font-size:15px;color:#dfe5f7}
+.crono .barra{height:12px;background:rgba(255,255,255,.08);border:1px solid rgba(244,213,138,.5);border-radius:2px;overflow:hidden}
+.crono .barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f1c24a,#ffe39a);box-shadow:0 0 8px #f1c24a}
+.crono .fila2.r .barra i{background:linear-gradient(90deg,#b27cff,#ff8a6e);box-shadow:0 0 8px #b27cff}
+.crono b{font-size:22px;color:#ffe39a;text-align:right;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.crono .fila2.r b{color:#ffb39a}
+.fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.leyenda{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--tenue)}
+.leyenda span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--c);transform:rotate(45deg) scale(.85)}
+.analisis{position:absolute;left:0;right:0;bottom:0;padding:6px 10px;background:rgba(239,226,194,.95);color:var(--tinta);border-top:2px solid var(--perg-borde)}
+.analisis[hidden]{display:none}
+video.oscuro{filter:brightness(.38) saturate(.8)}
+.chip{font-size:12px;color:var(--oro);border:1px solid rgba(232,196,106,.6);border-radius:2px;padding:3px 9px}
+/* ===== MUNDO: piedra y oro de la imagen ===== */
+body.mundo{--f-mando:"Pixelify Sans", var(--f-texto)}
+body.mundo .marca{font-family:"Pixelify Sans", var(--f-titulo);font-weight:700;letter-spacing:.05em}
+body.mundo button{border:2px solid var(--oro);background:#b9c5ee url(img/piedra.webp) 0 0/192px;background-blend-mode:multiply;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.14), inset 0 -3px 0 rgba(0,0,0,.4), 0 2px 0 #000;text-shadow:0 2px 0 #000;font-size:15px}
+body.mundo button:hover{background-color:#e2e9ff}
+body.mundo .sel button{background-color:#8592c4}
+body.mundo .sel button[aria-pressed="true"]{background-color:#c9a24a;color:#fff}
+body.mundo .prim{background:#c8781e;border-color:#ffe2a0;box-shadow:inset 0 2px 0 rgba(255,240,190,.35), inset 0 -3px 0 rgba(90,40,0,.45), 0 2px 0 #000}
+body.mundo .prim:hover{background:#d6862a}
+body.mundo .marco{border-color:var(--oro)}
+body.mundo .voz{border:2px solid var(--oro);background:#56628f url(img/piedra.webp) 0 0/192px;background-blend-mode:multiply}
+body.mundo .voz p{text-shadow:0 1px 0 #000}
+body.mundo .pergamino button:not(.prim){background:#f6ecd2;text-shadow:none;border-color:var(--perg-borde);box-shadow:0 2px 0 var(--perg-borde)}
+body.mundo .pergamino .prim{background:#a85a16;border-color:#2b1906}
+/* cartel de inicio del juego */
+.marco .centro .cartel{display:flex;flex-direction:column;gap:10px;align-items:center;max-width:640px;background:linear-gradient(180deg, rgba(20,28,66,.94), rgba(10,14,38,.94));border:3px double #f4d58a;border-radius:8px;padding:16px 22px;box-shadow:0 0 0 2px #1a1206, 0 8px 26px rgba(0,0,0,.6);color:#f3f0ff;font-size:clamp(13px,1.35vw,16px);line-height:1.45}
+.marco .centro .cartel .t{font-family:var(--f-titulo);font-weight:400;font-size:clamp(20px,2.6vw,30px);color:#ffe9b0}
+.alturas{display:flex;flex-direction:column;gap:3px;width:100%;max-width:470px;text-align:left}
+.alturas i{font-style:normal;color:#f4d58a;text-align:center;margin-bottom:2px}
+.alturas span{display:flex;gap:10px;align-items:baseline;padding:3px 8px;border-left:4px solid var(--c);background:rgba(255,255,255,.05);transition:background .35s, transform .35s}
+.alturas span.brilla{background:color-mix(in srgb, var(--c) 30%, transparent);transform:translateX(6px)}
+.alturas em{font-style:normal;font-weight:700;width:128px;flex:none;color:var(--c)}
+.alturas .a3{--c:#b27cff} .alturas .a2{--c:#bcd2ff} .alturas .a1{--c:#ffd98a} .alturas .a0{--c:#f1c24a}
+.marco .centro.pixel{background:transparent}
+.marco .centro.pixel .cartel{display:none}
+/* el wow: cada acorde de la orquesta aparece en pantalla; las llegadas a una tonalidad, a lo grande */
+.acWow{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.voz[hidden]{display:none}
+/* Iago 1-nov: subtítulo tipo terminal, letras en crudo y cursor _ parpadeando (ancho 0: no mueve el texto) */
+#voz{font-family:'IBM Plex Mono', ui-monospace, monospace;font-weight:300;font-size:clamp(16px,1.55vw,19px);line-height:1.5;color:#fff;letter-spacing:0}
+.nav button, .sel button{font-family:'IBM Plex Mono', ui-monospace, monospace;font-weight:500;letter-spacing:0}
+/* ===== RETRO 8/16 bits (Iago 1-nov): desde la portada hasta el wow todo en píxel; desde el wow, la tipografía de siempre ===== */
+/* desde el wow: vuelve la tipografía del título (no la de píxel del mundo) */
+body.mundo:not(.retro){--f-mando:var(--f-texto)} body.mundo:not(.retro) .marca{font-family:var(--f-titulo);font-weight:400;letter-spacing:.06em}
+body.retro{--f-texto:"Pixelify Sans", monospace; --f-mando:"Pixelify Sans", monospace}
+body.retro .marca, body.retro .marca small, body.retro h2, body.retro .pergamino .tit, body.retro .marco .velo b, body.retro .marco .centro .cartel .t, body.retro .voz .mic{font-family:"Pixelify Sans", monospace;font-weight:500}
+body.retro #voz, body.retro .nav button, body.retro .sel button{font-family:"DotGothic16", monospace;font-weight:400}
+body.retro button, body.retro .voz, body.retro .voz .mic, body.retro .crono{border-radius:0}
+body.retro .voz .mic{background:#e0a83a}
+/* pergamino de píxeles, limpio: papel liso, contorno de píxel con esquinas escalonadas, luz arriba-izquierda y sombra abajo-derecha, varillas de píxel */
+body.retro .pergamino, body.retro.perg-real .pergamino{background:#f3e6c4;border:0;border-image:none;border-radius:0;padding:16px 18px 12px;margin:22px 8px;
+  box-shadow:0 -4px 0 0 #3a2410, 0 4px 0 0 #3a2410, -4px 0 0 0 #3a2410, 4px 0 0 0 #3a2410, inset 4px 4px 0 #fff8e2, inset -4px -4px 0 #d8bf88}
+body.retro .pergamino::before, body.retro .pergamino::after, body.retro.perg-real .pergamino::before, body.retro.perg-real .pergamino::after{display:block;content:"";position:absolute;left:-16px;right:-16px;height:12px;background:#8a5a22;border:0;border-radius:0;z-index:2;
+  box-shadow:0 -4px 0 0 #2b1906, 0 4px 0 0 #2b1906, -4px 0 0 0 #2b1906, 4px 0 0 0 #2b1906, inset 0 4px 0 #b07a36, inset 0 -4px 0 #5e3a12}
+body.retro .pergamino::before, body.retro.perg-real .pergamino::before{top:-20px} body.retro .pergamino::after, body.retro.perg-real .pergamino::after{bottom:-20px}
+body.retro .pergamino .tit .prim.flota, body.retro.perg-real .pergamino .tit .prim.flota{border-radius:0;right:-16px;top:-22px}
+#voz .cur{display:inline-block;width:0;overflow:visible;animation:cursorT 1s steps(1) infinite}
+@keyframes cursorT{50%{opacity:0}}
+/* pantalla de inicio, como en un videojuego: «pulsa para empezar» */
+#inicio{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:pointer;text-align:center;
+  background:radial-gradient(ellipse at 50% 60%, rgba(30,40,90,.55), rgba(3,5,14,.96) 70%), url(img/mundo_fondo.webp) center/cover;color:#fff;user-select:none}
+#inicio .sup{font:700 clamp(13px,1.5vw,18px) "Pixelify Sans", var(--f-texto);letter-spacing:.35em;color:#ffd98a;text-transform:uppercase;opacity:0;animation:aparece .8s .3s forwards}
+#inicio h1{margin:0;font:400 clamp(54px,10vw,140px)/1 var(--f-titulo);letter-spacing:.04em;text-shadow:0 4px 0 #000, 0 0 30px rgba(255,200,100,.35);opacity:0;animation:aparece 1.1s .6s forwards}
+#inicio .sub{font:400 clamp(16px,2vw,24px) var(--f-titulo);color:#d9e2ff;opacity:0;animation:aparece .9s 1.1s forwards}
+#inicio .start{margin-top:5vh;font:700 clamp(18px,2.2vw,28px) "Pixelify Sans", var(--f-texto);letter-spacing:.22em;color:#fff;text-shadow:0 3px 0 #000;opacity:0;animation:aparece .6s 1.6s forwards, parpadea 1.1s 2.2s steps(2) infinite}
+#inicio .pista{font:500 13px "Pixelify Sans", var(--f-texto);color:rgba(255,255,255,.55);letter-spacing:.12em;opacity:0;animation:aparece .6s 2s forwards}
+#inicio.va .start{animation:pulsado .12s steps(2) 6}
+#inicio.sale{animation:saleInicio 1.7s .5s cubic-bezier(.5,0,.3,1) forwards}
+@keyframes aparece{from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
+@keyframes parpadea{50%{opacity:0}}
+@keyframes pulsado{50%{opacity:0;color:#ffd98a}}
+@keyframes saleInicio{0%{opacity:1;filter:none} 30%{opacity:1;filter:brightness(2.2)} 100%{opacity:0;filter:brightness(3) blur(6px);transform:scale(1.08);visibility:hidden}}
+#bSig.llama{animation:llama 1.1s ease-in-out infinite}
+@keyframes llama{50%{box-shadow:0 0 0 3px #ffd98a, 0 0 18px rgba(255,217,138,.8)}}
+.acWow .pauta{position:absolute;left:0;right:0;bottom:15%;height:58px;opacity:0;transition:opacity 1s;
+  background:repeating-linear-gradient(to bottom, rgba(255,226,150,.38) 0 1.5px, transparent 1.5px 13px);filter:drop-shadow(0 0 6px rgba(255,210,120,.5))}
+.acWow.on .pauta{opacity:0}
+.acWow .tira{position:absolute;left:0;right:0;bottom:5%;height:44px}
+.acWow .ac{position:absolute;bottom:0;transform:translateX(-50%);font:400 clamp(38px,5.4vw,74px)/1 var(--f-titulo);transform-origin:50% 100%;color:#fff4d4;letter-spacing:.02em;
+  text-shadow:0 0 14px rgba(255,200,90,.95), 0 0 34px rgba(255,170,60,.6), 0 3px 0 #000;animation:acEntra .55s cubic-bezier(.2,.9,.3,1.4) forwards;transition:left 1.1s ease, opacity 1.1s ease, transform 1.1s ease}
+.acWow .ac.viejo{opacity:.42;transform:translateX(-50%) scale(.52)}
+.acWow .ac.pnl{font:inherit;text-shadow:none;background:none;border:0;padding:0;text-align:center}
+/* para que la partitura se lea: el vídeo se oscurece suavemente por abajo mientras hay acordes (sin cajas) */
+.acWow::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s ease;
+  background:linear-gradient(to top, rgba(3,5,14,.9) 0%, rgba(3,5,14,.78) 26%, rgba(3,5,14,.4) 38%, rgba(3,5,14,0) 50%)}
+/* pentagrama continuo abajo: los acordes se van añadiendo, el último con ataque */
+.acWow .banda{position:absolute;left:1%;right:1%;bottom:2%;height:36%;opacity:0;transition:opacity .8s}
+.acWow.on .banda{opacity:1}
+.acWow .banda svg{display:block;width:100%;height:100%}
+.acWow .banda .chispa{position:absolute;top:-10%;width:22%;height:120%;transform:translateX(-50%);pointer-events:none;opacity:0}
+.acWow .banda .chispa.va{animation:chispa .9s ease-out forwards}
+@keyframes chispa{0%{opacity:1;transform:translateX(-50%) scale(.4)} 30%{opacity:.95} 100%{opacity:0;transform:translateX(-50%) scale(1.25)}}
+.acWow.on::before{opacity:0}
+/* barra de habilidades bajo el vídeo (Iago 1-nov): una casilla por acorde; el vídeo queda limpio */
+.hud{display:flex;gap:6px;align-items:stretch;justify-content:center;padding:9px 10px 10px;margin-top:-2px;background:linear-gradient(180deg,#232738,#0c0e17);border:2px solid var(--oro);border-top-width:3px;box-shadow:inset 0 2px 0 #3d4360, 0 10px 24px rgba(0,0,0,.5)}
+.hud .slot{position:relative;flex:1 1 0;max-width:78px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#10121c;border:2px solid #3b4058;box-shadow:inset 0 0 0 2px #070810;color:transparent;font:400 clamp(14px,1.9vw,26px)/1 var(--f-titulo);letter-spacing:.01em}
+.hud .slot small{font:700 clamp(9px,.85vw,11px)/1 'Atkinson Hyperlegible', sans-serif;white-space:nowrap;margin-top:5px;color:transparent}
+.hud .slot.ya{border-color:#8a7440;color:#e9cf8f;background:#1a1710} .hud .slot.ya small{color:#a99566}
+.hud .slot.act{border-color:#fff;color:#fff;background:#2c2615;animation:slotPop .24s ease-out} .hud .slot.act small{color:#ffe3a0}
+.hud .slot.azul.ya{border-color:#5f7bc4} .hud .slot.rojo.ya{border-color:#c4566c;color:#ffc2cd} .hud .slot.oro.ya{border-color:#f0c35a;color:#ffe6a6}
+.hud .slot.rojo.act{border-color:#ff8fa3} .hud .slot.oro.act{border-color:#ffe08a}
+.hud .sep{flex:0 0 3px;background:#5a4a28;margin:4px 1px} .hud .sep.ya{background:#ffd98a}
+@keyframes slotPop{0%{transform:scale(1.25)} 60%{transform:scale(.95)} 100%{transform:none}}
+.acWow .ac.pnl b{display:block;font:400 clamp(20px,2.4vw,32px)/1 var(--f-titulo);color:#ffd98a;margin-bottom:2px}
+.acWow .ac.pnl svg{display:block;height:clamp(120px,22vh,230px);width:auto}
+.acWow .ac.pnl img{display:block;height:clamp(120px,22vh,230px);width:auto}
+.acWow .ac.pnl.viejo{animation:none}
+.acWow .ac.pnl.menor b{color:#ffc4d0}
+.acWow .ac.muere{opacity:0}
+.acWow .ac.menor{color:#ffd6e0;text-shadow:0 0 14px rgba(255,90,120,.9), 0 0 30px rgba(220,40,80,.55), 0 3px 0 #000}
+@keyframes acEntra{from{opacity:0;transform:translateX(-50%) translateY(18px) scale(1.6);filter:blur(6px)} to{opacity:1;transform:translateX(-50%);filter:none}}
+.acWow .llegada{position:absolute;left:0;right:0;top:22%;text-align:center;opacity:0}
+.acWow .llegada b{display:block;font:400 clamp(48px,8vw,110px)/1 var(--f-titulo);letter-spacing:.03em;color:#fff}
+.acWow .llegada span{display:inline-block;margin-top:10px;padding:4px 14px;background:rgba(5,8,20,.55);border-radius:4px;font:700 clamp(17px,2vw,26px) "Pixelify Sans", var(--f-texto);letter-spacing:.16em;text-transform:uppercase;text-shadow:0 2px 0 #000}
+.acWow .llegada.va{animation:llega 3.6s ease forwards}
+.acWow .llegada.rojo b{text-shadow:0 0 24px #ff3355, 0 0 70px #ff1744, 0 4px 0 #000} .acWow .llegada.rojo span{color:#ffb3c1}
+.acWow .llegada.oro b{text-shadow:0 0 24px #ffd166, 0 0 80px #ffb703, 0 4px 0 #000} .acWow .llegada.oro span{color:#ffe7a3}
+.acWow .llegada.azul b{text-shadow:0 0 22px #8fb8ff, 0 0 60px #4d7cff, 0 4px 0 #000} .acWow .llegada.azul span{color:#cfe0ff}
+@keyframes llega{0%{opacity:0;transform:scale(2.4);filter:blur(14px)} 12%{opacity:1;transform:scale(1);filter:none} 75%{opacity:1;transform:scale(1.04)} 100%{opacity:0;transform:scale(1.08) translateY(-10px)}}
+.acWow .hype{position:absolute;left:0;right:0;top:8%;text-align:center;opacity:0;transition:opacity .5s ease, letter-spacing 2.6s ease;letter-spacing:.14em;
+  font:700 clamp(18px,2.3vw,32px) "Pixelify Sans", var(--f-texto);color:#fff;text-transform:uppercase;text-shadow:0 0 18px rgba(0,0,0,.9), 0 2px 0 #000}
+.acWow .hype.va{opacity:1;letter-spacing:.24em}
+.acWow .hype:not(.fin){padding:12px 0;background:linear-gradient(to bottom, transparent, rgba(5,8,20,.5) 25%, rgba(5,8,20,.5) 75%, transparent)}
+.acWow .hype.fin{top:30%}
+.acWow .hype.fin b{display:block;font:400 clamp(56px,10vw,140px)/1 var(--f-titulo);letter-spacing:.04em;text-transform:none;text-shadow:0 0 26px #ffd166, 0 0 80px #ffb703, 0 4px 0 #000}
+.acWow .hype.fin span{display:inline-block;margin-top:14px;padding:4px 16px;border-radius:4px;background:rgba(5,8,20,.6);font-size:clamp(16px,1.9vw,26px)}
+.acWow .destello{position:absolute;inset:0;opacity:0}
+.acWow .destello.va{animation:flash 1.4s ease-out forwards}
+@keyframes flash{0%{opacity:.95} 100%{opacity:0}}
+.marco.tiembla{animation:tiembla .5s ease}
+@keyframes tiembla{20%{transform:translate(-6px,3px)} 40%{transform:translate(5px,-4px)} 60%{transform:translate(-3px,2px)} 80%{transform:translate(2px,-1px)}}
+/* pergamino real (imagen de ChatGPT) cuando está disponible */
+body.perg-real .pergamino{background:none;box-shadow:none;border-style:solid;border-width:clamp(40px,4.6vw,62px) clamp(56px,6.6vw,86px) clamp(34px,3.8vw,50px);border-image:url(img/pergamino.webp) 170 250 140 250 fill / 1 / 0 stretch;padding:4px 6px;margin:8px 0}
+body.perg-real .pergamino::before, body.perg-real .pergamino::after{display:none}
+body.perg-real .pergamino .tit .prim.flota{right:-30px;top:-52px}
+/* espíritus de luz: Mozart y Rachmaninov aparecen junto a su partitura */
+.escena{position:relative}
+.espiritu{position:absolute;right:150px;top:-12px;height:min(22vh,165px);pointer-events:none;z-index:3;opacity:0;filter:drop-shadow(0 0 22px rgba(255,214,120,.55));transform:translateY(16px) scale(.96);transition:opacity 1.6s ease, transform 1.6s ease}
+.espiritu.r{filter:drop-shadow(0 0 22px rgba(170,170,255,.55))}
+.escena.on .espiritu{animation:espiritu 1.8s ease .3s forwards, flota 5s ease-in-out 2.1s infinite alternate}
+@keyframes espiritu{from{opacity:0;transform:translateY(16px) scale(.96);filter:blur(8px) drop-shadow(0 0 22px rgba(255,214,120,.55))} to{opacity:.95;transform:none}}
+@keyframes flota{from{opacity:.95;transform:none} to{opacity:.95;transform:translateY(-10px)}}
+.escena h2{position:relative;z-index:4}
+/* fondo VIVO desde el primer segundo: el mundo, desenfocado y en penumbra, deriva despacio; partículas siempre */
+body:not(.mundo) #mundoFondo{opacity:.62;filter:blur(7px) brightness(.5) saturate(.85)}
+#mundoFondo{transition:opacity 2.4s ease, filter 2.6s ease;animation:deriva 60s ease-in-out infinite alternate}
+@keyframes deriva{from{background-position:center top;transform:scale(1.08)} to{background-position:center 30%;transform:scale(1.14) translateX(-1.5%)}}
+body:not(.mundo) #cielo{opacity:.75}
+/* título que se forma letra a letra, con brillo dorado */
+.portada h1 .l{display:inline-block;opacity:0;filter:blur(10px);transform:translateY(18px) scale(1.2);animation:letra .9s cubic-bezier(.2,.8,.2,1) forwards;text-shadow:0 0 18px rgba(255,214,120,.0)}
+@keyframes letra{60%{opacity:1;filter:blur(0);transform:none;text-shadow:0 0 26px rgba(255,214,120,.95), 0 3px 0 #000;color:#fff3cf} to{opacity:1;filter:blur(0);transform:none;text-shadow:0 0 10px rgba(255,214,120,.35), 0 3px 0 #000}}
+.portada .sup, .portada p{opacity:0;animation:aparece 1.2s ease forwards}
+.portada .sup{animation-delay:.2s} .portada p{animation-delay:1.9s}
+@keyframes aparece{to{opacity:1}}
+/* caja de diálogo de RPG: la voz de Iago se escribe letra a letra */
+.voz{position:relative;display:block;margin-top:14px;background:linear-gradient(180deg, rgba(20,28,66,.94), rgba(10,14,38,.94));border:3px double #f4d58a;border-radius:8px;
+  padding:18px 22px 16px;box-shadow:0 0 0 2px #1a1206, 0 6px 22px rgba(0,0,0,.55), inset 0 0 24px rgba(120,150,255,.12);font-size:clamp(16px,1.6vw,19px);line-height:1.55;min-height:86px;cursor:pointer}
+.voz .mic{position:absolute;top:-15px;left:18px;font:400 15px var(--f-titulo);color:#2b1906;background:linear-gradient(#ffe9a8,#e0a83a);border:2px solid #2b1906;border-radius:4px;padding:2px 10px;letter-spacing:.06em}
+.voz p{margin:0;color:#f3f0ff;text-shadow:0 1px 0 #000}
+.voz .sigue{position:absolute;right:14px;bottom:8px;color:#f4d58a;font-size:14px;opacity:0;animation:none}
+.voz.lista .sigue{opacity:1;animation:bota .8s ease-in-out infinite alternate}
+@keyframes bota{to{transform:translateY(4px)}}
+body.mundo .voz{border:3px double #f4d58a;background:linear-gradient(180deg, rgba(20,28,66,.94), rgba(10,14,38,.94))}
+@media (prefers-reduced-motion: reduce){ #mundoFondo{animation:none} .portada h1 .l, .portada .sup, .portada p{animation:none;opacity:1;filter:none;transform:none} }
+@media (max-width:760px){ .analisis{position:static} .marco:has(.analisis:not([hidden])){aspect-ratio:auto} }
+@media (max-width:640px){ .marca small{display:none} .nav button{flex:1} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ===== S2 ===== */
+body.mundo #mundoFondo{opacity:1;background-image:url(img/mundo_abierto.webp);filter:blur(3px) brightness(.62) saturate(.95)}
+#mundoVelo{background:rgba(6,10,26,.3)}
+#inicio{background:radial-gradient(ellipse at 50% 60%, rgba(30,40,90,.45), rgba(3,5,14,.92) 72%), url(img/mundo_abierto.webp) center/cover}
+/* el papel del pergamino real tiene rizos a los lados: el contenido, más adentro */
+body.perg-real .pergamino{padding:6px clamp(14px,2.4vw,34px) 4px}
+.def{display:flex;flex-direction:column;align-items:center;gap:26px;padding:6vh 10px 10px;text-align:center}
+.def blockquote{margin:0;font:400 clamp(26px,4vw,50px)/1.2 var(--f-titulo);color:#fff4dc;text-shadow:0 3px 0 #000, 0 0 30px rgba(255,200,100,.25);max-width:22ch}
+.def blockquote em{font-style:normal;color:#ffd98a}
+.def .viaje{display:flex;align-items:center;gap:clamp(10px,3vw,40px);width:min(760px,100%)}
+.def .reino{flex:none;width:clamp(90px,15vw,150px);aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px double #f4d58a;border-radius:8px;
+  background:linear-gradient(180deg, rgba(20,28,66,.94), rgba(10,14,38,.94));font:400 clamp(30px,5vw,58px)/1 var(--f-titulo);color:#fff;box-shadow:0 6px 22px rgba(0,0,0,.55)}
+.def .reino small{font:700 12px var(--f-texto);letter-spacing:.2em;text-transform:uppercase;color:var(--tenue);margin-top:8px}
+.def .reino.b{border-color:#ffd98a;opacity:.25;transition:opacity 1s ease 2.6s, box-shadow 1s ease 2.6s}
+.def .camino{position:relative;flex:1;height:6px;background:rgba(255,255,255,.12);border-radius:3px;overflow:visible}
+.def .camino i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#8fb8ff,#ffd98a);border-radius:3px;box-shadow:0 0 12px #ffd98a;transition:width 2.4s cubic-bezier(.5,0,.3,1) .3s}
+.def .camino b{position:absolute;left:50%;top:16px;transform:translateX(-50%);white-space:nowrap;font:700 13px var(--f-texto);letter-spacing:.14em;text-transform:uppercase;color:#ffd98a;opacity:0;transition:opacity .8s ease 2.4s}
+.escena.on .def .camino i{width:100%} .escena.on .def .camino b{opacity:1}
+.escena.on .def .reino.b{opacity:1;box-shadow:0 0 0 2px #1a1206, 0 0 34px rgba(255,217,138,.5)}
+.def p{margin:0;color:var(--tenue);max-width:56ch;line-height:1.5}
+/* los tres caminos */
+.caminos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.camCard{display:flex;flex-direction:column;gap:0;padding:0;min-height:0;text-align:left;background:#0b1024;border:2px solid var(--oro);border-radius:2px;overflow:hidden;cursor:pointer;
+  opacity:0;transform:translateY(14px);animation:sube .7s ease forwards}
+.camCard:nth-child(2){animation-delay:.25s} .camCard:nth-child(3){animation-delay:.5s}
+@keyframes sube{to{opacity:1;transform:none}}
+.camCard img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;transition:transform .6s ease}
+.camCard:hover img{transform:scale(1.04)}
+.camCard span{display:block;padding:10px 14px 12px;background:rgba(5,8,20,.85)}
+.camCard b{display:block;font:400 clamp(20px,2.2vw,28px)/1.1 var(--f-titulo);color:#fff4dc}
+.camCard em{display:block;font-style:normal;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#ffd98a;margin-top:4px}
+.camCard small{display:block;color:var(--tenue);font-size:14px;margin-top:6px;line-height:1.4}
+body.mundo .camCard{background:#0b1024;box-shadow:0 8px 22px rgba(0,0,0,.5);text-shadow:none}
+body.mundo .camCard:hover{background:#0b1024}
+/* cinemáticas */
+.cine .titulo{position:absolute;left:0;right:0;top:12%;text-align:center;opacity:0;pointer-events:none}
+.cine .titulo b{display:block;font:400 clamp(40px,6.6vw,92px)/1 var(--f-titulo);color:#fff;text-shadow:0 0 24px var(--g), 0 0 70px var(--g), 0 4px 0 #000}
+.cine .titulo span{display:inline-block;margin-top:10px;padding:4px 14px;background:rgba(5,8,20,.55);border-radius:4px;font:700 clamp(15px,1.8vw,22px) var(--f-texto);letter-spacing:.2em;text-transform:uppercase;color:#ffe7a3;text-shadow:0 2px 0 #000}
+.cine .titulo.va{animation:llega 5.2s ease forwards}
+/* casillas del libro (método «Minecraft») */
+.casillas{display:flex;flex-direction:column;gap:4px;margin:4px 0 10px}
+.casillas .arm{display:flex;justify-content:space-between;font:700 12px var(--f-texto);color:var(--tinta-suave);width:min(100%,560px)}
+.casillas .arm span{text-align:center;line-height:1.2}
+.casillas .fila7{display:grid;grid-template-columns:repeat(7,1fr);width:min(100%,560px);border:2px solid var(--tinta);background:#fffaf0}
+.casillas .c{aspect-ratio:1.25;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(42,29,16,.35);font:700 clamp(17px,2.2vw,26px) var(--f-texto);color:var(--tinta);transition:background .3s, color .3s}
+.casillas .c:last-child{border-right:0}
+.casillas .c.vacia{color:transparent}
+.casillas .c.nueva{animation:slotPop .35s ease-out}
+.casillas .c.pu{background:#efe2ff;color:#5b2a96}
+.casillas .c.act{background:var(--acento);color:#fff}
+.casillas .gr{display:grid;grid-template-columns:repeat(7,1fr);width:min(100%,560px);font:700 12px/1.25 var(--f-texto);color:var(--tinta-suave);text-align:center}
+.paso{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-top:6px;padding-top:8px;border-top:1px dashed rgba(42,29,16,.35);color:var(--tinta)}
+.paso .txt{flex:1 1 320px;min-width:0}
+.paso .txt b{display:block;font:400 19px var(--f-titulo);color:var(--acento);margin-bottom:2px}
+.paso .txt span{line-height:1.45}
+.paso .fila button{min-height:38px;font-size:14px}
+.regs{display:flex;gap:14px;flex-wrap:wrap;font:700 12.5px var(--f-texto);color:var(--tinta-suave);margin:2px 0 4px}
+.regs span::before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--c);transform:rotate(45deg) scale(.85)}
+/* desafío */
+.retoMarco{position:relative;width:100%;height:clamp(560px,72vh,700px)}
+/* cierre: el mapa de los tres caminos */
+.mapa{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mapa div{position:relative;border:2px solid var(--oro);overflow:hidden;aspect-ratio:16/10}
+.mapa img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05)}
+.mapa b{position:absolute;left:0;right:0;bottom:0;padding:8px 10px;background:linear-gradient(transparent, rgba(5,8,20,.9));font:400 clamp(16px,1.8vw,22px) var(--f-titulo);color:#fff4dc}
+.hud .slot.pu.ya{border-color:#a77ce0;color:#e6d4ff} .hud .slot.pu.act{border-color:#d9b8ff}
+.cine .centro button:disabled{opacity:.85}
+.resTest{font:700 15px var(--f-texto);color:#ffd98a;letter-spacing:.04em}
+@media (max-width:760px){ .caminos, .mapa{grid-template-columns:1fr} .retoMarco{height:auto;min-height:620px} }
+</style>
+</head>
+<body class="mundo">
+<div id="mundoFondo" aria-hidden="true"></div><div id="mundoVelo" aria-hidden="true"></div><canvas id="cielo" aria-hidden="true"></canvas>
+<audio id="musica" loop preload="none"></audio>
+<div id="inicio" role="button" tabindex="0" aria-label="Pulsa para empezar la sesión">
+  <span class="sup">Unidad 8 · Sesión 2</span><h1>Modulación</h1><span class="sub">Tres formas de viajar</span>
+  <span class="start">▶ Pulsa para empezar</span><span class="pista">clic o cualquier tecla</span></div>
+<div class="app">
+  <div class="cab">
+    <div class="marca">Modulación · Sesión 2<small>Tres formas de viajar</small></div>
+    <div class="puntos" id="puntos" aria-hidden="true"></div>
+    <div class="fila"><button class="mute" id="bMus" title="Música de fondo" aria-label="Música de fondo">♪</button><div class="sel" role="group" aria-label="Modo">
+      <button id="mJ" aria-pressed="true" title="En casa: el alumno avanza">Jugable</button><button id="mV" aria-pressed="false" title="En el aula: todo se reproduce solo">Aula · vídeo</button>
+    </div></div>
+  </div>
+
+  <!-- 0 · portada y repaso -->
+  <section class="escena" data-e="intro">
+    <div class="portada"><span class="sup">Unidad 8 · Sesión 2</span><h1 id="tituloS2" aria-label="Tres formas de viajar"></h1>
+      <p>En la sesión anterior conocimos a dos viajeros. Hoy aprendemos los caminos para ir de un reino a otro.</p></div>
+  </section>
+
+  <!-- 1 · definición -->
+  <section class="escena" data-e="definicion">
+    <div class="def">
+      <blockquote>Modular es ir de una tonalidad <em>A</em> a una tonalidad <em>B</em> de forma <em>coherente</em>.</blockquote>
+      <div class="viaje"><div class="reino">A<small>Do mayor</small></div><div class="camino"><i></i><b>sin «pegotes»</b></div><div class="reino b">B<small>otro reino</small></div></div>
+      <p>Coherente: el oído tiene que aceptar el cambio.</p>
+    </div>
+  </section>
+
+  <!-- 2 · los tres caminos -->
+  <section class="escena" data-e="caminos">
+    <h2>Tres formas de viajar</h2>
+    <div class="caminos">
+      <button class="camCard" data-ir="diaCine"><img src="img/D2.webp" alt=""><span><b>Diatónica</b><em>el puente</em><small>A tonalidades cercanas, por un acorde común.</small></span></button>
+      <button class="camCard" data-ir="croCine"><img src="img/C2.webp" alt=""><span><b>Cromática</b><em>la escalera</em><small>Sin acordes comunes, pero sí parecidos: un semitono.</small></span></button>
+      <button class="camCard" data-ir="enaCine"><img src="img/E2.webp" alt=""><span><b>Enarmónica</b><em>el portal</em><small>Reescribir notas para irnos muy lejos.</small></span></button>
+    </div>
+  </section>
+
+  <!-- 3-4 · diatónica -->
+  <section class="escena" data-e="diaCine">
+    <div class="marco cine"><video id="vDia" playsinline preload="none" src="video/diatonica.mp4?v=1" poster="img/D1.webp"></video>
+      <div class="titulo" style="--g:#ffd166"><b>Diatónica</b><span>el puente</span></div>
+      <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
+      <div class="hud" id="hud_vDia" aria-label="Acordes del viaje"></div>
+  </section>
+  <section class="escena" data-e="diaPart">
+    <h2>El puente, en partitura</h2>
+    <div class="pergamino"><div class="tit"><span>Apuntes, pág. 35-36 · Do mayor → Sol mayor</span><button class="prim flota bOye" aria-label="Escuchar">▶ Escuchar</button></div>
+      <div class="regs"><span style="--c:#2f5fbf">Do mayor</span><span style="--c:#7a3fb5">acorde puente</span><span style="--c:#a8740f">Sol mayor</span></div>
+      <div class="pent" id="pDia"></div>
+      <div class="casillas" id="casDia"></div>
+      <div class="paso"><div class="txt"><b></b><span></span></div><div class="fila"><button class="bPA">◀ Paso</button><button class="prim bPS">Paso ▶</button></div></div></div>
+  </section>
+
+  <!-- 5-6 · cromática -->
+  <section class="escena" data-e="croCine">
+    <div class="marco cine"><video id="vCro" playsinline preload="none" src="video/cromatica.mp4?v=1" poster="img/C1.webp"></video>
+      <div class="titulo" style="--g:#b27cff"><b>Cromática</b><span>la escalera</span></div>
+      <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
+      <div class="hud" id="hud_vCro" aria-label="Acordes del viaje"></div>
+  </section>
+  <section class="escena" data-e="croPart">
+    <h2>La escalera, en partitura</h2>
+    <div class="pergamino"><div class="tit"><span>Apuntes, pág. 37 · Do mayor → Mi♭ mayor</span><button class="prim flota bOye" aria-label="Escuchar">▶ Escuchar</button></div>
+      <div class="regs"><span style="--c:#2f5fbf">Do mayor</span><span style="--c:#7a3fb5">acorde puente</span><span style="--c:#a8740f">Mi♭ mayor</span></div>
+      <div class="pent" id="pCro"></div>
+      <div class="paso"><div class="txt"><b></b><span></span></div><div class="fila"><button class="bPA">◀ Paso</button><button class="prim bPS">Paso ▶</button></div></div></div>
+  </section>
+
+  <!-- 7-8 · enarmónica -->
+  <section class="escena" data-e="enaCine">
+    <div class="marco cine"><video id="vEna" playsinline preload="none" src="video/enarmonica.mp4?v=1" poster="img/E1.webp"></video>
+      <div class="titulo" style="--g:#4dd0e1"><b>Enarmónica</b><span>el portal</span></div>
+      <div class="centro"><button class="prim bCine">▶ Ver</button></div></div>
+      <div class="hud" id="hud_vEna" aria-label="Acordes del viaje"></div>
+  </section>
+  <section class="escena" data-e="enaPart">
+    <h2>El portal, en partitura</h2>
+    <div class="pergamino"><div class="tit"><span>Apuntes, pág. 37 · enarmonía de dos notas · Do mayor → Fa♯ mayor</span><button class="prim flota bOye" aria-label="Escuchar">▶ Escuchar</button></div>
+      <div class="regs"><span style="--c:#2f5fbf">Do mayor</span><span style="--c:#7a3fb5">acorde puente (reescrito)</span><span style="--c:#a8740f">Fa♯ mayor</span></div>
+      <div class="pent" id="pEna"></div>
+      <div class="paso"><div class="txt"><b></b><span></span></div><div class="fila"><button class="bPA">◀ Paso</button><button class="prim bPS">Paso ▶</button></div></div></div>
+  </section>
+
+  <!-- 9 · desafío -->
+  <section class="escena" data-e="desafio">
+    <h2>Desafío final</h2>
+    <div class="retoMarco" id="reto"></div>
+  </section>
+
+  <!-- 10 · cierre -->
+  <section class="escena" data-e="cierre">
+    <h2>Ya conoces los tres caminos</h2>
+    <div class="mapa"><div><img src="img/D3.webp" alt=""><b>Diatónica · el puente</b></div><div><img src="img/C3.webp" alt=""><b>Cromática · la escalera</b></div><div><img src="img/E3.webp" alt=""><b>Enarmónica · el portal</b></div></div>
+    <div class="fila"><span class="resTest" id="resTest"></span></div>
+  </section>
+
+  <div class="voz" aria-live="polite" id="cajaVoz"><span class="mic">Iago</span><p id="voz"></p><span class="sigue" aria-hidden="true">▼</span></div>
+  <div class="nav"><button id="bAnt">◀ Anterior</button><button id="bSig" class="prim">Siguiente ▶</button></div>
+</div>
+
+<script>
+/* motas doradas y estrellas, muy ligero */
+(function(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  window.addEventListener('DOMContentLoaded', function(){
+    var lienzo = document.getElementById('cielo'), c = lienzo.getContext('2d'), P = [], w = 0, h = 0, ult = 0;
+    function ajusta(){ w = lienzo.width = innerWidth; h = lienzo.height = innerHeight; }
+    function nueva(y){ return {x:Math.random()*w, y: y == null ? Math.random()*h : y, r:.6 + Math.random()*2.2, v:.08 + Math.random()*.35, f:Math.random()*6.3, d:Math.random() < .55}; }
+    ajusta(); for(var i = 0; i < 45; i++) P.push(nueva()); addEventListener('resize', ajusta);
+    (function bucle(ms){ requestAnimationFrame(bucle); if(document.hidden || ms - ult < 33) return; ult = ms; c.clearRect(0, 0, w, h);
+      P.forEach(function(p, i){ p.f += .04; if(p.d){ p.y -= p.v; p.x += Math.sin(p.f)*.25; if(p.y < -5) P[i] = nueva(h + 5); }
+        var a = p.d ? .35 + .45*Math.abs(Math.sin(p.f)) : .25 + .5*Math.abs(Math.sin(p.f*.7)); c.globalAlpha = a; c.fillStyle = p.d ? '#ffd76a' : '#cfe0ff';
+        c.beginPath(); c.arc(p.x, p.y, p.r, 0, 6.3); c.fill(); }); c.globalAlpha = 1; })(0);
+  });
+})();
+</script>
+<script>window.MOD_BASE = '../s1/';</script><script src="../s1/js/vexflow.js?v=13"></script>
+<script src="js/sonido.js?v=14"></script>
+<script src="js/pentagrama.js?v=16"></script>
+<script src="js/s2_datos.js?v=1"></script>
+<script src="js/s2_test.js?v=1"></script>
+<script>
+(function(){
+  var $ = function(i){ return document.getElementById(i); };
+  window.fuenteCifra = function(){ return 'Atkinson Hyperlegible, sans-serif'; };
+  var AULA = false, idx = 0, raf = null, timers = [];
+  var ESC = [].slice.call(document.querySelectorAll('.escena'));
+  (function(){ var im = new Image(); im.onload = function(){ document.body.classList.add('perg-real'); }; im.src = 'img/pergamino.webp'; })();
+  /* título letra a letra */
+  $('tituloS2').innerHTML = 'Tres formas de viajar'.split('').map(function(ch, i){ return ch === ' ' ? ' ' : '<span class="l" aria-hidden="true" style="animation-delay:' + (0.5 + i*0.07).toFixed(2) + 's">' + ch + '</span>'; }).join('');
+  /* guion de voz (subtítulos hasta que Iago lo grabe; «|» = cuadro nuevo) */
+  var VOZ = {
+    intro:'En la sesión anterior conocimos a dos viajeros, Mozart, que no sale de su reino, y Rachmaninov, que se va lejos y tarda en volver.|Sin modular, la música tiene sus recursos limitados a los siete acordes de su tonalidad. Es como jugar en dos dimensiones.|Modular nos expande, obras más grandes, más ricas armónicamente, con viajes, contrastes y regresos.',
+    definicion:'Dicho de forma muy simple, modular es ir de una tonalidad A a una tonalidad B de forma coherente musicalmente. Coherente quiere decir sin que suene a pegote, el oído tiene que aceptar el cambio.',
+    caminos:'Hoy vemos tres formas de viajar. La diatónica, a tonalidades cercanas, el puente. La cromática, cuando no hay acordes comunes pero sí parecidos, la escalera. Y la enarmónica, el truco para irnos muy lejos, el portal.',
+    diaCine:'Para ir a una tonalidad cercana, con hasta dos alteraciones de diferencia en la armadura, buscamos un acorde común, un acorde que pertenece a las dos tonalidades. Ese acorde es nuestro puente.',
+    diaPart:'Es el ejemplo de los apuntes, de Do mayor a Sol mayor. Vamos paso a paso.',
+    croCine:'¿Y si queremos ir a una tonalidad lejana, que no tiene acordes en común con la nuestra? Buscamos uno parecido, que solo se diferencie por un cromatismo. Ese pequeño cambio es como bajar un escalón.',
+    croPart:'De Do mayor a Mi bemol mayor. Fíjate en el Fa mayor, le bajamos el la y se convierte en Fa menor, el segundo grado de Mi bemol.',
+    enaCine:'La tercera es la más mágica y la menos común, la enarmónica. Una nota puede escribirse de dos maneras, la bemol es igual a sol sostenido. Si reescribimos el acorde puente, se abre un portal hacia tonalidades muy lejanas.',
+    enaPart:'De Do mayor a Fa sostenido mayor, el otro extremo del mapa. Que os suene y ya me vale.',
+    desafio:'Vamos a comprobar si sabéis viajar. Hay retos de varios tipos, marcar, ordenar, unir y encontrar el puente. ¡Suerte!',
+    cierre:'Ya conocéis los tres caminos. En la próxima sesión practicaremos la diatónica, seréis vosotros quienes construyáis el puente.'
+  };
+  var vozT = null, vozTxt = '', vozN = 0, blipCtx = null;
+  function blip(){
+    if(!musOn || !window.Sonido) return;
+    try{ var c = Sonido.ctx, o = c.createOscillator(), g = c.createGain(); o.type = 'square'; o.frequency.value = 880 + Math.random()*60;
+      g.gain.setValueAtTime(.05, c.currentTime); g.gain.exponentialRampToValueAtTime(.0005, c.currentTime + .045);   /* Iago 1-nov: más alto (antes .018) */ o.connect(g); g.connect(Sonido.salida); o.start(); o.stop(c.currentTime + .05); }catch(e){}
+  }
+  function vozCompleta(){ clearInterval(vozT); vozT = null; pintaVoz(vozTxt.length); $('cajaVoz').classList.add('lista'); }
+  /* el texto que falta ya ocupa su sitio (invisible): así ninguna palabra salta de renglón a medio escribir */
+  function pintaVoz(n){
+    var b = $('voz'); b.innerHTML = '';
+    b.appendChild(document.createTextNode(vozTxt.slice(0, Math.max(0, n - 1))));
+    if(n > 0) b.appendChild(document.createTextNode(vozTxt[n-1]));
+    var cu = document.createElement('span'); cu.className = 'cur'; cu.textContent = '_'; b.appendChild(cu);
+    var r = document.createElement('span'); r.style.visibility = 'hidden'; r.textContent = vozTxt.slice(n); b.appendChild(r);
+  }
+  /* una palabra empezada se termina entera */
+  function finPalabra(n){ if(n <= 0) return 0; var m = vozTxt.slice(n).search(/[\s]/); return m < 0 ? vozTxt.length : n + m; }
+  /* voz grabada de Iago: VOZA[k] = {src, dur, pistas:[[segundo, nombre]]}; PISTA_EN[k][nombre]() hace que la pantalla reaccione a lo que dice */
+  var VOZA = {}   /* aquí irá la voz grabada de Iago: {src, dur, pag, hab} */, PISTA_EN = {}, vozAu = new Audio(), vozCue = null, vozK = null, vozEspera = false;
+  vozAu.preload = 'auto';
+  function vozSigue(){ vozEspera = false; var p = vozAu.play(); if(p && p.catch) p.catch(function(){}); }
+  function vozPara(){ vozEspera = false; clearInterval(vozCue); vozCue = null; if(!vozAu.paused) vozAu.pause(); if(vozK && musOn) fundido(VOLM[vozK] || 0); vozK = null; }
+  function vozHabla(k){
+    var A = VOZA[k]; if(!A || !musOn) return false;
+    if(A.vid) return 'vid';
+    vozK = k; vozAu.src = A.src; vozAu.currentTime = 0;
+    var hechas = {}, p = vozAu.play();
+    if(p && p.catch) p.catch(function(){ vozK = null; });
+    var cama = (VOLM[k] || 0) > 0 ? VOLM[k]*.35 : (LECHO[k] || 0); if(cama > 0) fundido(cama);   /* la música baja mientras habla; donde no hay música, una cama suave solo bajo la voz */
+    vozEspera = false;
+    vozCue = setInterval(function(){
+      if(vozEspera) return;                                    /* la voz se ha parado a propósito mientras la pantalla enseña algo */
+      var t = vozAu.currentTime;
+      (A.pistas || []).forEach(function(c, i){ if(!hechas[i] && t >= c[0]){ hechas[i] = true; var f = PISTA_EN[k] && PISTA_EN[k][c[1]]; if(f) f(); } });
+      if(!vozEspera && (vozAu.ended || (vozAu.paused && t > 0))){ clearInterval(vozCue); vozCue = null; if(vozK === k && musOn) fundido(VOLM[k] || 0); vozK = null; if(PISTA_EN[k] && PISTA_EN[k].fin) PISTA_EN[k].fin(); }
+    }, 40);
+    return true;
+  }
+  function voz(k){
+    vozPara();
+    var habla = vozHabla(k);
+    /* «|» parte el texto en cuadros (páginas); VOZA[k].pag = segundo en que empieza cada cuadro */
+    var partes = (VOZ[k] || '').split('|').map(function(x){ return x.trim(); }), pi = 0;
+    vozTxt = habla ? partes[0] : partes.join(' '); vozN = 0; clearInterval(vozT); $('cajaVoz').classList.remove('lista'); $('voz').textContent = '';
+    var reducido = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('cajaVoz').hidden = !vozTxt;
+    if(vozTxt) pintaVoz(0);   /* la caja toma ya su tamaño final (texto invisible) y muestra el cursor: nada salta al escribir la 1.ª letra */
+    if(reducido || !vozTxt){ vozTxt = partes[partes.length - 1]; vozCompleta(); return; }
+    var acc = 0, ultBlip = 0;
+    if(habla){                                   /* las letras salen sólo mientras Iago habla, repartidas a su ritmo */
+      var A = VOZA[k], HT = A.hab || [[0, A.dur]], P = (A.pag || [0]).concat([1e9]);
+      var reloj = habla === 'vid' ? $(A.vid) : vozAu;
+      var tramos = function(n){ return HT.map(function(x){ return [Math.max(x[0], P[n]), Math.min(x[1], P[n+1])]; }).filter(function(x){ return x[1] > x[0]; }); };
+      var H = tramos(0), tot = H.reduce(function(a, x){ return a + x[1] - x[0]; }, 0) || 1;
+      vozT = setInterval(function(){
+        var t = reloj.currentTime, hecho = 0;
+        /* ¿toca ya el cuadro siguiente? si el actual no ha terminado, se acaba deprisa y luego se pasa */
+        if(pi < partes.length - 1 && t >= P[pi+1]){
+          if(vozN >= vozTxt.length){ pi++; vozTxt = partes[pi]; vozN = 0; H = tramos(pi); tot = H.reduce(function(a, x){ return a + x[1] - x[0]; }, 0) || 1; pintaVoz(0); return; }
+          hecho = tot;
+        } else H.forEach(function(x){ if(t >= x[1]) hecho += x[1] - x[0]; else if(t > x[0]) hecho += t - x[0]; });
+        var meta = Math.min(vozTxt.length, Math.round(vozTxt.length*hecho/tot));
+        var aMedias = vozN > 0 && vozN < vozTxt.length && !/\s/.test(vozTxt[vozN-1]) && !/\s/.test(vozTxt[vozN]);
+        if(aMedias) meta = Math.max(meta, finPalabra(vozN));
+        if(vozN < meta){ vozN++; if(meta - vozN > 14) vozN++;   /* si va muy por detrás, recupera de 2 en 2 */
+          pintaVoz(vozN);
+          /* varios pitidos por palabra: la 1.ª letra y luego cada 2, nunca a menos de 70 ms */
+          var ini = vozTxt.slice(0, vozN).search(/\S+$/), enPal = ini < 0 ? -1 : vozN - 1 - ini, ms = performance.now();
+          if(enPal >= 0 && enPal % 2 === 0 && ms - ultBlip > 70){ blip(); ultBlip = ms; } }
+        var ultimo = pi === partes.length - 1;
+        if((ultimo && vozN >= vozTxt.length) || (reloj.ended && !vozEspera)){ vozTxt = partes[partes.length - 1]; vozCompleta(); }
+      }, 50);   /* Iago 1-nov: letra a letra, que se vea escribir cada palabra */
+    } else
+    vozT = setInterval(function(){ acc += 2; vozN = Math.floor(acc); pintaVoz(vozN); if(vozN % 6 === 0) blip(); if(vozN >= vozTxt.length) vozCompleta(); }, 45);
+  }
+  $('cajaVoz').addEventListener('click', vozCompleta);
+  function limpia(){ timers.forEach(clearTimeout); timers = []; if(raf) cancelAnimationFrame(raf); raf = null;
+    [].forEach.call(document.querySelectorAll('video'), function(m){ m.pause(); }); if(window.Sonido) Sonido.parar(); }
+  function despues(ms, f){ timers.push(setTimeout(f, ms)); }
+  var ENTRA = {};
+
+  /* ---------- música de fondo: las canciones de Suno, en tramos con fundido ---------- */
+  var MUS = $('musica'), musOn = true, musRaf = null;
+  var PISTA = {intro:'mus/cama_diatonica.mp3', definicion:'mus/cama_diatonica.mp3', caminos:'mus/cama_diatonica.mp3',
+    diaPart:'mus/cama_diatonica.mp3', croPart:'mus/cama_cromatica.mp3', enaPart:'mus/cama_enarmonica.mp3', desafio:'mus/test_portal.mp3', cierre:'mus/cama_enarmonica.mp3'};
+  var VOLM = {intro:.42, definicion:.3, caminos:.3, diaCine:0, croCine:0, enaCine:0, diaPart:.14, croPart:.14, enaPart:.14, desafio:.22, cierre:.38};
+  var LECHO = {};
+  function pista(k){ var src = PISTA[k]; if(src && MUS.getAttribute('src') !== src){ MUS.pause(); MUS.setAttribute('src', src); MUS.volume = 0; } }
+  function fundido(objetivo){
+    cancelAnimationFrame(musRaf);
+    if(objetivo > 0 && MUS.paused){ MUS.preload = 'auto'; MUS.volume = 0; var p = MUS.play(); if(p && p.catch) p.catch(function(){}); }
+    (function paso(){ var v = MUS.volume, d = objetivo - v;
+      if(Math.abs(d) < .02){ MUS.volume = objetivo; if(objetivo === 0) MUS.pause(); return; }
+      MUS.volume = Math.max(0, Math.min(1, v + Math.sign(d)*.012)); musRaf = requestAnimationFrame(paso); })();
+  }
+  function tema(k){ pista(k); fundido(musOn ? (VOLM[k] || 0)*(vozK === k ? .35 : 1) : 0); }
+  $('bMus').onclick = function(){ musOn = !musOn; $('bMus').textContent = musOn ? '♪' : '✕'; tema(ESC[idx].dataset.e); };
+
+  function ve(i){
+    limpia(); idx = Math.max(0, Math.min(ESC.length - 1, i));
+    ESC.forEach(function(e, k){ e.classList.toggle('on', k === idx); });
+    $('puntos').innerHTML = ESC.map(function(e, k){ return '<i class="'+(k < idx ? 'ya' : (k === idx ? 'ahora' : ''))+'"></i>'; }).join('');
+    var k = ESC[idx].dataset.e;
+    $('bAnt').disabled = idx === 0; $('bSig').textContent = idx === ESC.length - 1 ? 'Fin' : (ESC[idx + 1].dataset.e === 'cierre' ? 'Terminar la sesión 2 ▶' : 'Siguiente ▶');
+    if(!arrancado) return;
+    tema(k); voz(k);
+    if(ENTRA[k]) ENTRA[k]();
+    window.scrollTo(0, 0);
+  }
+  function irA(k){ ve(ESC.findIndex(function(e){ return e.dataset.e === k; })); }
+  $('bAnt').onclick = function(){ ve(idx - 1); };
+  $('bSig').onclick = function(){ ve(idx + 1); };
+  function modo(v){ AULA = v; $('mJ').setAttribute('aria-pressed', !v); $('mV').setAttribute('aria-pressed', v); }
+  $('mJ').onclick = function(){ modo(false); }; $('mV').onclick = function(){ modo(true); };
+  [].forEach.call(document.querySelectorAll('.camCard'), function(b){ b.onclick = function(){ irA(b.dataset.ir); }; });
+
+  /* ---------- cinemáticas: vídeo con su música (Suno, con fundido de entrada y salida) ---------- */
+  /* precarga completa (norma del portal): cada vídeo 1080p se descarga entero antes de reproducirse; empiezan a bajar al abrir la sesión */
+  var PRE = {};
+  function precarga(src, alProgreso){
+    if(PRE[src]) return PRE[src];
+    var base = src.split('?')[0], q = src.indexOf('?') >= 0 ? src.slice(src.indexOf('?')) : '', n = (window.TROZOS || {})[base] || 0;
+    function baja(url, alP){ return fetch(url).then(function(r){
+      var total = +r.headers.get('content-length') || 0;
+      if(!r.body || !total) return r.blob();
+      var lector = r.body.getReader(), trozos = [], recibido = 0;
+      return (function lee(){ return lector.read().then(function(x){
+        if(x.done) return new Blob(trozos, {type:'video/mp4'});
+        trozos.push(x.value); recibido += x.value.length; if(alP) alP(recibido/total); return lee(); }); })(); }); }
+    var p;
+    if(n){ var hechos = []; for(var i = 0; i < n; i++) hechos.push(0);
+      var partes = []; for(var j = 0; j < n; j++) (function(j){ partes.push(baja(base + '.' + (j+1) + q, function(f){ hechos[j] = f; if(alProgreso) alProgreso(hechos.reduce(function(a, b){ return a + b; }, 0)/n); })); })(j);
+      p = Promise.all(partes).then(function(bs){ return new Blob(bs, {type:'video/mp4'}); });   /* vídeo partido en trozos (subida por la web de GitHub) */
+    } else p = baja(src, alProgreso);
+    PRE[src] = p.then(function(b){ return URL.createObjectURL(b); }).catch(function(){ delete PRE[src]; return src; });
+    return PRE[src];
+  }
+  function cine(sec, E){
+    var v = sec.querySelector('video'), cen = sec.querySelector('.centro'), bt = sec.querySelector('.bCine'), ti = sec.querySelector('.titulo');
+    var SRC = v.getAttribute('src'); v.removeAttribute('src'); v.preload = 'none';
+    var hud = sec.querySelector('.hud'), slots = [];
+    /* barra de casillas: la progresión del libro; cada casilla se enciende cuando el viajero llega a ese punto */
+    hud.innerHTML = E.acordes.map(function(a, i){
+      var c = a.r === 'A' ? 'azul' : (a.r === 'P' ? 'pu' : 'oro');
+      return (i === E.puente ? '<i class="sep"></i>' : '') + '<div class="slot ' + c + '">' + menor(a.cif) + '<small>' + a.g + '</small></div>' + (i === E.puente ? '<i class="sep"></i>' : '');
+    }).join('');
+    slots = [].slice.call(hud.querySelectorAll('.slot'));
+    function pintaHud(t){ var act = -1; E.cine.forEach(function(x, i){ if(t >= x) act = i; });
+      slots.forEach(function(s, i){ s.classList.toggle('ya', i <= act); s.classList.toggle('act', i === act); });
+      [].forEach.call(hud.querySelectorAll('.sep'), function(s){ s.classList.toggle('ya', act >= E.puente); }); }
+    function progreso(p){ if(!v.src) bt.textContent = p >= 1 ? '▶ Ver' : 'Cargando vídeo… ' + Math.round(p*100) + ' %'; }
+    function toca(){
+      limpia(); cen.hidden = false; bt.disabled = true; pintaHud(-1);
+      precarga(SRC, progreso).then(function(url){
+        if(ESC[idx] !== sec) return;
+        if(v.src !== url) v.src = url;
+        bt.disabled = false; cen.hidden = true; ti.classList.remove('va'); void ti.offsetWidth; ti.classList.add('va'); fundido(0);
+        v.currentTime = 0; v.muted = !musOn; var p = v.play(); if(p && p.catch) p.catch(function(){ cen.hidden = false; bt.textContent = '▶ Ver'; });
+        (function bucle(){ pintaHud(v.currentTime); if(!v.paused && !v.ended) raf = requestAnimationFrame(bucle); })();
+      });
+    }
+    bt.onclick = function(){ toca(); };
+    v.addEventListener('ended', function(){ pintaHud(99); cen.hidden = false; bt.textContent = '↺ Ver de nuevo'; if(AULA && ESC[idx] === sec) despues(2000, function(){ ve(idx + 1); }); });
+    ENTRA[sec.dataset.e] = function(){ bt.textContent = v.src ? '▶ Ver' : 'Cargando vídeo…'; cen.hidden = false; ti.classList.remove('va'); pintaHud(-1); despues(500, toca); };
+    return function(){ return precarga(SRC, progreso); };
+  }
+  var BAJA = [['diaCine','diatonica'],['croCine','cromatica'],['enaCine','enarmonica']].map(function(p){ return cine(document.querySelector('[data-e="' + p[0] + '"]'), S2_EJ[p[1]]); });
+  BAJA[0]().then(function(){ return BAJA[1](); }).then(function(){ return BAJA[2](); });   /* de una en una, en orden de uso */
+
+  /* ---------- partituras del libro, paso a paso; el acorde que suena se ilumina ---------- */
+  var COL = {A:'#2f5fbf', P:'#7a3fb5', B:'#a8740f'};
+  function lamina(clave, k, idPent, idCas){
+    var E = S2_EJ[clave], sec = document.querySelector('[data-e="' + k + '"]'), paso = 0, actual = null, n = E.acordes.length;
+    var bTxt = sec.querySelector('.paso .txt b'), sTxt = sec.querySelector('.paso .txt span');
+    function vis(){ var P = E.pasos[paso]; return P.vis ? P.vis.map(Boolean) : E.acordes.map(function(_, i){ return i <= P.hasta; }); }
+    function pinta(nuevo){
+      var P = E.pasos[paso], V = vis(), cont = $(idPent);
+      bTxt.textContent = P.tit; sTxt.textContent = P.txt;
+      var grados = E.acordes.map(function(a, i){ return (i === E.puente && !P.pu) ? '' : a.g; });
+      var colG = E.acordes.map(function(a, i){ return (i === E.puente && !P.pu) ? COL.A : COL[a.r]; });
+      Pentagrama.pinta(cont, E.acordes.map(function(a){ return {t:a.t, b:a.b}; }), {vis:V, actual:actual, puente: P.pu ? E.puente : null,
+        cifras: E.acordes.map(function(a){ return a.cif; }), grados: grados, colGrado: colG, extraH: 22, marcasDy: 16,
+        marcas: P.pu ? (E.marcas || []) : (paso >= 1 && E.marcas && E.marcas[0].txt.indexOf('escalón') >= 0 ? E.marcas : []),
+        ancho: Math.max(330, cont.clientWidth - 4)});
+      if(idCas){
+        var c = $(idCas);
+        c.innerHTML = '<div class="arm"><span>' + E.A + '<br>' + E.armA + '</span><span>' + E.B + '<br>' + E.armB + '</span></div>' +
+          '<div class="fila7">' + E.acordes.map(function(a, i){ return '<div class="c' + (V[i] ? '' : ' vacia') + (i === E.puente && P.pu ? ' pu' : '') + (i === actual ? ' act' : '') + (nuevo && nuevo[i] ? ' nueva' : '') + '">' + (V[i] ? menor(a.cif) : '·') + '</div>'; }).join('') + '</div>' +
+          '<div class="gr">' + E.acordes.map(function(a, i){ return '<span>' + (V[i] && grados[i] ? grados[i].replace('/', '<br>') : '') + '</span>'; }).join('') + '</div>';
+      }
+      sec.querySelector('.bPA').disabled = paso === 0;
+      sec.querySelector('.bPS').disabled = paso === E.pasos.length - 1;
+    }
+    function oye(alAcabar){
+      limpia(); actual = null; fundido(0);
+      var V = vis(), q = 1.15;
+      Sonido.listo().then(function(){
+        var t0 = Sonido.ahora() + .2, j = 0;
+        E.acordes.forEach(function(a, i){
+          if(!V[i]) return;
+          var t = j*q; j++;
+          var notas = a.t.concat(a.b);
+          if(E.igual && i === E.igual[1]){ despues(t*1000 + 200, function(){ actual = i; pinta(); }); return; }   /* el acorde reescrito suena igual: se mantiene */
+          var dur = (E.igual && i === E.igual[0]) ? q*2 : q;
+          Sonido.acorde(notas, t0 + t, dur*.96, .5);
+          despues(t*1000 + 200, function(){ actual = i; pinta(); });
+        });
+        despues(j*q*1000 + 900, function(){ actual = null; pinta(); if(musOn) fundido((VOLM[k] || 0)); if(alAcabar) alAcabar(); });
+      });
+    }
+    function cambia(d){
+      var antes = vis(); paso = Math.max(0, Math.min(E.pasos.length - 1, paso + d)); var V = vis();
+      limpia(); actual = null; pinta(V.map(function(v, i){ return v && !antes[i]; }));
+      if(d > 0) oye();
+    }
+    sec.querySelector('.bPA').onclick = function(){ cambia(-1); };
+    sec.querySelector('.bPS').onclick = function(){ cambia(1); };
+    sec.querySelector('.bOye').onclick = function(){ vozPara(); oye(); };
+    ENTRA[k] = function(){ paso = 0; actual = null; pinta();
+      if(AULA){ (function auto(){ oye(function(){ if(paso < E.pasos.length - 1) despues(1600, function(){ paso++; pinta(); auto(); }); else despues(2500, function(){ ve(idx + 1); }); }); })(); } };
+    return {pinta:function(){ pinta(); }};
+  }
+  var LAM = {diaPart: lamina('diatonica', 'diaPart', 'pDia', 'casDia'), croPart: lamina('cromatica', 'croPart', 'pCro'), enaPart: lamina('enarmonica', 'enaPart', 'pEna')};
+
+  /* ---------- desafío final ---------- */
+  var quiz = null, resultado = null;
+  ENTRA.desafio = function(){
+    if(quiz) return;
+    quiz = S2Test.monta($('reto'), {retos: S2Test.RETOS, sonido: true, alFin: function(r){ resultado = r; }});
+  };
+  ENTRA.cierre = function(){
+    $('resTest').textContent = resultado ? 'Desafío: ' + resultado.aciertos + '/' + resultado.total + ' · ' + resultado.puntos + ' puntos' : '';
+  };
+  ENTRA.intro = function(){ if(AULA) despues(16000, function(){ if(ESC[idx].dataset.e === 'intro') ve(idx + 1); }); };
+  ENTRA.definicion = function(){ if(AULA) despues(14000, function(){ if(ESC[idx].dataset.e === 'definicion') ve(idx + 1); }); };
+  ENTRA.caminos = function(){ if(AULA) despues(15000, function(){ if(ESC[idx].dataset.e === 'caminos') ve(idx + 1); }); };
+  window.addEventListener('resize', function(){ var k = ESC[idx].dataset.e; if(LAM[k]) LAM[k].pinta(); });
+
+  /* pantalla de inicio */
+  var arrancado = false;
+  function sintonia(){
+    try{ Sonido.listo(); var c = Sonido.ctx, t = c.currentTime + .05, g0 = c.createGain(); g0.gain.value = .22; g0.connect(Sonido.salida);
+      function tono(f, a, d, tipo, v){ var o = c.createOscillator(), g = c.createGain(); o.type = tipo || 'square'; o.frequency.setValueAtTime(f, a);
+        g.gain.setValueAtTime(0, a); g.gain.linearRampToValueAtTime(v || .5, a + .008); g.gain.exponentialRampToValueAtTime(.001, a + d); o.connect(g); g.connect(g0); o.start(a); o.stop(a + d + .05); }
+      tono(988, t, .09); tono(1319, t + .08, .32);
+      [523, 659, 784, 1047, 1319, 1568].forEach(function(f, i){ tono(f, t + .42 + i*.065, .16); });
+      [1047, 1319, 1568, 2093].forEach(function(f){ tono(f, t + .85, 1.1, 'square', .18); tono(f/2, t + .85, 1.1, 'triangle', .3); });
+    }catch(e){}
+  }
+  function empezar(){
+    if(arrancado) return; arrancado = true;
+    var ini = $('inicio'); ini.classList.add('va'); sintonia();
+    setTimeout(function(){ ini.classList.add('sale'); }, 300);
+    setTimeout(function(){ ini.remove(); }, 2800);
+    var k = ESC[idx].dataset.e; tema(k); setTimeout(function(){ if(ESC[idx].dataset.e === k) voz(k); }, 3300);
+    if(ENTRA[k]) ENTRA[k]();
+  }
+  $('inicio').addEventListener('click', empezar);
+  document.addEventListener('keydown', function tecla(e){ if(!arrancado){ e.preventDefault(); empezar(); } });
+  var h = location.hash; if(/aula/.test(h)) modo(true);
+  var m = /e=(\d+)/.exec(h);
+  ve(m ? +m[1] : 0);
+  window.S2 = {ve:ve, irA:irA, empezar:empezar};
+})();
+</script>
+</body>
+</html>
