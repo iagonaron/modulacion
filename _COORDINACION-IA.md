@@ -5,6 +5,8 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
+- 1-nov 13:45 · C1 · HECHO · S1 v45 (s1/index.html, video/wow.mp4.1-2 = wow v13: escalada a 30 fps y sin paradita en la puerta; ♯/♭ dorados;
+  «Continuar» en el hueco de «Siguiente»; Mozart como fragmento) y S2 v6 (s2/index.html, js/s2_test.js; sin «pegotes»). DESHACER: volver esos ficheros al commit anterior.
 - 1-nov 13:45 · C1 · HECHO · S1 v44 (s1/index.html + js/coral_datos, s1_coral_juego, coral, partitura, pentagrama) y S2 v4 (s2/index.html, js/pentagrama):
   pergamino de 8 bits con esquina enrollada (sin varillas), llave del sistema entera, acorde 32 del coral = Mi mayor (V/VI).
   DESHACER: volver esos ficheros al commit anterior a este bloque.
