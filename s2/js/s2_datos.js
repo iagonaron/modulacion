@@ -14,7 +14,7 @@ window.S2_EJ = {
       {t:['b/3','d/4','g/4'],  b:['g/2'], cif:'G',   g:'I',      r:'B'}
     ],
     puente: 4,
-    cine: [0.4, 2.3, 4.2, 6.1, 8.0, 10.4, 12.3],   /* segundo del vídeo en que SUENA cada acorde y se enciende su casilla (la música se adapta al vídeo, que va a velocidad constante) */
+    cine: [0.0, 2.6, 5.2, 6.5, 7.8, 10.4, 13.0],   /* segundo del vídeo en que SUENA cada acorde y se enciende su casilla (la música se adapta al vídeo, que va a velocidad constante) */
     /* pasos del libro: qué casillas se ven en cada uno */
     pasos: [
       {vis:[1,0,0,0,0,0,1], tit:'Paso 0 · Las armaduras', txt:'Do mayor no tiene alteraciones. Sol mayor tiene un sostenido, fa♯.'},

@@ -88,26 +88,39 @@
     else (d.requestFullscreen || d.webkitRequestFullscreen).call(d);
   }
 
-  /* ---- que la escena quepa sin scroll: primero se encoge el vídeo/juego (16:9), si no basta se escala la escena ---- */
-  function encaja(){
-    var e = document.querySelector('section.escena.on'); if(!e) return;
-    var m = e.querySelector('.marco');
-    if(m){ m.style.maxWidth = ''; m.style.marginInline = ''; }
-    e.style.transform = ''; e.style.transformOrigin = ''; e.style.marginBottom = '';
-    var sobra = document.documentElement.scrollHeight - innerHeight;
-    if(sobra <= 2) return;
-    if(m && m.offsetHeight > 160){
-      var h = Math.max(200, m.offsetHeight - sobra - 4);
-      m.style.maxWidth = Math.round(h*16/9) + 'px'; m.style.marginInline = 'auto';
-      sobra = document.documentElement.scrollHeight - innerHeight;
-      if(sobra <= 2) return;
-    }
-    var H = e.getBoundingClientRect().height, f = (H - sobra - 4)/H;
-    if(f >= .45){   /* se escala la escena entera (transform: todo encoge igual, también el pergamino) y se recoge el hueco que deja */
-      e.style.transformOrigin = '50% 0'; e.style.transform = 'scale(' + f.toFixed(3) + ')'; e.style.marginBottom = (-(H*(1 - f))).toFixed(0) + 'px'; }
+  /* ---- que todo quepa sin scroll (Iago 1-nov 20:34: que no se recoloque al pasar de pestaña) ----
+     1) UNA medida para todo el portal: con la pantalla actual se calcula cuánto puede medir el cuadro de vídeo/juego (16:9)
+        y se aplica igual en todas las escenas (variable --marcoMax). Solo se recalcula si cambia el tamaño de la ventana.
+     2) Si alguna escena aún no cabe (partitura, cuestionario), su escala se calcula una sola vez, se guarda
+        y las siguientes veces se aplica al instante, antes de pintarse, sin mover nada. */
+  var TAM = '', ESCALA = {};
+  function medidaGlobal(){
+    var t = innerWidth + 'x' + innerHeight; if(t === TAM) return; TAM = t; ESCALA = {};
+    var cab = document.querySelector('.cab'), voz = document.querySelector('.voz'), nav = document.querySelector('.nav'), app = document.querySelector('.app');
+    var resto = (cab ? cab.offsetHeight : 50) + (voz ? Math.max(voz.offsetHeight, 70) : 90) + (nav ? nav.offsetHeight : 44) + 34 + 4*12 + 50;   /* cabecera, recuadro de texto, botones, título y márgenes */
+    var h = Math.max(220, innerHeight - resto), w = Math.min(app ? app.clientWidth : innerWidth, Math.round(h*16/9));
+    document.documentElement.style.setProperty('--marcoMax', w + 'px');
   }
-  var tEnc = [];
-  function encajaLuego(){ tEnc.forEach(rCT); tEnc = [0, 350, 1200, 2500].map(function(ms){ return rST(encaja, ms); }); }
+  function aplica(e, f){
+    if(f && f < .999){ e.style.transformOrigin = '50% 0'; e.style.transform = 'scale(' + f.toFixed(3) + ')'; e.style.marginBottom = (-(e.offsetHeight*(1 - f))).toFixed(0) + 'px'; }
+    else { e.style.transform = ''; e.style.transformOrigin = ''; e.style.marginBottom = ''; }
+  }
+  function mide(e){   /* solo la primera vez que se ve cada escena con este tamaño de pantalla */
+    var k = e.dataset.e; aplica(e, 1);
+    var sobra = document.documentElement.scrollHeight - innerHeight, f = 1;
+    if(sobra > 2){ var H = e.getBoundingClientRect().height; f = Math.max(.45, (H - sobra - 4)/H); }
+    ESCALA[k] = f; aplica(e, f);
+  }
+  var visto = null;
+  function encaja(){
+    medidaGlobal();
+    var e = document.querySelector('section.escena.on'); if(!e) return;
+    var k = e.dataset.e;
+    if(ESCALA[k] != null){ if(visto !== e){ aplica(e, ESCALA[k]); visto = e; } return; }
+    visto = e; mide(e);
+    rST(function(){ if(document.querySelector('section.escena.on') === e && ESCALA[k] === 1 && document.documentElement.scrollHeight - innerHeight > 2) mide(e); }, 1200);   /* por si el contenido tardó en dibujarse */
+  }
+  function encajaLuego(){ encaja(); }
   window.Encaja = encaja;
 
   /* ---- botones en la cabecera, junto a ♪ y al modo (sin franja propia) ---- */
@@ -133,7 +146,8 @@
     css.textContent = '.ctlB svg{width:18px;height:18px;fill:currentColor;display:block;margin:auto}.ctlB{display:inline-flex;align-items:center;justify-content:center;width:42px}' +
       '.ctlB[aria-pressed="true"]{background-color:#c9a24a;color:#fff}' +
       'body.enPausa .app::after{content:"⏸ EN PAUSA";position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:60;padding:10px 22px;background:rgba(5,8,20,.82);border:3px double #f4d58a;color:#ffe7a3;font:400 22px/1.2 "DotGothic16",monospace;letter-spacing:.15em;pointer-events:none}' +
-      'html:fullscreen,html:-webkit-full-screen{overflow:auto}';
+      'html:fullscreen,html:-webkit-full-screen{overflow:auto}' +
+      '.escena .marco{max-width:var(--marcoMax,100%);margin-inline:auto}';
     document.head.appendChild(css);
     var fila = document.querySelector('.cab .fila'); if(!fila) return;
     var volverA = window.MOD_VOLVER || '../prueba.html';
@@ -148,9 +162,9 @@
     document.addEventListener('keydown', function(ev){
       if((ev.key === 'p' || ev.key === 'P') && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')){ ev.preventDefault(); P.on ? sigue() : pausa(); }
     }, true);
-    ['fullscreenchange', 'webkitfullscreenchange'].forEach(function(n){ document.addEventListener(n, function(){ pinta(); encajaLuego(); }); });
-    window.addEventListener('resize', encajaLuego);
-    new MutationObserver(encajaLuego).observe(document.querySelector('.app') || document.body, {subtree:true, attributes:true, attributeFilter:['class']});
+    ['fullscreenchange', 'webkitfullscreenchange'].forEach(function(n){ document.addEventListener(n, function(){ pinta(); visto = null; rST(encaja, 150); }); });
+    window.addEventListener('resize', function(){ visto = null; rST(encaja, 120); });
+    new MutationObserver(function(){ var e = document.querySelector('section.escena.on'); if(e !== visto) encaja(); }).observe(document.querySelector('.app') || document.body, {subtree:true, attributes:true, attributeFilter:['class']});
     encajaLuego();
   });
 })();
