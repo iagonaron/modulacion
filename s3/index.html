@@ -1227,11 +1227,11 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
         if(!vid.paused && !vid.ended) raf = requestAnimationFrame(bucle); })();
       vid.onended = function(){ final(); };
     }
-    /* (Iago 2-nov) nota sobre 10: proporción de casillas bien; cada dominante sin 7ª resta 0,25 (máx. −0,5) */
+    /* (Iago 2-nov) nota sobre 10: proporción de casillas bien; cada dominante sin 7ª resta 2,5 (dos: −5, es decir, 75 % y 50 %) — corregido 2-nov 13:37 */
     function notaDe(V){
       var libres = EX.sol.filter(function(d){ return !d.fixed; }).length, bien = 0, sin7 = 0;
       V.forEach(function(v, i){ if(EX.sol[i].fixed) return; if(v.cls !== 'bad') bien++; if(v.cls === 'amber') sin7++; });
-      var n = Math.max(0, 10*bien/libres - .25*Math.min(2, sin7));
+      var n = Math.max(0, 10*bien/libres - 2.5*Math.min(2, sin7));
       return {n:n, txt:(Math.round(n*100)/100).toFixed(2).replace(/0$/, '').replace(/\.0?$/, '').replace('.', ','), sin7:sin7};
     }
     function final(){
@@ -1248,7 +1248,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       var ex = resultado.exito, V = resultado.V, ban = RS.querySelector('.ban');
       ban.style.setProperty('--vc', ex ? (resultado.amber ? '#f0b429' : '#46d17f') : '#ff5a4f');
       var nb = V.filter(function(v){ return v.cls === 'bad'; }).length, na = V.filter(function(v){ return v.cls === 'amber'; }).length;
-      var NT = notaDe(V), menos = NT.sin7 ? ' · −' + (NT.sin7 > 1 ? '0,5' : '0,25') + ' por la 7ª' : '';
+      var NT = notaDe(V), menos = NT.sin7 ? ' · −' + (NT.sin7 > 1 ? '5' : '2,5') + ' por la 7ª' : '';
       ban.querySelector('b').textContent = (ex ? (na ? 'Modulación salvada · con defectos' : 'Modulación exitosa') : 'Modulación fallida') + ' · Nota: ' + NT.txt + menos;
       ban.querySelector('span').textContent = ex ? (na ? na + ' dominante' + (na > 1 ? 's' : '') + ' sin 7ª (en ámbar). La 7ª no es solo estilo: le da a la dominante el impulso que te lleva al I.' : '¡Puente perfecto! De ' + M.keyLabel(EX.A) + ' a ' + M.keyLabel(EX.B) + '.')
         : nb + ' casilla' + (nb > 1 ? 's' : '') + ' en rojo' + (na ? ' y ' + na + ' sin 7ª (ámbar)' : '') + '. Abajo, en azul, la solución.';
@@ -1360,7 +1360,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
     R[4],
     { tipo: 'unica', titulo: 'La séptima de la dominante', enunciado: '¿Por qué escribes la dominante con 7ª (V7)?',
       opciones: ['Por estilo y, sobre todo, porque le da impulso hacia el I', 'Porque lo pide la armadura', 'Para que el acorde sea menor', 'Para que el puente sea más largo'],
-      correcta: 0, pista: 'La 7ª no es solo estilo: empuja la dominante hacia la tónica. Si la olvidas, el puente aguanta… pero tropiezas (−0,25).' },
+      correcta: 0, pista: 'La 7ª no es solo estilo: empuja la dominante hacia la tónica. Si la olvidas, el puente aguanta… pero tropiezas (−2,5).' },
     { tipo: 'unica', titulo: 'La casilla extra', enunciado: 'En un ejercicio de 8 casillas, ¿dónde va la casilla que se añade?',
       opciones: ['Justo después del puente: IV · V7 · I de la tonalidad B', 'Al principio, antes del I de la tonalidad A', 'Justo antes del puente', 'Al final, después del I de B'],
       correcta: 0, pista: 'Va después del puente: en vez de V7 · I, haces IV · V7 · I.' }];
