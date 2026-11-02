@@ -147,7 +147,10 @@
       '.ctlB[aria-pressed="true"]{background-color:#c9a24a;color:#fff}' +
       'body.enPausa .app::after{content:"⏸ EN PAUSA";position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:60;padding:10px 22px;background:rgba(5,8,20,.82);border:3px double #f4d58a;color:#ffe7a3;font:400 22px/1.2 "DotGothic16",monospace;letter-spacing:.15em;pointer-events:none}' +
       'html:fullscreen,html:-webkit-full-screen{overflow:auto}' +
-      '.escena .marco{max-width:var(--marcoMax,100%);margin-inline:auto}';
+      '.escena .marco{max-width:var(--marcoMax,100%);margin-inline:auto}' +
+      /* (Iago 2-nov) nada de parpadeos en los botones: «Continuar» oscurecido mientras escribe el texto; cuando se puede seguir, naranja + blip retro breve */
+      '.nav #bCont:not(.late){filter:saturate(.15) brightness(.55);transition:filter .25s}.nav #bCont.late{filter:none;transition:filter .25s}' +
+      '.nav #bCont.late,#bSig.llama,.bCorr.late,#bCorr.late{animation:none!important}';
     document.head.appendChild(css);
     var fila = document.querySelector('.cab .fila'); if(!fila) return;
     var volverA = window.MOD_VOLVER || '../prueba.html';
@@ -166,5 +169,33 @@
     window.addEventListener('resize', function(){ visto = null; rST(encaja, 120); });
     new MutationObserver(function(){ var e = document.querySelector('section.escena.on'); if(e !== visto) encaja(); }).observe(document.querySelector('.app') || document.body, {subtree:true, attributes:true, attributeFilter:['class']});
     encajaLuego();
+    /* (Iago 2-nov) blip retro breve al activarse un botón de seguir (Continuar, Siguiente, Comprobar/Corregir) */
+    function blipActiva(){
+      try{ var S = window.Sonido; if(!S) return; var c = S.ctx; if(c.state !== 'running') return;
+        var t = c.currentTime + .01, g0 = c.createGain(); g0.gain.value = .07; g0.connect(S.salida);
+        [[1318.5, 0], [1975.5, .055]].forEach(function(n){ var o = c.createOscillator(), g = c.createGain(); o.type = 'square'; o.frequency.value = n[0];
+          g.gain.setValueAtTime(0, t + n[1]); g.gain.linearRampToValueAtTime(.6, t + n[1] + .004); g.gain.exponentialRampToValueAtTime(.001, t + n[1] + .07);
+          o.connect(g); g.connect(g0); o.start(t + n[1]); o.stop(t + n[1] + .1); }); }catch(e){}
+    }
+    var ultBlip = 0;
+    new MutationObserver(function(ms){
+      ms.forEach(function(m){ var el = m.target; if(!el.classList) return;
+        var es = el.id === 'bCont' || el.id === 'bSig' || el.classList.contains('bCorr'); if(!es || el.hidden) return;
+        var antes = ' ' + (m.oldValue || '') + ' ', ahora = el.classList.contains('late') || el.classList.contains('llama');
+        if(ahora && antes.indexOf(' late ') < 0 && antes.indexOf(' llama ') < 0 && performance.now() - ultBlip > 400){ ultBlip = performance.now(); blipActiva(); }
+      });
+    }).observe(document.body, {subtree:true, attributes:true, attributeFilter:['class'], attributeOldValue:true});
+    /* (Iago 2-nov) «Pulsa para empezar»: un blip retro con cada parpadeo. Solo suena si el navegador ya deja (has tocado algo antes en el portal); si no, suena al pulsar */
+    var st = document.querySelector('#inicio .start');
+    if(st){
+      try{ var c0 = window.Sonido && Sonido.ctx; if(c0 && c0.state === 'suspended') c0.resume(); }catch(e){}
+      var latido = function(e){ if(e.animationName !== 'parpadea') return; var ini = document.getElementById('inicio'); if(!ini || ini.classList.contains('va')) return;
+        try{ var S = window.Sonido; if(!S) return; var c = S.ctx; if(c.state !== 'running') return;
+          var t = c.currentTime + .01, g0 = c.createGain(); g0.gain.value = .05; g0.connect(S.salida);
+          [[1567.98, 0], [2093, .07]].forEach(function(n){ var o = c.createOscillator(), g = c.createGain(); o.type = 'square'; o.frequency.value = n[0];
+            g.gain.setValueAtTime(0, t + n[1]); g.gain.linearRampToValueAtTime(.6, t + n[1] + .004); g.gain.exponentialRampToValueAtTime(.001, t + n[1] + .08);
+            o.connect(g); g.connect(g0); o.start(t + n[1]); o.stop(t + n[1] + .11); }); }catch(err){} };
+      st.addEventListener('animationstart', latido); st.addEventListener('animationiteration', latido);
+    }
   });
 })();
