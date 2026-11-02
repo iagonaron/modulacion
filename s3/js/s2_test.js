@@ -36,11 +36,11 @@
                  { t: 'Contraste y sensación de viaje', ok: true },
                  { t: 'Que la obra tenga menos acordes', ok: false }],
       pista: 'Sin modular, solo tienes los acordes de una tonalidad.' },
-    { tipo: 'unir', titulo: 'Tres formas de viajar', enunciado: 'Une cada tipo de modulación con su imagen',
-      pares: [['Diatónica', 'Un puente entre reinos parecidos'],
-              ['Cromática', 'Un desnivel: un semitono que cambia'],
-              ['Enarmónica', 'Un portal a un mundo muy lejano']],
-      pista: 'Puente, desnivel y portal.' },
+    { tipo: 'unir', titulo: 'Tres formas de viajar', enunciado: 'Une cada tipo de modulación con su definición',
+      pares: [['Diatónica', 'Un acorde común a las dos tonalidades (tonalidades cercanas)'],
+              ['Cromática', 'Un acorde parecido: una de sus notas sube o baja un semitono'],
+              ['Enarmónica', 'Notas del acorde que suenan igual pero se escriben con otro nombre, para ir a una tonalidad lejana']],
+      pista: 'Diatónica: un acorde común. Cromática: un semitono de diferencia. Enarmónica: misma nota, otro nombre.' },   /* (Iago 2-nov) en lenguaje técnico */
     { tipo: 'puente', titulo: 'Encuentra el puente', enunciado: 'Encuentra los acordes comunes',
       a: { nombre: 'Do mayor', color: '#6f8fe0', acordes: ['C', 'Dm', 'Em', 'F', 'G', 'Am', 'B°'] },
       b: { nombre: 'Sol mayor', color: '#7cc96a', acordes: ['G', 'Am', 'Bm', 'C', 'D', 'Em', 'F♯°'] },
@@ -49,7 +49,7 @@
     { tipo: 'vf', titulo: 'La dominante', enunciado: 'Verdadero o falso: ¡tienes 10 segundos!',
       afirmacion: 'La dominante siempre es un acorde mayor, aunque la armadura diga lo contrario',
       verdadero: true, segundos: 10,
-      pista: 'Por definición la dominante es mayor (y la escribes con 7ª).' },
+      pista: 'Por definición la dominante es mayor, y la escribes con 7ª: le da impulso hacia el I.' },
     { tipo: 'unica', titulo: 'El desnivel cromático', enunciado: 'En la modulación cromática del libro, F pasa a F-. ¿Qué nota cambia?',
       opciones: ['la → la♭', 'fa → fa♯', 'do → do♯', 'si → si♭'],
       correcta: 0, pista: 'Un solo cromatismo: el la baja medio tono.' },
@@ -73,7 +73,7 @@
   var COLORES = ['#6f8fe0', '#7cc96a', '#b07cff', '#4fd6e0'];   // azul, verde, violeta, cian
   var SVGNS = 'http://www.w3.org/2000/svg';
   var MODOS = { unica: 'Elige una', multi: 'Marca todas las correctas', unir: 'Une las parejas',
-                puente: 'Marca los comunes', ordenar: 'Ordena las cartas', vf: 'Verdadero o falso' };
+                puente: 'Marca los comunes', ordenar: 'Ordena las cartas', vf: 'Verdadero o falso', teclas: 'Toca las notas' };
 
   function el(tag, cls, txt) {
     var e = document.createElement(tag);
@@ -450,7 +450,63 @@
     };
   }
 
-  var TIPOS = { unica: tUnica, multi: tMulti, unir: tUnir, puente: tPuente, ordenar: tOrdenar, vf: tVF };
+
+  // ---- 7. Notas conflictivas en un piano (S3, Iago 2-nov): tocar las notas que cambian entre A y B.
+  //         Cada tecla blanca vale por la nota con cualquier alteración (pulsar «fa» cuenta como fa y fa♯).
+  function tTeclas(r, ctx) {
+    /* (Iago 2-nov) la blanca vale por sus alteraciones y cada negra va con su letra: pulsar do enciende do y do♯;
+       pulsar fa♯ enciende fa♯ y fa. No se muestran las armaduras (sería demasiada pista). r.sig = [armadura A, armadura B] */
+    var L = ['C', 'D', 'E', 'F', 'G', 'A', 'B'], N = { C: 'do', D: 're', E: 'mi', F: 'fa', G: 'sol', A: 'la', B: 'si' };
+    var SH = 'FCGDAEB', FL = 'BEADGCF';
+    function alt(sig, l) { return sig > 0 ? (SH.indexOf(l) < sig ? 1 : 0) : (FL.indexOf(l) < -sig ? -1 : 0); }
+    var sa = (r.sig || [0, 0])[0], sb = (r.sig || [0, 0])[1];
+    function dueno(i) { var l = L[i], d = L[i + 1]; if (alt(sa, l) === 1 || alt(sb, l) === 1) return l; if (alt(sa, d) === -1 || alt(sb, d) === -1) return d; return sa + sb >= 0 ? l : d; }
+    var sel = {}, teclas = [];
+    var wrap = el('div', 's2t-teclas');
+    var cab = el('div', 's2t-tk-cab');
+    [r.a, r.b].forEach(function (t, i) {
+      var k = el('div', 's2t-tk-ton' + (i ? ' b' : ''));
+      k.appendChild(el('b', '', t.nombre));
+      cab.appendChild(k);
+      if (!i) cab.appendChild(el('span', 's2t-tk-fl', '→'));
+    });
+    wrap.appendChild(cab);
+    var piano = el('div', 's2t-piano');
+    function pon(l, cls, on) { teclas.forEach(function (t) { if (t.l === l) t.b.classList.toggle(cls, on); }); }
+    function toca(l) { if (ctx.bloqueado()) return; sel[l] = !sel[l]; pon(l, 's2t-sel', !!sel[l]); teclas.forEach(function (t) { if (t.l === l) t.b.setAttribute('aria-checked', !!sel[l]); }); ctx.avisa(); }
+    L.forEach(function (l) {
+      var b = el('button', 's2t-tecla'); b.type = 'button'; b.setAttribute('role', 'checkbox'); b.setAttribute('aria-checked', 'false');
+      b.appendChild(el('span', 's2t-tk-n', N[l]));
+      b.onclick = function () { toca(l); };
+      teclas.push({ b: b, l: l }); piano.appendChild(b);
+    });
+    [0, 1, 3, 4, 5].forEach(function (i) {
+      var l = dueno(i), n = el('button', 's2t-negra'); n.type = 'button'; n.setAttribute('role', 'checkbox'); n.setAttribute('aria-checked', 'false'); n.setAttribute('aria-label', 'tecla negra');
+      n.style.left = 'calc(' + ((i + 1) * 100 / 7) + '% - 4.2%)'; n.onclick = function () { toca(l); };
+      teclas.push({ b: n, l: l, negra: true }); piano.appendChild(n);
+    });
+    wrap.appendChild(piano);
+    wrap.appendChild(el('div', 's2t-tk-nota', 'Cada tecla vale por la nota y su alteración: «fa» cuenta como fa y fa♯.'));
+    return {
+      el: wrap,
+      listo: function () { return L.some(function (l) { return sel[l]; }); },
+      tecla: function () {},
+      comprobar: function () {
+        var ok = true;
+        L.forEach(function (l) {
+          var debe = r.correctas.indexOf(l) >= 0, puso = !!sel[l];
+          pon(l, 's2t-sel', false);
+          if (debe && puso) pon(l, 's2t-ok', true);
+          else if (debe) { pon(l, 's2t-miss', true); ok = false; }
+          else if (puso) { pon(l, 's2t-bad', true); ok = false; }
+        });
+        teclas.forEach(function (t) { t.b.disabled = true; });
+        return { ok: ok };
+      }
+    };
+  }
+
+  var TIPOS = { unica: tUnica, multi: tMulti, unir: tUnir, puente: tPuente, ordenar: tOrdenar, vf: tVF, teclas: tTeclas };
 
   /* ========================================================================
      MONTAJE DEL QUIZ

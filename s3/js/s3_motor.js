@@ -44,6 +44,7 @@
     return out;
   }
   function evitar(A, B){ var ma = mapa(A.sig), mb = mapa(B.sig), o = []; LETTERS.forEach(function(L){ if(ma[L] !== mb[L]) o.push({letter:L, a:ma[L], b:mb[L]}); }); return o; }
+  function conflictivas(A, B){ return evitar(A, B).map(function(n){ return n.letter; }); }
   function evitarTexto(A, B){ return evitar(A, B).map(function(n){ var a = NOMBRE[n.letter].toLowerCase() + gl(n.a), b = NOMBRE[n.letter].toLowerCase() + gl(n.b); return a === b ? a : a + ' / ' + b; }).join(', '); }
   function ac(t, sev, mayor){ return {root:{letter:t.root.letter, alter:t.root.alter}, modo: mayor ? 'M' : t.modo, seventh:!!sev, grado:t.grado}; }
   /* pares válidos (mismas reglas que modulacion.html); soloMayores para la S3 */
@@ -127,6 +128,6 @@
     return out;
   }
   window.S3M = {LETTERS:LETTERS, NOMBRE:NOMBRE, gl:gl, tonalidad:tonalidad, keyLabel:keyLabel, keyCorto:keyCorto, sigLabel:sigLabel, sigNotas:sigNotas,
-    triadas:triadas, comunes:comunes, evitarTexto:evitarTexto, ejercicio:ejercicio, veredicto:veredicto, igual:igual,
+    triadas:triadas, comunes:comunes, evitarTexto:evitarTexto, conflictivas:conflictivas, alteracion:function(K, l){ return mapa(K.sig)[l]; }, ejercicio:ejercicio, veredicto:veredicto, igual:igual,
     nombreAcorde:nombreAcorde, cifrado:cifrado, romano:romano, voces:voces, tonos:tonos, pares:pares};
 })();
