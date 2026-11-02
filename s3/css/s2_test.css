@@ -61,7 +61,7 @@
 .s2t .s2t-extra { flex-basis: 100%; margin-top: 2px; color: var(--oro2); font-weight: 700; }
 .s2t .s2t-btns { flex: none; display: flex; align-items: stretch; min-width: 170px; }
 .s2t .s2t-btn {
-  flex: 1; padding: 0 22px; min-height: 52px; font-family: "Marcellus SC", Georgia, serif; font-size: 21px; letter-spacing: .03em;
+  flex: 1; padding: 0 22px; min-height: 52px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 500; font-size: 17px; letter-spacing: 0;   /* (Iago 2-nov) Marcellus se veía raro en el botón: la misma letra que los botones de abajo */
   color: #1a1300; background: linear-gradient(#ffe6a8, #e8bc58); border: 2px solid var(--oro); border-radius: 4px;
   box-shadow: 0 3px 0 #8a6a1c, 0 0 14px rgba(255, 217, 138, .3); transition: transform .08s, filter .15s;
 }
@@ -69,7 +69,7 @@
 .s2t .s2t-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #8a6a1c; }
 .s2t .s2t-btn:disabled { color: #6f7391; background: rgba(255, 255, 255, .06); border-color: rgba(244, 213, 138, .25); box-shadow: none; cursor: not-allowed; }
 .s2t .s2t-btn[hidden] { display: none; }
-.s2t .s2t-btn-sig { animation: s2t-latido 1.4s ease-in-out infinite; }
+.s2t .s2t-btn-sig { animation: none; }   /* (Iago 2-nov) sin parpadeo */
 
 /* ---------- Fichas (opciones) ---------- */
 .s2t .s2t-tile {
@@ -236,3 +236,27 @@
 .s2t .s2t-chk { position: relative; overflow: hidden; }
 .s2t .s2t-chk::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(255,226,150,.55) 50%, transparent 80%); transform: translateX(-100%); animation: s2tBarre .5s ease-out forwards; pointer-events: none; }
 @keyframes s2tBarre { to { transform: translateX(100%); } }
+
+/* (Iago 2-nov) reto «notas conflictivas»: piano de fantasía */
+.s2t .s2t-teclas { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+.s2t .s2t-tk-cab { display: flex; align-items: center; gap: 18px; }
+.s2t .s2t-tk-ton { display: flex; flex-direction: column; gap: 2px; padding: 8px 16px; border: 2px solid #5b9dff; background: rgba(91,157,255,.12); min-width: 170px; }
+.s2t .s2t-tk-ton.b { border-color: #e0a43a; background: rgba(224,164,58,.12); text-align: right; }
+.s2t .s2t-tk-ton b { font-family: "Marcellus SC", Georgia, serif; font-weight: 400; font-size: 22px; color: #fff4dc; }
+.s2t .s2t-tk-ton span { font: 700 13px "Atkinson Hyperlegible", system-ui, sans-serif; color: #cfd8f0; }
+.s2t .s2t-tk-fl { font-size: 26px; color: #ffe7a3; }
+.s2t .s2t-piano { position: relative; display: flex; width: min(560px, 92%); height: 190px; padding: 10px 10px 0; background: linear-gradient(#3a2a12, #1c1408); border: 3px solid var(--oro); border-radius: 10px 10px 4px 4px; box-shadow: 0 10px 26px rgba(0,0,0,.55), inset 0 2px 0 rgba(255,230,160,.25); }
+.s2t .s2t-tecla { position: relative; flex: 1; margin: 0 2px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px; min-height: 0; background: linear-gradient(#fffdf6, #f1e6c9); border: 1px solid #8a6a1c; border-radius: 0 0 7px 7px; box-shadow: inset 0 -6px 0 rgba(0,0,0,.08), 0 3px 0 #6b5014; cursor: pointer; transition: transform .08s, background .15s, box-shadow .15s; }
+.s2t .s2t-tecla:hover:not(:disabled) { background: linear-gradient(#fffef9, #fbefcf); }
+.s2t .s2t-tecla:active { transform: translateY(2px); }
+.s2t .s2t-tk-n { font: 700 16px "Atkinson Hyperlegible", system-ui, sans-serif; color: #2a1d10; }
+.s2t .s2t-negra { position: absolute; z-index: 2; top: 10px; width: 8.4%; height: 58%; padding: 0; min-height: 0; border: 1px solid #000; background: linear-gradient(#2a2a33, #0b0b10); border-radius: 0 0 5px 5px; box-shadow: 0 3px 0 #000, inset 0 -3px 0 rgba(255,255,255,.08); cursor: pointer; transition: background .15s, box-shadow .15s; }
+.s2t .s2t-negra.s2t-sel { background: linear-gradient(#e8bc58, #a97a1c); box-shadow: 0 0 0 3px #ffd98a, 0 0 14px rgba(255,217,138,.7); }
+.s2t .s2t-negra.s2t-ok { background: linear-gradient(#5fd394, #1f7f4c) !important; box-shadow: 0 0 0 3px #2faa6a !important; }
+.s2t .s2t-negra.s2t-bad { background: linear-gradient(#e0736c, #8f2a24) !important; box-shadow: 0 0 0 3px #d9534f !important; }
+.s2t .s2t-negra.s2t-miss { background: linear-gradient(#5fd394, #1f7f4c) !important; outline: 2px dashed #2faa6a; }
+.s2t .s2t-tecla.s2t-sel { background: linear-gradient(#ffe7a3, #e8bc58); box-shadow: 0 0 0 3px #ffd98a, 0 0 18px rgba(255,217,138,.7); }
+.s2t .s2t-tecla.s2t-ok { background: linear-gradient(#d9f7e6, #8fe0b0) !important; box-shadow: 0 0 0 3px #2faa6a !important; }
+.s2t .s2t-tecla.s2t-bad { background: linear-gradient(#fde2e0, #f2a39d) !important; box-shadow: 0 0 0 3px #d9534f !important; }
+.s2t .s2t-tecla.s2t-miss { background: linear-gradient(#e9f8f0, #c4eed6) !important; border-style: dashed !important; box-shadow: 0 0 0 3px #2faa6a !important; }
+.s2t .s2t-tk-nota { font: 400 14px "Atkinson Hyperlegible", system-ui, sans-serif; color: var(--tenue); }
