@@ -393,6 +393,8 @@ body.mundo .mCf.ok .cf-n.on{background:linear-gradient(#5fd394,#1f7f4c);box-shad
 .grados .lla{position:absolute;top:21px;height:9px;border:2px solid #5b9dff;border-top:none;border-radius:0 0 8px 8px}
 .grados .lla.b{border-color:#e0a43a}
 .grados .lla em{position:absolute;top:5px;left:50%;transform:translateX(-50%);font:800 10.5px var(--f-texto);font-style:normal;color:#cfe0ff;background:#16233f;border:1px solid #5b9dff;padding:1px 9px;border-radius:9px;white-space:nowrap}
+.grados .evG{position:absolute;top:19px;transform:translateX(-50%);white-space:nowrap;font:800 11px var(--f-texto);color:#f1e2ff;background:#2a1a40;border:1px solid #b98cff;padding:2px 9px;border-radius:9px}
+.grados .evG b{color:#fff}
 .grados .lla.b em{color:#ffe7a3;background:#3a2a0c;border-color:#e0a43a}
 .evita{position:absolute;bottom:calc(100% + 8px);transform:translateX(-50%);z-index:4;white-space:nowrap;font:800 12px/1.25 var(--f-texto);color:#cfe0ff;background:#16233f;border:1px solid #5b9dff;border-radius:8px;padding:5px 10px;text-align:center;transition:left .3s ease;animation:evitaPop .35s ease-out}
 @keyframes evitaPop{0%{transform:translateX(-50%) scale(.6);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
@@ -820,7 +822,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
     return t;
   }
   var ROTURA = 16.25, CAE = 17.2, LEVANTA = 21.4, WOW = 18.75;   /* tropiezo (salvada): el puente se rompe en CAE, salta y aterriza mal; se incorpora en LEVANTA */
-  var SRC_V = {exito:'video/s3_exito.mp4?v=4', caida:'video/s3_caida.mp4?v=3', tropiezo:'video/s3_tropiezo.mp4?v=3'};
+  var SRC_V = {exito:'video/s3_exito.mp4?v=5', caida:'video/s3_caida.mp4?v=3', tropiezo:'video/s3_tropiezo.mp4?v=3'};
 
   function taller(sec){
     var tipo = sec.dataset.tipo, k = sec.dataset.e, ej = EJEMPLOS[k];
@@ -873,7 +875,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
         fila.appendChild(b);
       });
       pintaGrados();
-      if(evitaOn) ponEvita(); else { var ev = fila.querySelector('.evita'); if(ev) ev.remove(); }
+      var ev = fila.querySelector('.evita'); if(ev) ev.remove();   /* la burbuja flotante se sustituye por el cartelito fijo de abajo (pintaGrados) */
     }
     /* grados bajo las casillas: van apareciendo con los pasos (pista) */
     var gradosVis = 0, evitaOn = false;
@@ -885,6 +887,8 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       if(gradosVis >= 1) h += [0,1,2,3].map(function(i){ return g(i, rom(i)); }).join('') + lla(0, 3, M.keyCorto(EX.A));
       if(gradosVis >= 3){ var B = []; for(var j = 5; j < n; j++) B.push(rom(j)); h += B.map(function(t, j){ return g(5 + j, t, 'b'); }).join('') + lla(5, n - 1, M.keyCorto(EX.B), 'b'); }
       if(gradosVis >= 2 && user[4]){ var c = EX.comunes.filter(function(c){ return M.igual(user[4], c); })[0]; if(c) h += g(4, c.romA + '/' + c.romB, 'p'); }
+      /* (Iago 2-nov) «nota a evitar» fija bajo la casilla 5 desde que aciertas las notas conflictivas (sin animación: no se mueve) */
+      if(conflOK) h += '<span class="evG" style="left:' + xs[4].toFixed(1) + 'px">evita: <b>' + EX.evitar + '</b></span>';
       gr.innerHTML = h;
     }
     function ponEvita(){
@@ -1036,7 +1040,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       bEnt.hidden = false; bEnt.textContent = 'Entendido'; mModo = 'texto'; cC.classList.toggle('arm', !!alTerminar);
       cC.style.transition = 'none'; cC.style.transform = ''; cC.style.opacity = ''; cC.hidden = false;
       cartelEntra(); T.classList.add('atento');
-      trasEnt = alEntendido || null; trasArm = alTerminar || null; clic('ding');
+      trasEnt = alEntendido || null; trasArm = alTerminar || null;   /* (Iago 2-nov) sin campanita en los carteles informativos */
     }
     function modoArm(){
       mModo = 'arm'; cTx.innerHTML = 'Pon la <b>armadura</b> de cada tonalidad: desliza la rueda hacia arriba para los sostenidos y hacia abajo para los bemoles.';
@@ -1045,10 +1049,10 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
     function modoCf(){
       if(cC.hidden || mModo !== 'arm') return;
       mModo = 'cf'; cTit.textContent = 'Notas conflictivas'; cTx.innerHTML = 'Toca en el piano las notas que <b>cambian</b> de una tonalidad a otra.';
-      mArm.hidden = true; mCf.hidden = false; bEnt.hidden = false; bEnt.textContent = 'Comprobar'; mRes.textContent = ''; pintaConfl(); cartelEntra(); clic('ding');
+      mArm.hidden = true; mCf.hidden = false; bEnt.hidden = false; bEnt.textContent = 'Comprobar'; mRes.textContent = ''; pintaConfl(); cartelEntra();
     }
     function modoFin(){
-      mModo = 'fin'; clic('ding'); var pl = EX.evitar.indexOf(',') >= 0;
+      mModo = 'fin'; var pl = EX.evitar.indexOf(',') >= 0;
       mRes.classList.add('bien'); mRes.innerHTML = '✓ ' + (pl ? 'Notas' : 'Nota') + ' a evitar en el puente: <b>' + EX.evitar + '</b>';
       bEnt.textContent = 'Siguiente paso ▶';
     }
