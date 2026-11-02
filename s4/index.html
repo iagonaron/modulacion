@@ -762,7 +762,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
   }
   function irA(k){ ve(ESC.findIndex(function(e){ return e.dataset.e === k; })); }
   $('bAnt').onclick = function(){ ve(idx - 1); };
-  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = '../'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
+  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = window.MOD_VOLVER || '../prueba.html'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
   function enEscena(sec){ return ESC[idx] === sec; }
 
   /* =====================================================================
@@ -796,16 +796,16 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
   /* tiempos de la cinemática (segundo del vídeo en que suena cada acorde; compases de 4 o 2 pulsos, negra = 0,625 s) */
   var Q = .625;
   /* (Iago 2-nov) ♩ = 96: un acorde por compás (2,5 s), cosido a la percusión del vídeo. Antes del puente, tensión.
-     fin: 'exito' (llega y se abre la puerta) · 'tropiezo' (dominantes sin 7ª: tropieza, se levanta y llega cojeando) · 'caida' */
+     fin: 'exito' (llega y se abre la luz) · 'tropiezo' (dominantes sin 7ª: el puente se rompe, salta a tiempo, aterriza mal, se sacude y sigue) · 'caida' */
   function tiemposCine(n, fin){
     var t = [1.25, 3.75, 6.25, 8.75];
     if(fin === 'caida'){ t.push(15.0); return t; }
     if(n === 8) t.push(12.5, 14.375); else t.push(13.75);
-    t.push(16.25, fin === 'tropiezo' ? 22.5 : 18.75);
+    t.push(16.25, fin === 'tropiezo' ? 23.75 : 18.75);
     return t;
   }
-  var ROTURA = 16.25, CAE = 17.35, LEVANTA = 19.8, WOW = 18.75;
-  var SRC_V = {exito:'../s3/video/s3_exito.mp4?v=4', caida:'../s3/video/s3_caida.mp4?v=3', tropiezo:'../s3/video/s3_tropiezo.mp4?v=2'};
+  var ROTURA = 16.25, CAE = 17.2, LEVANTA = 21.4, WOW = 18.75;   /* tropiezo (salvada): el puente se rompe en CAE, salta y aterriza mal; se incorpora en LEVANTA */
+  var SRC_V = {exito:'../s3/video/s3_exito.mp4?v=4', caida:'../s3/video/s3_caida.mp4?v=3', tropiezo:'../s3/video/s3_tropiezo.mp4?v=3'};
 
   function taller(sec){
     var tipo = sec.dataset.tipo, k = sec.dataset.e, ej = EJEMPLOS[k];
@@ -913,7 +913,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       [].forEach.call(ed.querySelectorAll('[data-a]'), function(b){ b.onclick = function(){ clic('tecla'); est.alter = +b.dataset.a; vivo(i); }; });
       [].forEach.call(ed.querySelectorAll('[data-m]'), function(b){ b.onclick = function(){ clic('tecla'); est.modo = b.dataset.m; if(est.modo !== 'M') est.seventh = false; vivo(i); }; });
       ed.querySelector('[data-s]').onclick = function(){ clic('tecla'); est.seventh = !est.seventh; if(est.seventh) est.modo = 'M'; vivo(i); };
-      ed.querySelector('.eHecho').onclick = function(){ if(!corriendo || demoClic){ clic(demo ? 'tecla' : 'boton', true); cierra(); } };   /* (Iago 2-nov) en la demo, «Hecho» suena a tecla y seleccionar, a clic de ratón; el alumno real conserva sus sonidos
+      ed.querySelector('.eHecho').onclick = function(){ if(!corriendo || demoClic){ clic(demo ? 'tecla' : 'boton', true); cierra(); } };   /* (Iago 2-nov) en la demo, «Hecho» suena a tecla y seleccionar, a clic de ratón; el alumno real conserva sus sonidos */
       ed.querySelector('.eVacia').onclick = function(){ if(corriendo) return; clic('boton'); user[i] = null; sel = null; ed.classList.remove('show'); pinta(); revisa(); };
       vivo(i, true);
     }
@@ -1270,7 +1270,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       }
       tt.forEach(function(ti, i){
         var v = V[i]; if(!v) return;
-        var ini = t0 + ti, sig = i < ult ? tt[i + 1] : (fin === 'exito' ? WOW + 3.2 : fin === 'tropiezo' ? 24.6 : ROTURA), d = sig - ti;
+        var ini = t0 + ti, sig = i < ult ? tt[i + 1] : (fin === 'exito' ? WOW + 3.2 : fin === 'tropiezo' ? 26.2 : ROTURA), d = sig - ti;
         if(fin === 'caida' && i === ult) d = ROTURA - ti;
         if(fin === 'tropiezo' && ti < CAE && sig > CAE) d = CAE - ti;   /* tropieza: se corta en seco */
         Sonido.acorde(v.t.concat(v.b), ini, Math.min(d, 2.4), i === ult && fin !== 'caida' ? .42 : .5);
