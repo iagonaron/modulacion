@@ -1135,8 +1135,9 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       var q = [function(){ return fila.querySelector('.cas[data-i="' + i + '"]'); },
                function(){ return ed.querySelector('[data-l="' + a.root.letter + '"]'); }];
       if(a.root.alter) q.push(function(){ return ed.querySelector('[data-a="' + a.root.alter + '"]'); });
-      q.push(function(){ return ed.querySelector('[data-m="' + a.modo + '"]'); });
+      /* 2-nov 13:36 Iago: para la dominante pulsa directamente «7ª (dominante)», que ya marca Mayor solo */
       if(a.seventh) q.push(function(){ return ed.querySelector('[data-s]'); });
+      else q.push(function(){ return ed.querySelector('[data-m="' + a.modo + '"]'); });
       q.push(function(){ return ed.querySelector('.eHecho'); });
       (function sig(j){ if(!enEscena(sec)) return; if(j >= q.length){ alFin(); return; } var el = q[j](); if(!el){ sig(j + 1); return; } dedoA(el, function(){ sig(j + 1); }); })(0);
     }
