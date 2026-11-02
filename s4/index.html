@@ -804,8 +804,8 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
     t.push(16.25, fin === 'tropiezo' ? 22.5 : 18.75);
     return t;
   }
-  var ROTURA = 16.25, CAE = 17.05, LEVANTA = 19.6, WOW = 18.75;
-  var SRC_V = {exito:'../s3/video/s3_exito.mp4?v=3', caida:'../s3/video/s3_caida.mp4?v=3', tropiezo:'../s3/video/s3_tropiezo.mp4?v=1'};
+  var ROTURA = 16.25, CAE = 17.35, LEVANTA = 19.8, WOW = 18.75;
+  var SRC_V = {exito:'../s3/video/s3_exito.mp4?v=4', caida:'../s3/video/s3_caida.mp4?v=3', tropiezo:'../s3/video/s3_tropiezo.mp4?v=2'};
 
   function taller(sec){
     var tipo = sec.dataset.tipo, k = sec.dataset.e, ej = EJEMPLOS[k];
@@ -1246,13 +1246,13 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       }
       tt.forEach(function(ti, i){
         var v = V[i]; if(!v) return;
-        var ini = t0 + ti, sig = i < ult ? tt[i + 1] : (fin === 'exito' ? WOW + 3.2 : fin === 'tropiezo' ? 26.0 : ROTURA), d = sig - ti;
+        var ini = t0 + ti, sig = i < ult ? tt[i + 1] : (fin === 'exito' ? WOW + 3.2 : fin === 'tropiezo' ? 24.6 : ROTURA), d = sig - ti;
         if(fin === 'caida' && i === ult) d = ROTURA - ti;
         if(fin === 'tropiezo' && ti < CAE && sig > CAE) d = CAE - ti;   /* tropieza: se corta en seco */
         Sonido.acorde(v.t.concat(v.b), ini, Math.min(d, 2.4), i === ult && fin !== 'caida' ? .42 : .5);
         v.midi.forEach(function(m){ Orq.nota('cu', m, ini, Math.max(.2, d - .04), .085, .12); });
         var aFin = fin === 'exito' ? Math.min(ti + d, WOW) : ti + d;   /* con la música «wow», el arpegiador se retira */
-        if(fin === 'tropiezo' && i === ult) aFin = ti + 2.5;
+        if(fin === 'tropiezo' && i === ult) aFin = ti + 2.0;
         if(aFin > ti + .1) arpegia(v, ti, aFin, i === ult && fin === 'tropiezo' ? .022 : .03);
         if(fin === 'tropiezo' && ti < CAE && sig > CAE) v.midi.forEach(function(m){ Orq.nota('cu', m, t0 + LEVANTA, sig - LEVANTA - .04, .05, .9); });   /* se levanta: la dominante vuelve, débil */
       });
