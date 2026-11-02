@@ -4,7 +4,7 @@
    API: Orq.listo() → Promise · Orq.nota(instr, midi, t, dur, vol, ataque) · Orq.fx(nombre, t, vol) · Orq.parar() · Orq.ahora() */
 (function(){
   var INS = {cu:[36,84]};   /* (Iago 1-nov) solo la cuerda tenida bajo los acordes; nada de arreglo orquestal */
-  var FX = ['boom','revela','tecla','maquina','boton','ding'];
+  var FX = ['boom','revela','tecla','maquina','boton','ding','raton'];   /* (Iago 2-nov) raton = clic de ratón para seleccionar */
   var buf = {}, fxb = {}, vivas = [], cargando = null, bus = null;
   function ctx(){ return Sonido.ctx; }
   function salida(){
