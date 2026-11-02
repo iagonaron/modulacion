@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<script src="js/controles.js?v=2"></script>
+<script src="js/controles.js?v=3"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
-<script>window.TROZOS = {};</script>
+<script>window.TROZOS = {"video/s3_exito.mp4": 2};</script>
 <title>Modulación · Sesión 3</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/s2_test.css?v=2">
+<link rel="stylesheet" href="css/s2_test.css?v=6">
 <style>
 /* Sesión 3 · «Construye el puente». Interfaz de la S1/S2 (piedra, oro y pergamino) + mecánica del ejercicio de
    TEORÍA at home PRO → Modulación (casillas cuadradas, casilla 5 mágica, editor Nota / Alteración / Tipo / 7ª). */
@@ -325,13 +325,40 @@ body.sinVoz #cajaVoz{display:none}
 .ktag b{font:400 21px/1.1 var(--f-titulo);color:#fff4dc}
 .ktag span{font:700 12px var(--f-texto);color:#cfd8f0;min-height:15px;opacity:0;transition:opacity .5s}
 .ktag.ok span, .taller.corr .ktag span{opacity:1}
-.armSel{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;align-items:center}
-.ktag.ok .armSel{display:none}
-.armSel em{font:800 9.5px var(--f-texto);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:#cbb88a;width:100%}
-body.mundo .armSel button{min-height:28px;min-width:26px;padding:0 6px;font:700 13px var(--f-texto);text-shadow:none}
-body.mundo .armSel button.on{background-color:#c9a24a;color:#fff;border-color:#ffe7a3}
-.ktag.mal{animation:edShake .32s ease;border-color:#d9534f}
-.ktag.b .armSel{justify-content:flex-end}
+/* (Iago 2-nov) paso 0 en una ventana, delante del fondo oscurecido y difuminado: texto → armaduras → notas conflictivas */
+.mArm{display:flex;flex-direction:column;gap:12px;width:100%}
+.mArm[hidden],.mCf[hidden]{display:none}
+.armPar{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.armFila{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;min-width:210px;padding:12px 18px 14px;background:rgba(91,157,255,.10);border:1px solid #5b9dff;border-top:4px solid #5b9dff}
+.armFila[data-k="B"]{background:rgba(224,164,58,.10);border-color:#e0a43a}
+.armFila .aN{display:flex;flex-direction:column;align-items:center}
+.armFila .aN small{font:800 10px var(--f-texto);letter-spacing:.16em;text-transform:uppercase;color:#9bc2ff} .armFila[data-k="B"] .aN small{color:#ffd98a}
+.armFila .aN b{font:400 21px/1.1 var(--f-titulo);color:#fff4dc}
+.armFila .aOk{position:absolute;top:8px;right:10px;font-style:normal;font:800 22px var(--f-texto);color:#2fd07f;opacity:0;transition:opacity .3s}
+.armFila.ok .aOk{opacity:1} .armFila.mal{animation:edShake .32s ease;border-color:#d9534f}
+.armSel{display:flex;align-items:center;gap:10px}
+.armSel .rTxt{font:700 12px/1.3 var(--f-texto);color:#cbb88a;text-align:left;max-width:120px}
+.rueda{position:relative;width:76px;height:96px;flex:none;border:2px solid #8a6a1c;border-radius:12px;background:linear-gradient(#141b36,#0a0f22);overflow:hidden;touch-action:none;cursor:ns-resize;box-shadow:inset 0 1px 0 rgba(255,217,138,.12)}
+.rueda .rLista{position:absolute;left:0;right:0;top:0;will-change:transform}
+.rueda .rIt{display:flex;align-items:center;justify-content:center;height:32px;line-height:32px;text-align:center;font:800 19px var(--f-texto);color:#6f7896;user-select:none}
+.rueda .rIt.sel{color:#ffd98a}
+.rueda::before,.rueda::after{content:"";position:absolute;left:0;right:0;height:32px;pointer-events:none;z-index:2}
+.rueda::before{top:0;background:linear-gradient(#0a0f22,rgba(10,15,34,0))} .rueda::after{bottom:0;background:linear-gradient(0deg,#0a0f22,rgba(10,15,34,0))}
+.rueda .rBanda{position:absolute;left:0;right:0;top:32px;height:32px;border-top:1px solid rgba(255,217,138,.5);border-bottom:1px solid rgba(255,217,138,.5);background:rgba(255,217,138,.08);pointer-events:none;z-index:1}
+.armFila.ok .rueda{border-color:#2faa6a;cursor:default} .armFila.mal .rueda{border-color:#d9534f}
+.mCf{display:flex;flex-direction:column;align-items:center;gap:10px}
+.cf-ton{display:flex;gap:12px;align-items:center;font:400 20px var(--f-titulo);color:#fff4dc} .cf-ton i{font-style:normal;color:#ffe7a3}
+.cf-piano{position:relative;display:flex;width:min(440px,78vw);height:130px;padding:7px 7px 0;background:linear-gradient(#3a2a12,#1c1408);border:2px solid var(--oro);border-radius:8px 8px 3px 3px;box-shadow:0 8px 20px rgba(0,0,0,.55)}
+body.mundo .cf-piano .cf-t{position:relative;flex:1;margin:0 1px;min-height:0;min-width:0;padding:0 0 8px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(#fffdf6,#f1e6c9);border:1px solid #8a6a1c;border-radius:0 0 6px 6px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.08),0 2px 0 #6b5014;font:700 14px var(--f-texto);color:#2a1d10;text-shadow:none;letter-spacing:0;text-transform:none}
+body.mundo .cf-piano .cf-t.on{background:linear-gradient(#ffe7a3,#e8bc58);box-shadow:0 0 0 2px #ffd98a,0 0 14px rgba(255,217,138,.7)}
+body.mundo .cf-piano .cf-n{position:absolute;z-index:2;top:7px;width:8.4%;height:56%;min-height:0;min-width:0;padding:0;background:linear-gradient(#2a2a33,#0b0b10);border:1px solid #000;border-radius:0 0 4px 4px;box-shadow:0 3px 0 #000}
+body.mundo .cf-piano .cf-n.on{background:linear-gradient(#e8bc58,#a97a1c);box-shadow:0 0 0 2px #ffd98a,0 0 12px rgba(255,217,138,.7)}
+body.mundo .mCf.ok .cf-t.on{background:linear-gradient(#d9f7e6,#8fe0b0);box-shadow:0 0 0 2px #2faa6a}
+body.mundo .mCf.ok .cf-n.on{background:linear-gradient(#5fd394,#1f7f4c);box-shadow:0 0 0 2px #2faa6a}
+.mCf.mal .cf-piano{animation:edShake .32s ease}
+.mRes{min-height:18px;font:700 14px var(--f-texto);color:#ffb3a8}
+.mRes.bien{color:#bff3df}
+.kflujo small{display:block;margin-top:2px;font:700 11px var(--f-texto);letter-spacing:.06em;text-transform:none;color:#cfe0ff} .kflujo small b{color:#fff}
 .kflujo{flex:1;text-align:center;font:700 12px var(--f-texto);letter-spacing:.12em;text-transform:uppercase;color:#cbb88a}
 .kflujo i{display:block;font-style:normal;font-size:20px;color:#ffe7a3}
 .hoja{position:relative;background:#fffaf0;border:2px solid #2a1d10;padding:4px 6px 0;overflow:hidden}
@@ -367,7 +394,8 @@ body.mundo .armSel button.on{background-color:#c9a24a;color:#fff;border-color:#f
 .grados .lla.b{border-color:#e0a43a}
 .grados .lla em{position:absolute;top:5px;left:50%;transform:translateX(-50%);font:800 10.5px var(--f-texto);font-style:normal;color:#cfe0ff;background:#16233f;border:1px solid #5b9dff;padding:1px 9px;border-radius:9px;white-space:nowrap}
 .grados .lla.b em{color:#ffe7a3;background:#3a2a0c;border-color:#e0a43a}
-.evita{position:absolute;bottom:calc(100% + 8px);transform:translateX(-50%);z-index:4;white-space:nowrap;font:800 12px/1.25 var(--f-texto);color:#cfe0ff;background:#16233f;border:1px solid #5b9dff;border-radius:8px;padding:5px 10px;text-align:center;animation:slotPop .35s ease-out}
+.evita{position:absolute;bottom:calc(100% + 8px);transform:translateX(-50%);z-index:4;white-space:nowrap;font:800 12px/1.25 var(--f-texto);color:#cfe0ff;background:#16233f;border:1px solid #5b9dff;border-radius:8px;padding:5px 10px;text-align:center;transition:left .3s ease;animation:evitaPop .35s ease-out}
+@keyframes evitaPop{0%{transform:translateX(-50%) scale(.6);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
 .evita b{color:#fff}
 .evita::after{content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);border:6px solid transparent;border-top-color:#5b9dff}
 /* editor */
@@ -376,7 +404,8 @@ body.mundo .armSel button.on{background-color:#c9a24a;color:#fff;border-color:#f
 @keyframes edIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .editor .ehead{font:800 13px var(--f-texto);color:#ffe7a3;margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .editor .chip{font:800 10px var(--f-texto);color:#1a1407;background:linear-gradient(135deg,#d4af37,#b8860b);padding:2px 8px;letter-spacing:.06em}
-.erow{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.erow{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.erow .eact{margin-left:auto}
 .egrp{display:flex;flex-direction:column;gap:5px}
 .egrp > span{font:800 10px var(--f-texto);letter-spacing:.13em;text-transform:uppercase;color:#cbb88a}
 .ebtns{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
@@ -388,8 +417,7 @@ body.mundo .editor .pill.acc{font-size:17px}
 body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ffe7a3;box-shadow:0 0 0 2px rgba(255,217,138,.5), 0 2px 0 #000}
 .pill.pulsa{transform:scale(.9);box-shadow:0 0 0 3px #ffd98a}
 .esep{width:1px;align-self:stretch;background:#6a5420;margin:0 3px}
-.eact{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
-.ewarn{font:700 12.5px var(--f-texto);color:#e6a417;visibility:hidden} .ewarn.show{visibility:visible}
+.ewarn{margin-left:auto;font:700 12.5px var(--f-texto);color:#e6a417;visibility:hidden} .ewarn.show{visibility:visible}
 .editor.shake{animation:edShake .32s ease}
 @keyframes edShake{0%,100%{transform:none}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 .pie{display:flex;justify-content:flex-end;align-items:stretch;gap:10px;flex-wrap:wrap;min-height:44px}
@@ -407,6 +435,21 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 .cartel .pn{flex:none;font:400 15px var(--f-titulo);color:#1a1206;background:#ffd98a;padding:4px 9px}
 .cartel .tx{flex:1;font:700 15px/1.4 var(--f-texto)} .cartel .tx b{color:#ffd98a}
 .cartel button{flex:none;min-height:36px;font-size:14px}
+/* (Iago 2-nov) el cartel aparece primero en el centro con «Entendido»; al pulsarlo baja a su sitio, junto a los botones */
+.taller .velo{position:absolute;inset:0;z-index:7;background:rgba(5,8,20,.68);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);opacity:0;pointer-events:none;transition:opacity .35s}
+.taller.atento .velo{opacity:1;pointer-events:auto}
+/* (Iago 2-nov) «Escuchar todo», discreto: las veces que quieras */
+body.mundo .pie .bOir{flex:none;min-height:30px;padding:0 12px;font:700 12px var(--f-texto);letter-spacing:.04em;text-transform:none;color:#cfd8f0;background:transparent;border:1px solid rgba(207,216,240,.35);border-radius:16px;box-shadow:none;text-shadow:none}
+body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
+.taller.demoT .bOir{visibility:hidden}
+.cartelC{position:absolute;left:50%;top:42%;z-index:8;width:min(720px,86%);transform:translate(-50%,-50%);display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;padding:22px 28px 20px;
+  background:#0b1024;border:3px solid #ffd98a;box-shadow:0 0 0 3px #000, 0 20px 60px rgba(0,0,0,.7), 0 0 30px rgba(255,217,138,.35);color:#eef1fb;transform-origin:50% 50%}
+.cartelC[hidden]{display:none}
+.cartelC.entra{animation:cartelCEntra .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes cartelCEntra{0%{transform:translate(-50%,-50%) scale(.8);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.cartelC .pn{font:400 18px var(--f-titulo);color:#1a1206;background:#ffd98a;padding:4px 12px}
+.cartelC .tx{font:700 clamp(17px,1.6vw,21px)/1.45 var(--f-texto)} .cartelC .tx b{color:#ffd98a}
+.cartelC .bEnt{min-width:170px}
 /* puntero de la demostración */
 .dedo{position:absolute;z-index:9;width:26px;height:26px;margin:-3px 0 0 -4px;pointer-events:none;transition:left 1.05s cubic-bezier(.45,0,.25,1), top 1.05s cubic-bezier(.45,0,.25,1), opacity .3s;opacity:0}
 .dedo.on{opacity:1}
@@ -426,6 +469,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 .veredicto.va{animation:verLlega .9s cubic-bezier(.3,1.5,.5,1) forwards}
 @keyframes verLlega{0%{opacity:0;transform:scale(.6)}100%{opacity:1;transform:none}}
 .hud .slot.mal.ya{border-color:#d9534f;color:#ffc9c4}
+.hud .slot.sin7{border-color:#f0b429;color:#ffe7a3;box-shadow:0 0 12px rgba(240,180,41,.6)}
 /* resultado */
 .resul{display:none;flex-direction:column;gap:8px}
 .escena.vResul .resul{display:flex} .escena.vResul > .taller, .escena.vResul .cineS3{display:none}
@@ -499,17 +543,19 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 <template id="tTaller">
   <div class="taller">
     <div class="neb"></div>
+    <div class="velo"></div>
+    <div class="cartelC" hidden><span class="pn"></span><span class="tx"></span><div class="mArm" hidden><div class="armPar"><div class="armFila" data-k="A"><span class="aN"><small>Tonalidad A</small><b class="kA"></b></span><div class="armSel" data-k="A"></div><i class="aOk">✓</i></div><div class="armFila" data-k="B"><span class="aN"><small>Tonalidad B</small><b class="kB"></b></span><div class="armSel" data-k="B"></div><i class="aOk">✓</i></div></div></div><div class="mCf" hidden><div class="cf-ton"><b class="kA"></b><i>→</i><b class="kB"></b></div><div class="cf-piano"></div></div><span class="mRes"></span><button class="prim bEnt">Entendido</button></div>
     <div class="claves">
-      <div class="ktag a"><small>Tonalidad A</small><b class="kA"></b><span class="sA"></span><div class="armSel" data-k="A"></div></div>
+      <div class="ktag a"><small>Tonalidad A</small><b class="kA"></b><span class="sA"></span></div>
       <div class="kflujo">modulas<i>→</i></div>
-      <div class="ktag b"><small>Tonalidad B</small><b class="kB"></b><span class="sB"></span><div class="armSel" data-k="B"></div></div>
+            <div class="ktag b"><small>Tonalidad B</small><b class="kB"></b><span class="sB"></span></div>
     </div>
     <div class="hoja"><div class="pent"></div></div>
     <span class="cap">✦ la casilla 5 es la puerta entre las dos tonalidades ✦</span>
     <div class="fila8"></div>
     <div class="grados"></div>
     <div class="editor"></div>
-    <div class="pie"><div class="cartel" hidden><span class="pn"></span><span class="tx"></span><button class="prim bPaso" hidden>Siguiente paso ▶</button></div><span class="msg"></span><button class="bOye" title="Escuchar lo que llevas">▶ Escuchar</button><button class="prim bCorr" disabled>✓ Corregir</button></div>
+    <div class="pie"><div class="cartel" hidden><span class="pn"></span><span class="tx"></span><button class="prim bPaso" hidden>Siguiente paso ▶</button></div><button class="bOir" title="Escuchar todos los acordes, las veces que quieras">♪ Escuchar todo</button><span class="msg"></span><button class="prim bCorr" disabled>✓ Corregir</button></div>
     <div class="dedo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 2.5 L4 19.5 L8.6 15.4 L11.6 21.8 L14.7 20.4 L11.7 14.1 L17.8 14.1 Z" fill="#ffffff" stroke="#1a1206" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
   </div>
   <div class="cineS3">
@@ -553,9 +599,10 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 <script>window.MOD_BASE = '../s1/';</script><script src="../s1/js/vexflow.js?v=13"></script>
 <script src="js/sonido.js?v=14"></script>
 <script src="js/pentagrama.js?v=s3b"></script>
-<script src="js/s2_test.js?v=7"></script>
-<script src="js/s3_motor.js?v=1"></script>
-<script src="js/orquesta.js?v=3"></script>
+<script src="js/s2_test.js?v=13"></script>
+<script src="js/s3_motor.js?v=3"></script>
+<script src="js/rueda.js?v=1"></script>
+<script src="js/orquesta.js?v=5"></script>
 <script>
 (function(){
   var $ = function(i){ return document.getElementById(i); };
@@ -722,7 +769,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     ESC.forEach(function(e, k){ e.classList.toggle('on', k === idx); });
     $('puntos').innerHTML = ESC.map(function(e, k){ return '<i class="'+(k < idx ? 'ya' : (k === idx ? 'ahora' : ''))+'"></i>'; }).join('');
     var k = ESC[idx].dataset.e;
-    $('bAnt').disabled = idx === 0; $('bSig').textContent = idx === ESC.length - 1 ? 'Fin' : (ESC[idx + 1].dataset.e === 'cierre' ? 'Terminar la sesión 3 ▶' : 'Siguiente ▶');
+    $('bAnt').disabled = idx === 0; $('bSig').textContent = idx === ESC.length - 1 ? 'Cerrar sesión' : (ESC[idx + 1].dataset.e === 'cierre' ? 'Terminar la sesión 3 ▶' : 'Siguiente ▶');
     if(!arrancado) return;
     tema(k); voz(k);
     if(ENTRA[k]) ENTRA[k]();
@@ -730,7 +777,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
   }
   function irA(k){ ve(ESC.findIndex(function(e){ return e.dataset.e === k; })); }
   $('bAnt').onclick = function(){ ve(idx - 1); };
-  $('bSig').onclick = function(){ ve(idx + 1); };
+  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = '../'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
   function enEscena(sec){ return ESC[idx] === sec; }
 
   /* =====================================================================
@@ -739,22 +786,22 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
   var EJEMPLOS = {
     ej7: {n:7, A:['F','major'], B:['C','major'], puente:'D',
       pasos:[
-        {tit:'Paso 0', tx:'Primero, las armaduras. <b>Fa mayor</b> tiene un bemol (si♭); <b>Do mayor</b>, ninguna alteración. La primera y la última casilla ya vienen dadas: el I de cada tonalidad.', casillas:[], arm:[[1,'♭'],[0,null]]},
-        {tit:'Paso 1', tx:'Asentar la tonalidad A con una cadencia básica: <b>I · IV · V7 · I</b> de Fa mayor.', casillas:[1,2,3]},
+        {tit:'Paso 0', tx:'Primero, las armaduras. <b>Fa mayor</b> tiene un bemol (si♭); <b>Do mayor</b>, ninguna alteración. Después, la nota conflictiva: el <b>si</b> (si♭ en Fa, si natural en Do).', casillas:[], arm:[[1,'♭'],[0,null]]},
+        {tit:'Paso 1', tx:'Asienta la tonalidad A con una cadencia básica: <b>I · IV · V7 · I</b> de Fa mayor. La <b>7ª</b> de la dominante no es solo estilo: le da el impulso que te lleva al I.', casillas:[1,2,3]},
         {tit:'Paso 2', tx:'El puente: un acorde común. Evita el <b>si</b> (si♭ en Fa, si natural en Do). <b>Re menor</b> está en las dos: VI de Fa y II de Do.', casillas:[4], evita:true},
-        {tit:'Paso 3', tx:'Asentar Do mayor. Solo queda una casilla: <b>la dominante</b>, G7, que lleva al I.', casillas:[5]}
+        {tit:'Paso 3', tx:'Asienta Do mayor. Solo queda una casilla: <b>la dominante</b>, G7, que lleva al I.', casillas:[5]}
       ]},
     ej8: {n:8, A:['A','minor'], B:['E','minor'], puente:'C',   /* (Iago 1-nov 22:49) el de 8 casillas, en menor, para que les vaya sonando */
       pasos:[
-        {tit:'Paso 0', tx:'Primero, las armaduras. <b>La menor</b>: ninguna alteración. <b>Mi menor</b>: un sostenido (fa♯). Este tiene <b>8 casillas</b>: la que se añade va después del puente.', casillas:[], arm:[[0,null],[1,'♯']]},
-        {tit:'Paso 1', tx:'Asentar La menor: <b>i · iv · V7 · i</b>. Ojo: la dominante siempre es mayor, E7 (con sol♯), aunque la armadura no lo diga.', casillas:[1,2,3]},
+        {tit:'Paso 0', tx:'Primero, las armaduras. <b>La menor</b>: ninguna alteración. <b>Mi menor</b>: un sostenido (fa♯). La nota conflictiva es el <b>fa</b>. Este tiene <b>8 casillas</b>: la que se añade va después del puente.', casillas:[], arm:[[0,null],[1,'♯']]},
+        {tit:'Paso 1', tx:'Asienta La menor: <b>i · iv · V7 · i</b>. Ojo: la dominante siempre es mayor, E7 (con sol♯), aunque la armadura no lo diga.', casillas:[1,2,3]},
         {tit:'Paso 2', tx:'El puente. Evita el <b>fa</b> (natural en La m, sostenido en Mi m). <b>Do mayor</b> está en las dos: III de La m y VI de Mi m.', casillas:[4], evita:true},
         {tit:'Paso 3', tx:'Con dos casillas, un final más currado: <b>iv · V7 · i</b> de Mi menor → Am · B7 · Em.', casillas:[5,6]}
       ]}
   };
   var PASOS_GUIA = [
-    {tit:'Paso 0', tx:function(E){ return 'Primero, las armaduras: arriba, elige cuántas alteraciones tienen <b>' + M.keyLabel(E.A) + '</b> y <b>' + M.keyLabel(E.B) + '</b>, y si son ♯ o ♭.' + (E.n === 8 ? ' Este tiene <b>8 casillas</b>: la extra va después del puente.' : ''); }},
-    {tit:'Paso 1', tx:function(E){ return 'Asienta <b>' + M.keyLabel(E.A) + '</b>: rellena las casillas 2, 3 y 4 con <b>' + (E.A.mode === 'minor' ? 'i · iv · V7 · i' : 'I · IV · V7 · I') + '</b>. Pulsa una casilla para elegir su acorde.'; }},
+    {tit:'Paso 0', tx:function(E){ return 'Vas de <b>' + M.keyLabel(E.A) + '</b> a <b>' + M.keyLabel(E.B) + '</b>. Primero, establece las <b>armaduras</b> de las dos tonalidades. Después, toca en el piano las <b>notas conflictivas</b>: las que cambian de una a otra.' + (E.n === 8 ? ' Este tiene <b>8 casillas</b>: la extra va después del puente.' : ''); }},
+    {tit:'Paso 1', tx:function(E){ return 'Asienta <b>' + M.keyLabel(E.A) + '</b>: rellena las casillas 2, 3 y 4 con <b>' + (E.A.mode === 'minor' ? 'i · iv · V7 · i' : 'I · IV · V7 · I') + '</b>. Pulsa una casilla para elegir su acorde. La dominante, con <b>7ª</b>: no es solo estilo, es el impulso que te lleva al I.'; }},
     {tit:'Paso 2', tx:function(E){ return 'El puente (casilla 5): un acorde que esté en las dos tonalidades. Evita la nota que no comparten: <b>' + E.evitar + '</b>.'; }, evita:true},
     {tit:'Paso 3', tx:function(E){ return E.n === 8 ? 'Asienta <b>' + M.keyLabel(E.B) + '</b> con un final más currado: casillas 6 y 7, <b>' + (E.B.mode === 'minor' ? 'iv · V7' : 'IV · V7') + '</b> → ' + (E.B.mode === 'minor' ? 'i' : 'I') + '.' : 'Asienta <b>' + M.keyLabel(E.B) + '</b>: solo queda una casilla, la <b>dominante</b> (V7) → I.'; }},
     {tit:'¡Listo!', tx:function(){ return 'Cuando lo tengas, pulsa <b>✓ Corregir</b>… y que aguante el puente.'; }}
@@ -763,20 +810,24 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
 
   /* tiempos de la cinemática (segundo del vídeo en que suena cada acorde; compases de 4 o 2 pulsos, negra = 0,625 s) */
   var Q = .625;
-  function tiemposCine(n, exito){
-    var t = [2.5, 5.0, 7.5, 10.0];
-    if(exito){ t.push(13.75); if(n === 8) t.push(15.0); t.push(16.25, 17.5); }
-    else t.push(15.0);
+  /* (Iago 2-nov) ♩ = 96: un acorde por compás (2,5 s), cosido a la percusión del vídeo. Antes del puente, tensión.
+     fin: 'exito' (llega y se abre la puerta) · 'tropiezo' (dominantes sin 7ª: tropieza, se levanta y llega cojeando) · 'caida' */
+  function tiemposCine(n, fin){
+    var t = [1.25, 3.75, 6.25, 8.75];
+    if(fin === 'caida'){ t.push(15.0); return t; }
+    if(n === 8) t.push(12.5, 14.375); else t.push(13.75);
+    t.push(16.25, fin === 'tropiezo' ? 22.5 : 18.75);
     return t;
   }
-  var ROTURA = 16.25, FIN = 20.0;
+  var ROTURA = 16.25, CAE = 17.05, LEVANTA = 19.6, WOW = 18.75;
+  var SRC_V = {exito:'video/s3_exito.mp4?v=3', caida:'video/s3_caida.mp4?v=3', tropiezo:'video/s3_tropiezo.mp4?v=1'};
 
   function taller(sec){
     var tipo = sec.dataset.tipo, k = sec.dataset.e, ej = EJEMPLOS[k];
     sec.appendChild($('tTaller').content.cloneNode(true));
-    var T = sec.querySelector('.taller'), fila = T.querySelector('.fila8'), gr = T.querySelector('.grados'), ed = T.querySelector('.editor');
-    var cartel = T.querySelector('.cartel'), bPaso = T.querySelector('.bPaso'), bCorr = T.querySelector('.bCorr'), bOye = T.querySelector('.bOye'), msg = T.querySelector('.pie .msg'), dedo = T.querySelector('.dedo');
-    var armOK = {A:false, B:false}, armSel = {A:{}, B:{}}, actual = null, sonando = false;
+    var T = sec.querySelector('.taller'); if(sec.dataset.tipo === 'demo') T.classList.add('demoT'); var _x = 0, fila = T.querySelector('.fila8'), gr = T.querySelector('.grados'), ed = T.querySelector('.editor');
+    var cartel = T.querySelector('.cartel'), bPaso = T.querySelector('.bPaso'), bCorr = T.querySelector('.bCorr'), msg = T.querySelector('.pie .msg'), dedo = T.querySelector('.dedo');
+    var armOK = {A:false, B:false}, armSel = {A:{}, B:{}}, actual = null, sonando = false, conflOK = false, conflSel = {};
     var EX = null, user = [], sel = null, est = {}, paso = 0, abiertas = {}, demo = tipo === 'demo', corriendo = false, xs = [], lado = 96;
     bCorr.textContent = demo ? '✓ Comprobar' : '✓ Corregir';
     function nuevoEj(){
@@ -785,7 +836,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       user = EX.sol.map(function(s){ return s.fixed ? JSON.parse(JSON.stringify(s.acc[0])) : null; });
       sel = null; est = {}; paso = 0; abiertas = {}; ed.classList.remove('show'); ed.innerHTML = ''; msg.textContent = '';
       T.classList.remove('arm', 'neb'); bCorr.disabled = true; bCorr.classList.remove('late');
-      armOK = {A:false, B:false}; armSel = {A:{}, B:{}}; [].forEach.call(T.querySelectorAll('.ktag'), function(e){ e.classList.remove('ok', 'mal'); }); pintaArm();
+      armOK = {A:false, B:false}; armSel = {A:{}, B:{}}; conflOK = false; conflSel = {}; [].forEach.call(T.querySelectorAll('.ktag,.armFila'), function(e){ e.classList.remove('ok', 'mal'); }); var ev0 = fila.querySelector('.evita'); if(ev0) ev0.remove(); pintaArm(); pintaConfl();
       [].forEach.call(sec.querySelectorAll('.kA'), function(e){ e.textContent = M.keyLabel(EX.A); });
       [].forEach.call(sec.querySelectorAll('.kB'), function(e){ e.textContent = M.keyLabel(EX.B); });
       [].forEach.call(sec.querySelectorAll('.sA'), function(e){ e.textContent = M.sigLabel(EX.A.sig) + (EX.A.sig ? ' · ' + M.sigNotas(EX.A.sig) : ''); });
@@ -809,7 +860,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       xs = pintaPartitura(T.querySelector('.pent'), user, null, actual);
       geometria(); var svg = T.querySelector('.pent svg'), W = svg ? +svg.getAttribute('width') : 800;
       fila.style.width = W + 'px'; fila.style.setProperty('--lado', lado + 'px'); gr.style.width = W + 'px';
-      fila.innerHTML = '';
+      [].forEach.call(fila.querySelectorAll('.cas'), function(c){ c.remove(); });   /* (Iago 2-nov) la burbuja «nota a evitar» no se rehace en cada repintado: así no baila */
       EX.sol.forEach(function(d, i){
         var b = document.createElement('div'); b.setAttribute('role', 'button'); b.tabIndex = d.fixed ? -1 : 0; b.className = 'cas' + (d.fixed ? ' fixed' : '') + (d.magic ? ' magic' : '') + (sel === i ? ' sel' : '') + (nuevo === i ? ' nueva' : '') + (actual === i ? (user[i] ? ' suena' : ' suenaVacia') : '');
         b.style.left = (xs[i] - lado/2).toFixed(1) + 'px'; b.dataset.i = i;
@@ -822,7 +873,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
         fila.appendChild(b);
       });
       pintaGrados();
-      if(evitaOn) ponEvita();
+      if(evitaOn) ponEvita(); else { var ev = fila.querySelector('.evita'); if(ev) ev.remove(); }
     }
     /* grados bajo las casillas: van apareciendo con los pasos (pista) */
     var gradosVis = 0, evitaOn = false;
@@ -837,9 +888,9 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       gr.innerHTML = h;
     }
     function ponEvita(){
-      var v = fila.querySelector('.evita'); if(v) v.remove();
-      var e = document.createElement('div'); e.className = 'evita'; e.style.left = xs[4] + 'px'; e.innerHTML = 'nota a evitar<br><b>' + EX.evitar + '</b>';
-      fila.appendChild(e);
+      var e = fila.querySelector('.evita'), h = 'nota a evitar<br><b>' + EX.evitar + '</b>';
+      if(!e){ e = document.createElement('div'); e.className = 'evita'; fila.appendChild(e); }
+      e.style.left = xs[4].toFixed(0) + 'px'; if(e.innerHTML !== h) e.innerHTML = h;
     }
     /* --- editor (igual que en TEORÍA at home PRO) --- */
     function completo(){ return est.letter != null && est.modo != null; }
@@ -859,18 +910,18 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       if(!completo() && !user[sel]){ sacude(); return; }
       var i = sel; guarda(i); sel = null; ed.classList.remove('show');
       pinta(i);
-      var fs = finSeccion(i);
-      if(fs != null && !demo) oye(0, fs); else if(!demo) suena(i);
+      /* (Iago 2-nov) cada «Hecho» hace sonar la secuencia desde el principio hasta la última casilla puesta */
+      if(!demo){ var ult = i; EX.sol.forEach(function(d, j){ if(!d.fixed && user[j]) ult = Math.max(ult, j); }); oye(0, ult); }
       revisa();
     }
     function editor(i){
       var magic = EX.sol[i].magic;
       ed.classList.add('show');
-      var h = '<div class="ehead"><span class="chip">Casilla ' + (i + 1) + '</span>' + (magic ? '<span style="color:#ffe7a3">Acorde puente · un acorde común a las dos tonalidades ✦</span>' : 'Elige nota, alteración y tipo de acorde') + '</div><div class="erow">';
+      var h = '<div class="ehead"><span class="chip">Casilla ' + (i + 1) + '</span>' + (magic ? '<span style="color:#ffe7a3">Acorde puente · un acorde común a las dos tonalidades ✦</span>' : 'Elige nota, alteración y tipo de acorde') + '<span class="ewarn">Completa la nota y el tipo para continuar.</span></div><div class="erow">';
       h += '<div class="egrp"><span>Nota</span><div class="ebtns">' + M.LETTERS.map(function(L){ return '<button class="pill" data-l="' + L + '">' + M.NOMBRE[L] + '</button>'; }).join('') + '</div></div>';
       h += '<div class="egrp"><span>Alteración</span><div class="ebtns">' + [['♭♭',-2],['♭',-1],['♮',0],['♯',1],['×',2]].map(function(x){ return '<button class="pill acc" data-a="' + x[1] + '">' + x[0] + '</button>'; }).join('') + '</div></div>';
       h += '<div class="egrp"><span>Tipo</span><div class="ebtns">' + [['Mayor','M'],['menor','m'],['dism.','dim']].map(function(x){ return '<button class="pill" data-m="' + x[1] + '">' + x[0] + '</button>'; }).join('') + '<span class="esep"></span><button class="pill" data-s="1">7ª (dominante)</button></div></div>';
-      h += '</div><div class="eact"><button class="prim eHecho">Hecho</button><button class="eVacia">Vaciar casilla</button><span class="ewarn">Completa la nota y el tipo para continuar.</span></div>';
+      h += '<div class="egrp eact"><span>&nbsp;</span><div class="ebtns"><button class="prim eHecho">Hecho</button><button class="eVacia">Vaciar casilla</button></div></div></div>';   /* (Iago 2-nov) todo en una sola franja */
       ed.innerHTML = h;
       [].forEach.call(ed.querySelectorAll('[data-l]'), function(b){ b.onclick = function(){ clic('tecla'); est.letter = b.dataset.l; vivo(i); }; });
       [].forEach.call(ed.querySelectorAll('[data-a]'), function(b){ b.onclick = function(){ clic('tecla'); est.alter = +b.dataset.a; vivo(i); }; });
@@ -919,38 +970,102 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
         despues((hasta - desde + 1)*q*1000 + 250, function(){ actual = null; sonando = false; pinta(); if(alFin) alFin(); });
       });
     }
-    bOye.onclick = function(){ if(corriendo && !demoClic) return; clic('boton'); oye(0, EX.n - 1); };
-    /* paso 0: elegir la armadura de A y de B (obligatorio) */
+    /* paso 0 (Iago 2-nov): en la ventana central, sobre el fondo oscurecido y difuminado.
+       Texto → «Entendido» → armaduras de A y B → piano de notas conflictivas → «Comprobar» → «Siguiente paso» */
+    /* (Iago 2-nov) la armadura se pone con una rueda que desliza, como en TEORÍA at home PRO: ↑ sostenidos · ↓ bemoles */
+    var ruedas = {};
     function pintaArm(){
       ['A','B'].forEach(function(K){
         var h = T.querySelector('.armSel[data-k="' + K + '"]'); if(!h) return;
-        var S = armSel[K];
-        h.innerHTML = '<em>Armadura</em>' + [0,1,2,3,4,5,6,7].map(function(n){ return '<button data-n="' + n + '" class="' + (S.n === n ? 'on' : '') + '">' + n + '</button>'; }).join('') +
-          ['♯','♭'].map(function(t){ return '<button data-t="' + t + '" class="' + (S.t === t ? 'on' : '') + '">' + t + '</button>'; }).join('');
-        [].forEach.call(h.querySelectorAll('button'), function(b){ b.onclick = function(){
-          if(corriendo && !demoClic) return; if(!demo && paso !== 0) return;
-          clic('tecla'); if(b.dataset.n != null) S.n = +b.dataset.n; else S.t = b.dataset.t;
-          pintaArm(); compruebaArm(K); }; });
+        h.innerHTML = '<div class="rHost"></div><span class="rTxt">↑ sostenidos<br>↓ bemoles</span>';
+        var host = h.querySelector('.rHost');
+        ruedas[K] = Rueda.crea(host, Rueda.ARM.map(Rueda.armTxt), Rueda.ARM.indexOf(0), function(){ var fi = T.querySelector('.armFila[data-k="' + K + '"]'); fi.classList.remove('mal'); mRes.textContent = ''; });
+        host.classList.toggle('quieta', !!armOK[K]);
       });
     }
-    function compruebaArm(K){
-      var S = armSel[K]; if(S.n == null || (S.n > 0 && !S.t)) return;
-      var sig = S.n === 0 ? 0 : S.n*(S.t === '♯' ? 1 : -1), tag = T.querySelector('.ktag.' + K.toLowerCase());
-      if(sig === EX[K].sig){ armOK[K] = true; tag.classList.add('ok'); clic('boton'); }
-      else { tag.classList.remove('mal'); void tag.offsetWidth; tag.classList.add('mal'); armSel[K] = {}; pintaArm();
-        msg.textContent = 'Esa no es la armadura de ' + M.keyLabel(EX[K]) + '. Prueba otra vez.'; despues(2600, function(){ msg.textContent = ''; }); }
-      revisa();
+    function compruebaArm(){
+      var malas = [];
+      ['A','B'].forEach(function(K){
+        if(armOK[K]) return;
+        var sig = Rueda.ARM[ruedas[K].idx()], fi = T.querySelector('.armFila[data-k="' + K + '"]'), tag = T.querySelector('.ktag.' + K.toLowerCase());
+        if(sig === EX[K].sig){ armOK[K] = true; fi.classList.add('ok'); fi.classList.remove('mal'); tag.classList.add('ok'); fi.querySelector('.rueda').classList.add('quieta'); }
+        else { fi.classList.remove('mal'); void fi.offsetWidth; fi.classList.add('mal'); malas.push(M.keyLabel(EX[K])); }
+      });
+      mRes.classList.remove('bien');
+      if(armOK.A && armOK.B){ mRes.textContent = ''; bEnt.hidden = true; despues(900, modoCf); }
+      else mRes.textContent = 'Revisa la armadura de ' + malas.join(' y de ') + '.';
+    }
+    /* piano: la blanca vale por sus alteraciones. Cada negra pertenece a una letra: a la de su izquierda si alguna de las
+       dos tonalidades la tiene sostenida; a la de su derecha si alguna la tiene bemol; si no, según el lado de las armaduras.
+       Pulsar do enciende do y do♯; pulsar fa♯ enciende fa♯ y fa. */
+    var LT = ['C','D','E','F','G','A','B'], NEG = [0,1,3,4,5];
+    function duenoNegra(i){
+      var l = LT[i], r = LT[i + 1], a = M.alteracion;
+      if(a(EX.A, l) === 1 || a(EX.B, l) === 1) return l;
+      if(a(EX.A, r) === -1 || a(EX.B, r) === -1) return r;
+      return EX.A.sig + EX.B.sig >= 0 ? l : r;
+    }
+    function pintaConfl(){
+      var c = T.querySelector('.mCf'), kf = T.querySelector('.kflujo'), pi = c.querySelector('.cf-piano');
+      c.classList.toggle('ok', conflOK);
+      kf.innerHTML = 'modulas<i>→</i>' + (conflOK ? '<small>evita: <b>' + EX.evitar + '</b></small>' : '');
+      pi.innerHTML = LT.map(function(l){ return '<button class="cf-t' + (conflSel[l] ? ' on' : '') + '" data-l="' + l + '">' + M.NOMBRE[l].toLowerCase() + '</button>'; }).join('') +
+        NEG.map(function(i){ var d = duenoNegra(i); return '<button class="cf-n' + (conflSel[d] ? ' on' : '') + '" data-l="' + d + '" data-i="' + i + '" aria-label="tecla negra" style="left:calc(' + ((i + 1)*100/7).toFixed(2) + '% - 4.2%)"></button>'; }).join('');
+      [].forEach.call(pi.querySelectorAll('button'), function(b){ b.onclick = function(){ if(conflOK || mModo !== 'cf' || (corriendo && !demoClic)) return; clic('tecla'); conflSel[b.dataset.l] = !conflSel[b.dataset.l]; pintaConfl(); }; });
+    }
+    function compruebaConfl(){
+      var bien = M.conflictivas(EX.A, EX.B), puso = Object.keys(conflSel).filter(function(l){ return conflSel[l]; });
+      if(!puso.length){ mRes.classList.remove('bien'); mRes.textContent = 'Toca al menos una tecla.'; return; }
+      if(bien.length === puso.length && bien.every(function(l){ return conflSel[l]; })){ conflOK = true; pintaConfl(); modoFin(); }
+      else { var c = T.querySelector('.mCf'); c.classList.remove('mal'); void c.offsetWidth; c.classList.add('mal'); conflSel = {}; pintaConfl(); mRes.classList.remove('bien');
+        mRes.textContent = 'Esas no son las notas que cambian entre ' + M.keyLabel(EX.A) + ' y ' + M.keyLabel(EX.B) + '. Prueba otra vez.'; }
     }
     function suena(i){
       var V = M.voces(user), v = V[i]; if(!v || !musOn) return;
       Sonido.listo().then(function(){ Sonido.acorde(v.t.concat(v.b), Sonido.ahora() + .03, 1.1, .5); });
     }
     /* --- pasos y carteles --- */
-    function cartelPon(tit, tx, conBoton){
-      cartel.hidden = false; cartel.querySelector('.pn').textContent = tit; cartel.querySelector('.tx').innerHTML = tx;
-      bPaso.hidden = !conBoton; cartel.classList.remove('pop'); void cartel.offsetWidth; cartel.classList.add('pop');
-      clic('ding');
+    var cC = T.querySelector('.cartelC'), bEnt = cC.querySelector('.bEnt'), trasEnt = null, trasArm = null, mModo = 'texto';
+    var cTit = cC.querySelector('.pn'), cTx = cC.querySelector('.tx'), mArm = cC.querySelector('.mArm'), mCf = cC.querySelector('.mCf'), mRes = cC.querySelector('.mRes');
+    function cartelEntra(){ cC.classList.remove('entra'); void cC.offsetWidth; cC.classList.add('entra'); }
+    /* alTerminar (solo paso 0): tras «Entendido» la misma ventana pide armaduras y notas conflictivas; al acabar, alTerminar() */
+    function cartelPon(tit, tx, conBoton, alEntendido, alTerminar){
+      cartel.querySelector('.pn').textContent = tit; cartel.querySelector('.tx').innerHTML = tx; bPaso.hidden = !conBoton;
+      cartel.hidden = !!alTerminar; cartel.style.visibility = 'hidden';
+      cTit.textContent = tit; cTx.innerHTML = tx; mArm.hidden = true; mCf.hidden = true; mRes.textContent = ''; mRes.classList.remove('bien');
+      bEnt.hidden = false; bEnt.textContent = 'Entendido'; mModo = 'texto'; cC.classList.toggle('arm', !!alTerminar);
+      cC.style.transition = 'none'; cC.style.transform = ''; cC.style.opacity = ''; cC.hidden = false;
+      cartelEntra(); T.classList.add('atento');
+      trasEnt = alEntendido || null; trasArm = alTerminar || null; clic('ding');
     }
+    function modoArm(){
+      mModo = 'arm'; cTx.innerHTML = 'Pon la <b>armadura</b> de cada tonalidad: desliza la rueda hacia arriba para los sostenidos y hacia abajo para los bemoles.';
+      mArm.hidden = false; bEnt.hidden = false; bEnt.textContent = 'Comprobar'; pintaArm(); cartelEntra();
+    }
+    function modoCf(){
+      if(cC.hidden || mModo !== 'arm') return;
+      mModo = 'cf'; cTit.textContent = 'Notas conflictivas'; cTx.innerHTML = 'Toca en el piano las notas que <b>cambian</b> de una tonalidad a otra.';
+      mArm.hidden = true; mCf.hidden = false; bEnt.hidden = false; bEnt.textContent = 'Comprobar'; mRes.textContent = ''; pintaConfl(); cartelEntra(); clic('ding');
+    }
+    function modoFin(){
+      mModo = 'fin'; clic('ding'); var pl = EX.evitar.indexOf(',') >= 0;
+      mRes.classList.add('bien'); mRes.innerHTML = '✓ ' + (pl ? 'Notas' : 'Nota') + ' a evitar en el puente: <b>' + EX.evitar + '</b>';
+      bEnt.textContent = 'Siguiente paso ▶';
+    }
+    /* «Entendido»: el cartel baja desde el centro hasta su sitio, abajo, junto a los botones */
+    bEnt.onclick = function(){
+      if(cC.hidden || (corriendo && !demoClic && mModo !== 'texto')) return; clic('boton');
+      if(mModo === 'texto' && trasArm){ modoArm(); var f0 = trasEnt; trasEnt = null; if(f0) f0(); return; }
+      if(mModo === 'arm'){ compruebaArm(); return; }
+      if(mModo === 'cf'){ compruebaConfl(); return; }
+      if(mModo === 'fin'){ var g = trasArm; trasArm = null; mModo = 'texto'; if(g) g(); return; }
+      var a = cC.getBoundingClientRect(), b = cartel.getBoundingClientRect();
+      var dx = (b.left + b.width/2) - (a.left + a.width/2), dy = (b.top + b.height/2) - (a.top + a.height/2), sc = Math.max(.4, b.width/a.width);
+      cC.classList.remove('entra'); T.classList.remove('atento');
+      cC.style.transition = 'transform .6s cubic-bezier(.5,0,.3,1), opacity .6s ease';
+      cC.style.transform = 'translate(-50%,-50%) translate(' + dx.toFixed(0) + 'px,' + dy.toFixed(0) + 'px) scale(' + sc.toFixed(3) + ')'; cC.style.opacity = '.25';
+      despues(600, function(){ cC.hidden = true; cartel.style.visibility = ''; cartel.classList.remove('pop'); void cartel.offsetWidth; cartel.classList.add('pop'); var f = trasEnt; trasEnt = null; if(f) f(); });
+    };
     function pasoVisual(p){
       if(p >= 0) T.classList.add('arm');
       gradosVis = Math.max(gradosVis, p >= 1 ? 1 : 0); if(p >= 2) gradosVis = Math.max(gradosVis, 2); if(p >= 3) gradosVis = 3;
@@ -963,17 +1078,17 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       paso = p; var E = EX, cas = CAS_GUIA(E)[p] || [];
       cas.forEach(function(i){ abiertas[i] = true; });
       pasoVisual(p);
-      cartelPon(PASOS_GUIA[p].tit, PASOS_GUIA[p].tx(E), false);
+      cartelPon(PASOS_GUIA[p].tit, PASOS_GUIA[p].tx(E), false, null, p === 0 ? function(){ guiaPaso(1); } : null);
       revisa();
     }
     function revisa(){
       if(demo) return;
       var cas = CAS_GUIA(EX)[paso] || [], llenas = cas.every(function(i){ return user[i]; });
-      if(paso === 0){ bPaso.hidden = !(armOK.A && armOK.B); bPaso.textContent = 'Siguiente paso ▶'; }
       if(paso >= 1 && paso <= 3){ bPaso.hidden = !llenas; if(llenas){ bPaso.textContent = paso === 3 ? 'Terminar ▶' : 'Siguiente paso ▶'; } }
       var todas = EX.sol.every(function(s, i){ return s.fixed || user[i]; });
       bCorr.disabled = !todas; bCorr.classList.toggle('late', todas && paso >= 4);
     }
+    T.querySelector('.bOir').onclick = function(){ if(corriendo || sonando) return; if(sel != null){ cierra(); if(sel != null) return; } oye(0, EX.n - 1); };
     bPaso.onclick = function(){ clic('boton'); if(sel != null){ cierra(); if(sel != null) return; } guiaPaso(Math.min(4, paso + 1)); };
     /* demostración: el «alumno fantasma» pulsa casilla, nota, alteración, tipo, 7ª y Hecho */
     function dedoA(el, alFin){
@@ -981,6 +1096,15 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       dedo.classList.add('on'); dedo.style.left = (r.left - R.left + r.width*.55) + 'px'; dedo.style.top = (r.top - R.top + r.height*.45) + 'px';
       despues(1250, function(){ if(!enEscena(sec)) return; dedo.classList.add('clic'); el.classList.add('pulsa'); demoClic = true; el.click(); demoClic = false;
         despues(260, function(){ dedo.classList.remove('clic'); el.classList.remove('pulsa'); if(alFin) despues(650, alFin); }); });
+    }
+    /* el alumno robot desliza la rueda paso a paso hasta la armadura */
+    function dedoGira(K, sig, alFin){
+      var host = T.querySelector('.armSel[data-k="' + K + '"] .rueda'), r = host.getBoundingClientRect(), R = T.getBoundingClientRect(), api = ruedas[K];
+      dedo.classList.add('on'); dedo.style.left = (r.left - R.left + r.width*.55) + 'px'; dedo.style.top = (r.top - R.top + r.height*.5) + 'px';
+      var meta = Rueda.ARM.indexOf(sig);
+      despues(1250, function(){ dedo.classList.add('clic');
+        (function paso(){ if(!enEscena(sec)) return; var i = api.idx(); if(i === meta){ dedo.classList.remove('clic'); despues(500, alFin); return; }
+          api.pon(i + (meta > i ? 1 : -1), true); dedo.style.top = (parseFloat(dedo.style.top) + (meta > i ? -3 : 3)) + 'px'; despues(260, paso); })(); });
     }
     function demoAcorde(i, a, alFin){
       var q = [function(){ return fila.querySelector('.cas[data-i="' + i + '"]'); },
@@ -997,21 +1121,30 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       (function hazPaso(p){
         if(!enEscena(sec)) return;
         if(p >= P.length){ dedo.classList.remove('on'); corriendo = false;
-          cartelPon('¡Listo!', 'Todas las casillas llenas. Pulsa <b>✓ Comprobar</b> para cruzar el puente.', false);
-          bCorr.disabled = false; bCorr.classList.add('late'); return; }
-        pasoVisual(p); cartelPon(P[p].tit, P[p].tx, false);
-        despues(3600, function(){
+          bCorr.disabled = false; bCorr.classList.add('late');
+          cartelPon('¡Listo!', 'Todas las casillas llenas. Ahora, <b>✓ Comprobar</b>: a cruzar el puente.', false, function(){
+            despues(900, function(){ corriendo = true; dedoA(bCorr, function(){ dedo.classList.remove('on'); corriendo = false; }); }); });
+          despues(2600, function(){ if(enEscena(sec)) dedoA(bEnt, null); });
+          return; }
+        pasoVisual(p);
+        cartelPon(P[p].tit, P[p].tx, false, function(){ despues(700, paso_); }, P[p].arm ? function(){ despues(500, function(){ hazPaso(p + 1); }); } : null);
+        despues(3200, function(){ if(enEscena(sec)) dedoA(bEnt, null); });   /* el alumno robot lee y pulsa «Entendido» */
+        function paso_(){
           if(P[p].arm){   /* el «alumno fantasma» elige las armaduras */
             var cl = [];
-            ['A','B'].forEach(function(K, x){ var a = P[p].arm[x]; cl.push('.armSel[data-k="' + K + '"] [data-n="' + a[0] + '"]'); if(a[1]) cl.push('.armSel[data-k="' + K + '"] [data-t="' + a[1] + '"]'); });
-            (function va(j){ if(!enEscena(sec)) return; if(j >= cl.length){ dedo.classList.remove('on'); despues(1400, function(){ hazPaso(p + 1); }); return; }
+            ['A','B'].forEach(function(K){ cl.push({rueda:K, sig:EX[K].sig}); });
+            cl.push('.cartelC .bEnt'); cl.push(1300);   /* la ventana pasa al piano */
+            M.conflictivas(EX.A, EX.B).forEach(function(l){ cl.push('.cf-piano .cf-t[data-l="' + l + '"]'); }); cl.push('.cartelC .bEnt'); cl.push(1500); cl.push('.cartelC .bEnt');
+            (function va(j){ if(!enEscena(sec)) return; if(j >= cl.length){ dedo.classList.remove('on'); return; }   /* el último clic («Siguiente paso») lleva al paso 1 */
+              if(typeof cl[j] === 'number'){ despues(cl[j], function(){ va(j + 1); }); return; }
+              if(cl[j].rueda){ dedoGira(cl[j].rueda, cl[j].sig, function(){ va(j + 1); }); return; }
               dedoA(T.querySelector(cl[j]), function(){ va(j + 1); }); })(0);
             return;
           }
           (function cas(j){ if(!enEscena(sec)) return; if(j >= P[p].casillas.length){ pasoVisual(p);
               var fin = p === 1 ? 3 : p === 2 ? 4 : EX.n - 1; oye(0, fin, function(){ despues(1300, function(){ hazPaso(p + 1); }); }); return; }
             var i = P[p].casillas[j]; demoAcorde(i, sol[i], function(){ dedo.classList.remove('on'); despues(350, function(){ cas(j + 1); }); }); })(0);
-        });
+        }
       })(0);
     }
     /* --- corregir → cinemática --- */
@@ -1027,11 +1160,11 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       resultado = {V:V, exito: !V.some(function(v){ return v.cls === 'bad'; }), amber: V.some(function(v){ return v.cls === 'amber'; })};
       cinematica();
     };
-    var SRC = {exito:'video/s3_exito.mp4?v=2', caida:'video/s3_caida.mp4?v=2'};
+    var SRC = SRC_V;
     function para(){ timers.forEach(clearTimeout); timers = []; if(raf) cancelAnimationFrame(raf); raf = null; vid.pause(); Orq.parar(); }
     function cinematica(){
       para(); sec.classList.remove('vResul'); sec.classList.add('vCine');
-      var ex = resultado.exito, tt = tiemposCine(EX.n, ex);
+      var ex = resultado.exito, finC = ex ? (resultado.amber ? 'tropiezo' : 'exito') : 'caida', tt = tiemposCine(EX.n, finC); resultado.fin = finC;
       /* barra de casillas del alumno (sin decir aún si están bien) */
       hud.innerHTML = user.map(function(u, i){
         var c = i < 4 ? 'azul' : (i === 4 ? 'pu' : 'oro');
@@ -1040,12 +1173,12 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       var slots = [].slice.call(hud.querySelectorAll('.slot'));
       verd.classList.remove('va'); cen.hidden = false; bCine.disabled = true; bCine.textContent = 'Preparando el puente…';
       vid.poster = 'img/B1.webp';
-      Promise.all([precarga(SRC[ex ? 'exito' : 'caida'], function(p){ bCine.textContent = 'Cargando… ' + Math.round(p*100) + ' %'; }), Orq.listo()]).then(function(r){
+      Promise.all([precarga(SRC[finC], function(p){ bCine.textContent = 'Cargando… ' + Math.round(p*100) + ' %'; }), Orq.listo()]).then(function(r){
         if(!enEscena(sec)) return;
         if(vid.src !== r[0]) vid.src = r[0];
         bCine.disabled = false; bCine.textContent = '▶ Cruzar el puente';
         bCine.onclick = function(){ arranca(tt, slots); };
-        if(AULA) arranca(tt, slots);
+        if(AULA || demo) arranca(tt, slots);
       });
     }
     function arranca(tt, slots){
@@ -1054,21 +1187,29 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       var p = vid.play(); if(p && p.catch) p.catch(function(){ cen.hidden = false; });
       vid.addEventListener('playing', function una(){ vid.removeEventListener('playing', una);
         var t0 = Orq.ahora() - vid.currentTime + .03;   /* los acordes, cosidos al reloj del vídeo */
-        if(musOn) musica(t0, tt, resultado.exito); });
+        if(musOn) musica(t0, tt, resultado.fin); });
       var n = user.length;
       (function bucle(){ var t = vid.currentTime, act = -1;
         tt.forEach(function(x, i){ if(t >= x) act = i; });
         slots.forEach(function(s, i){ s.classList.toggle('ya', i <= act); s.classList.toggle('act', i === act); });
         [].forEach.call(hud.querySelectorAll('.sep'), function(s){ s.classList.toggle('ya', act >= 4); });
         if(!resultado.exito && t >= ROTURA && !bucle.roto){ bucle.roto = true; hud.classList.add('roto'); slots.forEach(function(s, i){ if(resultado.V[i].cls === 'bad') s.classList.add('mal', 'ya'); }); }
+        if(resultado.fin === 'tropiezo' && t >= CAE && !bucle.cae){ bucle.cae = true; slots.forEach(function(s, i){ if(resultado.V[i].cls === 'amber') s.classList.add('sin7'); }); }   /* tropieza justo en la dominante sin 7ª */
         if(!vid.paused && !vid.ended) raf = requestAnimationFrame(bucle); })();
       vid.onended = function(){ final(); };
     }
+    /* (Iago 2-nov) nota sobre 10: proporción de casillas bien; cada dominante sin 7ª resta 0,25 (máx. −0,5) */
+    function notaDe(V){
+      var libres = EX.sol.filter(function(d){ return !d.fixed; }).length, bien = 0, sin7 = 0;
+      V.forEach(function(v, i){ if(EX.sol[i].fixed) return; if(v.cls !== 'bad') bien++; if(v.cls === 'amber') sin7++; });
+      var n = Math.max(0, 10*bien/libres - .25*Math.min(2, sin7));
+      return {n:n, txt:(Math.round(n*100)/100).toFixed(2).replace(/0$/, '').replace(/\.0?$/, '').replace('.', ','), sin7:sin7};
+    }
     function final(){
       var ex = resultado.exito;
-      verd.style.setProperty('--vc', ex ? '#46d17f' : '#ff5a4f');
-      verd.querySelector('b').textContent = ex ? 'Modulación exitosa' : 'Modulación fallida';
-      verd.querySelector('span').textContent = ex ? (resultado.amber ? 'El puente aguanta… pero a alguna dominante le falta la 7ª' : 'Has llegado a ' + M.keyLabel(EX.B)) : 'Algún acorde no encajaba y el puente no aguantó';
+      verd.style.setProperty('--vc', ex ? (resultado.amber ? '#f0b429' : '#46d17f') : '#ff5a4f');
+      verd.querySelector('b').textContent = ex ? (resultado.amber ? 'Modulación salvada' : 'Modulación exitosa') : 'Modulación fallida';
+      verd.querySelector('span').textContent = ex ? (resultado.amber ? 'Con defectos: a alguna dominante le falta la 7ª' : 'Has llegado a ' + M.keyLabel(EX.B)) : 'Algún acorde no encajaba y el puente no aguantó';
       verd.classList.remove('va'); void verd.offsetWidth; verd.classList.add('va');
       if(musOn) Orq.listo().then(function(){ Orq.fx(ex ? 'revela' : 'boom', Orq.ahora() + .02, ex ? .55 : .35); });
       despues(2600, function(){ if(enEscena(sec)) resultadoVer(); });
@@ -1076,10 +1217,11 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     function resultadoVer(){
       sec.classList.remove('vCine'); sec.classList.add('vResul');
       var ex = resultado.exito, V = resultado.V, ban = RS.querySelector('.ban');
-      ban.style.setProperty('--vc', ex ? '#46d17f' : '#ff5a4f');
+      ban.style.setProperty('--vc', ex ? (resultado.amber ? '#f0b429' : '#46d17f') : '#ff5a4f');
       var nb = V.filter(function(v){ return v.cls === 'bad'; }).length, na = V.filter(function(v){ return v.cls === 'amber'; }).length;
-      ban.querySelector('b').textContent = ex ? 'Modulación exitosa' : 'Modulación fallida';
-      ban.querySelector('span').textContent = ex ? (na ? 'Casi perfecta: ' + na + ' dominante' + (na > 1 ? 's' : '') + ' sin 7ª (en ámbar). Recuerda escribirlas con séptima.' : '¡Puente perfecto! De ' + M.keyLabel(EX.A) + ' a ' + M.keyLabel(EX.B) + '.')
+      var NT = notaDe(V), menos = NT.sin7 ? ' · −' + (NT.sin7 > 1 ? '0,5' : '0,25') + ' por la 7ª' : '';
+      ban.querySelector('b').textContent = (ex ? (na ? 'Modulación salvada · con defectos' : 'Modulación exitosa') : 'Modulación fallida') + ' · Nota: ' + NT.txt + menos;
+      ban.querySelector('span').textContent = ex ? (na ? na + ' dominante' + (na > 1 ? 's' : '') + ' sin 7ª (en ámbar). La 7ª no es solo estilo: le da a la dominante el impulso que te lleva al I.' : '¡Puente perfecto! De ' + M.keyLabel(EX.A) + ' a ' + M.keyLabel(EX.B) + '.')
         : nb + ' casilla' + (nb > 1 ? 's' : '') + ' en rojo' + (na ? ' y ' + na + ' sin 7ª (ámbar)' : '') + '. Abajo, en azul, la solución.';
       RS.querySelector('.bNuevo').hidden = demo;
       var C = RS.querySelector('.taller.corr'), cont = C.querySelector('.hoja .pent');
@@ -1101,19 +1243,31 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     RS.querySelector('.bOtra').onclick = function(){ cinematica(); };
     RS.querySelector('.bNuevo').onclick = function(){ entra(true); };
     /* --- acordes de la cinemática: SOLO los del alumno (piano + cuerda tenida debajo para que no haya huecos) --- */
-    function musica(t0, tt, exito){
-      var V = M.voces(user), fin = exito ? FIN - .4 : ROTURA;
+    /* acordes del alumno en directo: piano + cuerda tenida + arpegiador en semicorcheas (la percusión va en el vídeo) */
+    function musica(t0, tt, fin){
+      var V = M.voces(user), Q = .3125/2, ult = tt.length - 1;
+      function arpegia(v, desde, hasta, vol){
+        var ns = v.midi.slice().sort(function(a, b){ return a - b; }).filter(function(m){ return m >= 52; }).map(function(m){ while(m < 62) m += 12; return m; });
+        ns = ns.concat(ns.map(function(m){ return m + 12; })).sort(function(a, b){ return a - b; });
+        var pat = [], k; for(k = 0; k < ns.length; k++) pat.push(ns[k]); for(k = ns.length - 2; k > 0; k--) pat.push(ns[k]);
+        for(k = Math.ceil(desde/Q - .01); k*Q < hasta - .02; k++) Orq.arp(pat[k % pat.length], t0 + k*Q + .03, Q*1.6, vol*(k % 4 === 0 ? 1.25 : 1));
+      }
       tt.forEach(function(ti, i){
         var v = V[i]; if(!v) return;
-        var ini = t0 + ti, d = (i + 1 < tt.length ? tt[i + 1] : fin) - ti;
-        if(!exito && i === 4) d = ROTURA - ti;
-        Sonido.acorde(v.t.concat(v.b), ini, Math.min(d, 2.4), .5);
-        v.midi.forEach(function(m){ Orq.nota('cu', m, ini, d - .04, .085, .12); });   /* la cuerda mantiene el acorde hasta el siguiente */
+        var ini = t0 + ti, sig = i < ult ? tt[i + 1] : (fin === 'exito' ? WOW + 3.2 : fin === 'tropiezo' ? 26.0 : ROTURA), d = sig - ti;
+        if(fin === 'caida' && i === ult) d = ROTURA - ti;
+        if(fin === 'tropiezo' && ti < CAE && sig > CAE) d = CAE - ti;   /* tropieza: se corta en seco */
+        Sonido.acorde(v.t.concat(v.b), ini, Math.min(d, 2.4), i === ult && fin !== 'caida' ? .42 : .5);
+        v.midi.forEach(function(m){ Orq.nota('cu', m, ini, Math.max(.2, d - .04), .085, .12); });
+        var aFin = fin === 'exito' ? Math.min(ti + d, WOW) : ti + d;   /* con la música «wow», el arpegiador se retira */
+        if(fin === 'tropiezo' && i === ult) aFin = ti + 2.5;
+        if(aFin > ti + .1) arpegia(v, ti, aFin, i === ult && fin === 'tropiezo' ? .022 : .03);
+        if(fin === 'tropiezo' && ti < CAE && sig > CAE) v.midi.forEach(function(m){ Orq.nota('cu', m, t0 + LEVANTA, sig - LEVANTA - .04, .05, .9); });   /* se levanta: la dominante vuelve, débil */
       });
-      if(!exito) despues(Math.max(0, (t0 + ROTURA - Orq.ahora() - .02)*1000), function(){ Orq.corta(Orq.ahora(), .03); Sonido.parar(); });   /* el puente se rompe: se cortan los acordes */
+      if(fin === 'caida') despues(Math.max(0, (t0 + ROTURA - Orq.ahora() - .02)*1000), function(){ Orq.corta(Orq.ahora(), .03); Sonido.parar(); });   /* el puente se rompe: se cortan los acordes */
     }
     function entra(otro){
-      limpia(); sec.classList.remove('vCine', 'vResul'); cartel.hidden = true; dedo.classList.remove('on'); actual = null; sonando = false; corriendo = false; gradosVis = 0; evitaOn = false;
+      limpia(); sec.classList.remove('vCine', 'vResul'); cartel.hidden = true; dedo.classList.remove('on'); actual = null; sonando = false; cC.hidden = true; T.classList.remove('atento'); cartel.style.visibility = ''; trasEnt = null; corriendo = false; gradosVis = 0; evitaOn = false;
       if(!EX || otro || tipo === 'demo') nuevoEj();
       else pinta();
       if(otro) document.body.classList.remove('lectura');
@@ -1168,7 +1322,16 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
       a: { nombre: 'Fa mayor', color: '#6f8fe0', acordes: ['F', 'Gm', 'Am', 'B♭', 'C', 'Dm', 'E°'] },
       b: { nombre: 'Do mayor', color: '#7cc96a', acordes: ['C', 'Dm', 'Em', 'F', 'G', 'Am', 'B°'] },
       comunes: ['F', 'Am', 'C', 'Dm'], pista: 'La nota que no comparten es el si (si♭ en Fa, si natural en Do).' },
+    { tipo: 'teclas', titulo: 'Notas conflictivas', enunciado: 'Toca en el piano las notas que cambian de una tonalidad a otra',
+      a: { nombre: 'Do mayor' }, b: { nombre: 'Re mayor' }, sig: [0, 2],
+      correctas: ['F', 'C'], pista: 'Do mayor tiene fa y do naturales; Re mayor, fa♯ y do♯: las dos cambian.' },
+    { tipo: 'teclas', titulo: 'Notas conflictivas', enunciado: 'Toca en el piano las notas que cambian de una tonalidad a otra',
+      a: { nombre: 'Sol mayor' }, b: { nombre: 'Re mayor' }, sig: [1, 2],
+      correctas: ['C'], pista: 'El fa♯ está en las dos: solo cambia el do (natural en Sol, sostenido en Re).' },
     R[4],
+    { tipo: 'unica', titulo: 'La séptima de la dominante', enunciado: '¿Por qué escribes la dominante con 7ª (V7)?',
+      opciones: ['Por estilo y, sobre todo, porque le da impulso hacia el I', 'Porque lo pide la armadura', 'Para que el acorde sea menor', 'Para que el puente sea más largo'],
+      correcta: 0, pista: 'La 7ª no es solo estilo: empuja la dominante hacia la tónica. Si la olvidas, el puente aguanta… pero tropiezas (−0,25).' },
     { tipo: 'unica', titulo: 'La casilla extra', enunciado: 'En un ejercicio de 8 casillas, ¿dónde va la casilla que se añade?',
       opciones: ['Justo después del puente: IV · V7 · I de la tonalidad B', 'Al principio, antes del I de la tonalidad A', 'Justo antes del puente', 'Al final, después del I de B'],
       correcta: 0, pista: 'Va después del puente: en vez de V7 · I, haces IV · V7 · I.' }];
@@ -1210,7 +1373,7 @@ body.mundo .editor .pill.on{background-color:#c9a24a;color:#fff;border-color:#ff
     var k = ESC[idx].dataset.e; tema(k); setTimeout(function(){ if(ESC[idx].dataset.e === k) voz(k); }, 3300);
     if(ENTRA[k]) ENTRA[k]();
     Orq.listo();
-    precarga('video/s3_exito.mp4?v=2').then(function(){ return precarga('video/s3_caida.mp4?v=2'); });
+    precarga(SRC_V.exito).then(function(){ return precarga(SRC_V.caida); }).then(function(){ return precarga(SRC_V.tropiezo); });
   }
   $('inicio').addEventListener('click', empezar);
   document.addEventListener('keydown', function tecla(e){ if(!arrancado){ e.preventDefault(); empezar(); } });
