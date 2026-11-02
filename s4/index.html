@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<script src="../s3/js/controles.js?v=3"></script>
+<script src="../s3/js/controles.js?v=4"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
 <script>window.TROZOS = {};</script>
@@ -764,7 +764,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
   }
   function irA(k){ ve(ESC.findIndex(function(e){ return e.dataset.e === k; })); }
   $('bAnt').onclick = function(){ ve(idx - 1); };
-  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = window.MOD_VOLVER || '../prueba.html'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
+  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = (window.MOD_VOLVER || '../prueba.html') + location.hash; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
   function enEscena(sec){ return ESC[idx] === sec; }
 
   /* =====================================================================
