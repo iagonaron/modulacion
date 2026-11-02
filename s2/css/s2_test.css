@@ -61,7 +61,7 @@
 .s2t .s2t-extra { flex-basis: 100%; margin-top: 2px; color: var(--oro2); font-weight: 700; }
 .s2t .s2t-btns { flex: none; display: flex; align-items: stretch; min-width: 170px; }
 .s2t .s2t-btn {
-  flex: 1; padding: 0 22px; min-height: 52px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 500; font-size: 17px; letter-spacing: 0;   /* (Iago 2-nov) Marcellus se veía raro en el botón: la misma letra que los botones de abajo */
+  flex: 1; padding: 0 22px; min-height: 52px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 600; font-size: 17px; letter-spacing: 0; text-shadow: none; -webkit-font-smoothing: antialiased;   /* (Iago 2-nov) sin la sombra negra de los botones de piedra: con letra oscura sobre oro se veía doble. Marcellus se veía raro en el botón: la misma letra que los botones de abajo */
   color: #1a1300; background: linear-gradient(#ffe6a8, #e8bc58); border: 2px solid var(--oro); border-radius: 4px;
   box-shadow: 0 3px 0 #8a6a1c, 0 0 14px rgba(255, 217, 138, .3); transition: transform .08s, filter .15s;
 }
