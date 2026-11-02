@@ -11,7 +11,8 @@
    2) las sesiones se abren en clase: si este navegador guarda las sesiones abiertas de un alumno (lm_mod_hitos, lo pone el menú)
       y esta aún no lo está, vuelve al menú;
    3) seleccionador de voluntarios (solo la cuenta Protester, en la hora de clase de su grupo): sale al pulsar «Pulsa para empezar»,
-      con la animación de esta sesión (S1 modpixel · S2 modmapa · S3 modpuente · S4 modrueda). A los alumnos no les hace nada.
+      con la pantalla de selección de personaje «modjugador» (los retratos de los alumnos), la misma en las 4 sesiones (2-nov-2026, v7;
+      antes S1 modpixel · S2 modmapa · S3 modpuente · S4 modrueda). A los alumnos no les hace nada.
    Quitarlo: borrar este bloque. */
 (function () {
   var m = /\/s(\d)\//.exec(location.pathname), n = m ? +m[1] : 0;
@@ -19,7 +20,7 @@
   try { var st = JSON.parse(localStorage.getItem('lm_mod_hitos') || 'null');
     if (n && st && Array.isArray(st.dias) && st.dias.indexOf(n) < 0 && !/(?:^#|&)c=/.test(location.hash)) { location.replace('../prueba.html'); return; } } catch (e) {}
   window.LM_VOL_CONFIG = function () {
-    return { portal: 'modulacion', tema: ({ 1: 'modpixel', 2: 'modmapa', 3: 'modpuente', 4: 'modrueda' })[n] || 'modmapa', empezar: ['#inicio', '[data-lmv-empezar]'] };
+    return { portal: 'modulacion', tema: 'modjugador', empezar: ['#inicio', '[data-lmv-empezar]'] };
   };
   try {
     var mc = /(?:^#|&)c=([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i.exec(location.hash || ''), c = null;
