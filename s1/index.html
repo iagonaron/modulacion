@@ -5,6 +5,37 @@
 <script src="js/controles.js?v=4"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
+<script>
+/* (2-nov-2026, C1 Modulación) INTEGRACIÓN con gp.lmathome.es, como en los demás portales temáticos:
+   1) qué sesión es, para «Actividad de los alumnos» del Diario (latido: data-lm-ejercicio = sesion-N);
+   2) las sesiones se abren en clase: si este navegador guarda las sesiones abiertas de un alumno (lm_mod_hitos, lo pone el menú)
+      y esta aún no lo está, vuelve al menú;
+   3) seleccionador de voluntarios (solo la cuenta Protester, en la hora de clase de su grupo): sale al pulsar «Pulsa para empezar»,
+      con la animación de esta sesión (S1 modpixel · S2 modmapa · S3 modpuente · S4 modrueda). A los alumnos no les hace nada.
+   Quitarlo: borrar este bloque. */
+(function () {
+  var m = /\/s(\d)\//.exec(location.pathname), n = m ? +m[1] : 0;
+  try { document.documentElement.setAttribute('data-lm-ejercicio', n ? 'sesion-' + n : 'portada'); } catch (e) {}
+  try { var st = JSON.parse(localStorage.getItem('lm_mod_hitos') || 'null');
+    if (n && st && Array.isArray(st.dias) && st.dias.indexOf(n) < 0 && !/(?:^#|&)c=/.test(location.hash)) { location.replace('../prueba.html'); return; } } catch (e) {}
+  window.LM_VOL_CONFIG = function () {
+    return { portal: 'modulacion', tema: ({ 1: 'modpixel', 2: 'modmapa', 3: 'modpuente', 4: 'modrueda' })[n] || 'modmapa', empezar: ['#inicio', '[data-lmv-empezar]'] };
+  };
+  try {
+    var mc = /(?:^#|&)c=([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i.exec(location.hash || ''), c = null;
+    if (mc) { c = mc[1].toLowerCase(); try { localStorage.setItem('lm_vol_cuenta', c); } catch (e) {} }
+    else { try { c = localStorage.getItem('lm_vol_cuenta'); } catch (e) {} }
+    if (!c) return;
+    var s = document.createElement('script'); s.async = true;
+    s.src = 'https://gp.lmathome.es/voluntarios/lm-voluntarios.js?h=' + Math.floor(Date.now() / 36e5);
+    s.onload = function () {
+      var ir = function () { try { if (window.LMVoluntarios) window.LMVoluntarios.monta(window.LM_VOL_CONFIG()); } catch (e) {} };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ir); else ir();
+    };
+    document.head.appendChild(s);
+  } catch (e) {}
+})();
+</script>
 <script>window.TROZOS = {"video/wow.mp4": 2};</script>
 <title>Modulación · Sesión 1</title>
 <meta name="claude:viewport-fit-sides" content="cover">
