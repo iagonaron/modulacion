@@ -707,7 +707,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   }
   function irA(k){ ve(ESC.findIndex(function(e){ return e.dataset.e === k; })); }
   $('bAnt').onclick = function(){ ve(idx - 1); };
-  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = '../'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
+  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = window.MOD_VOLVER || '../prueba.html'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
   function modo(v){ AULA = v; $('mJ').setAttribute('aria-pressed', !v); $('mV').setAttribute('aria-pressed', v); }
   $('mJ').onclick = function(){ modo(false); }; $('mV').onclick = function(){ modo(true); };
   [].forEach.call(document.querySelectorAll('.camCard'), function(b){ b.onclick = function(){ irA(b.dataset.ir); }; });
