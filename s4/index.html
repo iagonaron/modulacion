@@ -1174,8 +1174,10 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       if(vac.length){ msg.textContent = 'Faltan casillas por completar: ' + vac.join(', ') + '.'; return; }
       msg.textContent = ''; cartel.hidden = true;
       var V = EX.sol.map(function(s, i){ return M.veredicto(EX, user, i); });
+      /* (Iago 2-nov 13:43) un acorde mal (p. ej. el modo) −5; dominante sin 7ª −2,5; puente mal → 0. Con 5 o más pasa (salvada si hay defectos); por debajo, fallida. */
+      var NT0 = notaDe(V);
       EX.hecho = true;
-      resultado = {V:V, exito: !V.some(function(v){ return v.cls === 'bad'; }), amber: V.some(function(v){ return v.cls === 'amber'; })};
+      resultado = {V:V, nota:NT0.n, exito: NT0.n >= 5, amber: NT0.n < 10};
       cinematica();
     };
     var SRC = SRC_V;
@@ -1212,22 +1214,22 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
         slots.forEach(function(s, i){ s.classList.toggle('ya', i <= act); s.classList.toggle('act', i === act); });
         [].forEach.call(hud.querySelectorAll('.sep'), function(s){ s.classList.toggle('ya', act >= 4); });
         if(!resultado.exito && t >= ROTURA && !bucle.roto){ bucle.roto = true; hud.classList.add('roto'); slots.forEach(function(s, i){ if(resultado.V[i].cls === 'bad') s.classList.add('mal', 'ya'); }); }
-        if(resultado.fin === 'tropiezo' && t >= CAE && !bucle.cae){ bucle.cae = true; slots.forEach(function(s, i){ if(resultado.V[i].cls === 'amber') s.classList.add('sin7'); }); }   /* tropieza justo en la dominante sin 7ª */
+        if(resultado.fin === 'tropiezo' && t >= CAE && !bucle.cae){ bucle.cae = true; slots.forEach(function(s, i){ if(resultado.V[i].cls === 'amber') s.classList.add('sin7'); if(resultado.V[i].cls === 'bad') s.classList.add('mal'); }); }   /* tropieza justo en la dominante sin 7ª */
         if(!vid.paused && !vid.ended) raf = requestAnimationFrame(bucle); })();
       vid.onended = function(){ final(); };
     }
-    /* (Iago 2-nov) nota sobre 10: proporción de casillas bien; cada dominante sin 7ª resta 2,5 (dos: −5, es decir, 75 % y 50 %) — corregido 2-nov 13:37 */
+    /* (Iago 2-nov 13:37–13:43) nota sobre 10, igual que las fichas: cada acorde mal −5, cada dominante sin 7ª −2,5, puente mal → 0 */
     function notaDe(V){
-      var libres = EX.sol.filter(function(d){ return !d.fixed; }).length, bien = 0, sin7 = 0;
-      V.forEach(function(v, i){ if(EX.sol[i].fixed) return; if(v.cls !== 'bad') bien++; if(v.cls === 'amber') sin7++; });
-      var n = Math.max(0, 10*bien/libres - 2.5*Math.min(2, sin7));
-      return {n:n, txt:(Math.round(n*100)/100).toFixed(2).replace(/0$/, '').replace(/\.0?$/, '').replace('.', ','), sin7:sin7};
+      var mal = 0, sin7 = 0, puenteMal = false;
+      V.forEach(function(v, i){ if(EX.sol[i].fixed) return; if(v.cls === 'bad'){ mal++; if(EX.sol[i].magic) puenteMal = true; } if(v.cls === 'amber') sin7++; });
+      var n = puenteMal ? 0 : Math.max(0, 10 - 5*mal - 2.5*sin7);
+      return {n:n, txt:String(n).replace('.', ','), sin7:sin7, mal:mal, puenteMal:puenteMal};
     }
     function final(){
       var ex = resultado.exito;
       verd.style.setProperty('--vc', ex ? (resultado.amber ? '#f0b429' : '#46d17f') : '#ff5a4f');
       verd.querySelector('b').textContent = ex ? (resultado.amber ? 'Modulación salvada' : 'Modulación exitosa') : 'Modulación fallida';
-      verd.querySelector('span').textContent = ex ? (resultado.amber ? 'Con defectos: a alguna dominante le falta la 7ª' : 'Has llegado a ' + M.keyLabel(EX.B)) : 'Algún acorde no encajaba y el puente no aguantó';
+      verd.querySelector('span').textContent = ex ? (resultado.amber ? 'Con defectos, pero llegas: nota ' + String(resultado.nota).replace('.', ',') : 'Has llegado a ' + M.keyLabel(EX.B)) : 'Demasiados fallos: el puente no aguantó';
       verd.classList.remove('va'); void verd.offsetWidth; verd.classList.add('va');
       if(musOn) Orq.listo().then(function(){ Orq.fx(ex ? 'revela' : 'boom', Orq.ahora() + .02, ex ? .55 : .35); });
       despues(2600, function(){ if(enEscena(sec)) resultadoVer(); });
@@ -1237,10 +1239,13 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       var ex = resultado.exito, V = resultado.V, ban = RS.querySelector('.ban');
       ban.style.setProperty('--vc', ex ? (resultado.amber ? '#f0b429' : '#46d17f') : '#ff5a4f');
       var nb = V.filter(function(v){ return v.cls === 'bad'; }).length, na = V.filter(function(v){ return v.cls === 'amber'; }).length;
-      var NT = notaDe(V), menos = NT.sin7 ? ' · −' + (NT.sin7 > 1 ? '5' : '2,5') + ' por la 7ª' : '';
-      ban.querySelector('b').textContent = (ex ? (na ? 'Modulación salvada · con defectos' : 'Modulación exitosa') : 'Modulación fallida') + ' · Nota: ' + NT.txt + menos;
-      ban.querySelector('span').textContent = ex ? (na ? na + ' dominante' + (na > 1 ? 's' : '') + ' sin 7ª (en ámbar). La 7ª no es solo estilo: le da a la dominante el impulso que te lleva al I.' : '¡Puente perfecto! De ' + M.keyLabel(EX.A) + ' a ' + M.keyLabel(EX.B) + '.')
-        : nb + ' casilla' + (nb > 1 ? 's' : '') + ' en rojo' + (na ? ' y ' + na + ' sin 7ª (ámbar)' : '') + '. Abajo, en azul, la solución.';
+      var NT = notaDe(V), menos = '';
+      ban.querySelector('b').textContent = (ex ? (resultado.amber ? 'Modulación salvada · con defectos' : 'Modulación exitosa') : 'Modulación fallida') + ' · Nota: ' + NT.txt + menos;
+      var det = [];
+      if(NT.puenteMal) det.push('El puente está mal: sin acorde común no hay modulación (0)');
+      else { if(nb) det.push(nb + ' acorde' + (nb > 1 ? 's' : '') + ' mal, en rojo (−' + 5*nb + ')'); if(na) det.push(na + ' dominante' + (na > 1 ? 's' : '') + ' sin 7ª, en ámbar (−' + String(2.5*na).replace('.', ',') + ')'); }
+      ban.querySelector('span').textContent = (NT.n === 10) ? '¡Puente perfecto! De ' + M.keyLabel(EX.A) + ' a ' + M.keyLabel(EX.B) + '.'
+        : det.join(' · ') + '.' + (na ? ' La 7ª no es solo estilo: le da a la dominante el impulso que te lleva al I.' : '') + (nb ? ' Abajo, en azul, la solución.' : '');
       RS.querySelector('.bNuevo').hidden = demo;
       var C = RS.querySelector('.taller.corr'), cont = C.querySelector('.hoja .pent');
       var col = V.map(function(v){ return v.cls === 'ok' ? '#1e9e57' : v.cls === 'amber' ? '#b07d09' : '#c0392b'; });
