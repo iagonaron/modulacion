@@ -29,10 +29,15 @@ a.ses small{color:var(--tenue);font-size:14px;line-height:1.4}
 a.ses:hover, a.ses:focus-visible{border-color:#fff;outline:none}
 .ses.prox{opacity:.45;pointer-events:none}
 .ses.prox img{filter:grayscale(1) blur(2px)}
+/* (Iago 2-nov) música del menú, también al volver de una sesión */
+#bMus{position:fixed;top:14px;right:max(16px, env(safe-area-inset-right, 0px));width:44px;height:44px;display:grid;place-items:center;background:var(--panel);border:2px solid var(--oro);color:var(--oro2);font:700 20px system-ui;cursor:pointer;box-shadow:0 3px 0 #000}
+#bMus.off{opacity:.5}
 </style>
 </head>
 <body>
 <div class="fondo" aria-hidden="true"></div>
+<audio id="mus" src="s1/mus/mundo.mp3" loop preload="auto"></audio>
+<button id="bMus" title="Música" aria-label="Música">♪</button>
 <main>
   <span class="sup">Unidad 8 · 2.º GP</span>
   <h1>Modulación</h1>
@@ -47,6 +52,19 @@ a.ses:hover, a.ses:focus-visible{border-color:#fff;outline:none}
 <script>
 /* los enlaces llevan la cuenta (#c=…) a cada sesión */
 [].forEach.call(document.querySelectorAll('a.ses[data-ir]'), function(a){ a.href = a.getAttribute('data-ir') + location.hash; });
+/* (Iago 2-nov) música del menú: suena al entrar y al volver de una sesión; si el navegador no deja sonar solo, empieza con el primer toque */
+(function(){
+  var au = document.getElementById('mus'), b = document.getElementById('bMus'), on = true, raf = null;
+  try{ on = localStorage.getItem('mod_menu_mus') !== 'off'; }catch(e){}
+  function pinta(){ b.classList.toggle('off', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+  function sube(){ cancelAnimationFrame(raf); var t0 = performance.now(), v0 = au.volume;
+    (function paso(t){ var k = Math.min(1, (t - t0)/1500); au.volume = v0 + (.4 - v0)*k; if(k < 1) raf = requestAnimationFrame(paso); })(t0); }
+  function suena(){ if(!on || !au.paused) return; au.volume = 0; var p = au.play(); if(p && p.then) p.then(sube).catch(function(){}); else sube(); }
+  function primerToque(e){ if(e && e.target === b) return; document.removeEventListener('pointerdown', primerToque, true); document.removeEventListener('keydown', primerToque, true); suena(); }
+  document.addEventListener('pointerdown', primerToque, true); document.addEventListener('keydown', primerToque, true);
+  b.onclick = function(e){ e.stopPropagation(); on = !on; try{ localStorage.setItem('mod_menu_mus', on ? 'on' : 'off'); }catch(er){} pinta(); if(on) suena(); else au.pause(); };
+  pinta(); suena();
+})();
 </script>
 </body>
 </html>
