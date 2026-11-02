@@ -4,6 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
+<script>
+/* (2-nov-2026, C1 Modulación, Iago: «como en Atonalidad») LAS SESIONES SE ABREN EN CLASE. El portal gp.lmathome.es (la medalla y el
+   aviso «Modulación · Sesión N» de la campana) abre esta página con «#cu=<cuenta>&dias=1.2» (y «&dia=2» desde el aviso de esa
+   sesión): aquí se quita de la dirección, se guarda en este navegador (lm_mod_hitos) y solo se puede entrar en esas sesiones; las
+   demás, con su candado. El profe (#c=, cuenta de pruebas), el ordenador de clase o quien llega sin más: todo abierto.
+   Para la campana del Diario, la portada se apunta como «portada». Quitarlo: borrar este bloque y el de «candados» de abajo. */
+(function () {
+  var K = 'lm_mod_hitos', st = null, UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  try { document.documentElement.setAttribute('data-lm-ejercicio', 'portada'); } catch (e) {}
+  try { st = JSON.parse(localStorage.getItem(K) || 'null'); } catch (e) {}
+  var ir = 0;
+  try {
+    var ps = (location.hash || '').replace(/^#/, '').split('&'), q = {};
+    ps.forEach(function (p) { var i = p.indexOf('='); if (i > 0) { try { q[p.slice(0, i)] = decodeURIComponent(p.slice(i + 1)); } catch (e) {} } });
+    if (q.c && UUID.test(q.c)) { st = null; try { localStorage.removeItem(K); } catch (e) {} }
+    else if (q.cu && UUID.test(q.cu)) {
+      var d = String(q.dias || '').split(/[.,]/).map(Number).filter(function (n) { return n >= 1 && n <= 4; });
+      st = { cuenta: q.cu.toLowerCase(), dias: d, en: new Date().toISOString() }; try { localStorage.setItem(K, JSON.stringify(st)); } catch (e) {}
+    }
+    if (/^[1-4]$/.test(q.dia || '')) ir = +q.dia;
+    if ('cu' in q || 'dias' in q || 'dia' in q) {
+      var resto = ps.filter(function (p) { return p && !/^(cu|dias|dia)=/.test(p); }).join('&');
+      history.replaceState(history.state, '', location.pathname + location.search + (resto ? '#' + resto : ''));
+    }
+  } catch (e) {}
+  var ab = (st && Array.isArray(st.dias)) ? st.dias.map(Number) : null;   // null = todo abierto
+  window.ModHitos = { activo: function () { return !!ab; }, abierto: function (n) { return !ab || ab.indexOf(+n) >= 0; }, ir: ir };
+  if (ir && (!ab || ab.indexOf(ir) >= 0)) { location.replace('s' + ir + '/' + location.hash); }
+})();
+</script>
 <title>Modulación · Unidad 8</title>
 <link rel="icon" href="favicon-32.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
@@ -29,6 +59,13 @@ a.ses small{color:var(--tenue);font-size:14px;line-height:1.4}
 a.ses:hover, a.ses:focus-visible{border-color:#fff;outline:none}
 .ses.prox{opacity:.45;pointer-events:none}
 .ses.prox img{filter:grayscale(1) blur(2px)}
+/* (2-nov-2026) una sesión que aún no se ha visto en clase: apagada, con su candado */
+a.ses.cerrado{cursor:default;border-color:rgba(232,196,106,.45)}
+a.ses.cerrado img{filter:grayscale(.85) brightness(.55)}
+a.ses.cerrado span{opacity:.75}
+a.ses .candado{display:none;align-items:center;gap:6px;font:700 12px "Pixelify Sans",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--oro2)}
+a.ses.cerrado .candado{display:inline-flex}
+a.ses .candado svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 /* (Iago 2-nov) música del menú, también al volver de una sesión */
 #bMus{position:fixed;top:14px;right:max(16px, env(safe-area-inset-right, 0px));width:44px;height:44px;display:grid;place-items:center;background:var(--panel);border:2px solid var(--oro);color:var(--oro2);font:700 20px system-ui;cursor:pointer;box-shadow:0 3px 0 #000}
 #bMus.off{opacity:.5}
@@ -52,6 +89,16 @@ a.ses:hover, a.ses:focus-visible{border-color:#fff;outline:none}
 <script>
 /* los enlaces llevan la cuenta (#c=…) a cada sesión */
 [].forEach.call(document.querySelectorAll('a.ses[data-ir]'), function(a){ a.href = a.getAttribute('data-ir') + location.hash; });
+/* candados (ver arriba): las sesiones que aún no se han dado en clase */
+[].forEach.call(document.querySelectorAll('a.ses[data-ir]'), function(a){
+  var n = +((/s(\d)\//.exec(a.getAttribute('data-ir')) || [])[1] || 0);
+  if(!n || !window.ModHitos || window.ModHitos.abierto(n)) return;
+  a.classList.add('cerrado'); a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true');
+  var c = document.createElement('i'); c.className = 'candado';
+  c.innerHTML = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Se abre en clase';
+  a.querySelector('span').appendChild(c);
+  a.addEventListener('click', function(e){ e.preventDefault(); });
+});
 /* (Iago 2-nov) música del menú: suena al entrar y al volver de una sesión; si el navegador no deja sonar solo, empieza con el primer toque */
 (function(){
   var au = document.getElementById('mus'), b = document.getElementById('bMus'), on = true, raf = null;
