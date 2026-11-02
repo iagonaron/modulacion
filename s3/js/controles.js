@@ -154,7 +154,7 @@
     document.head.appendChild(css);
     var fila = document.querySelector('.cab .fila'); if(!fila) return;
     var volverA = window.MOD_VOLVER || '../prueba.html';
-    var bV = boton('bVolver', 'Volver al portal', SVG.volver, function(){ location.href = volverA; });
+    var bV = boton('bVolver', 'Volver al portal', SVG.volver, function(){ location.href = volverA + location.hash; });   /* (2-nov) conserva la cuenta (#c=…) al volver al menú */
     bP = boton('bPausa', 'Pausa (P)', SVG.pausa, function(){ P.on ? sigue() : pausa(); });
     bF = boton('bFull', 'Pantalla completa', SVG.full, completa);
     if(!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen)) bF.hidden = true;
