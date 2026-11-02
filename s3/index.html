@@ -9,7 +9,7 @@
 <title>Modulación · Sesión 3</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/s2_test.css?v=6">
+<link rel="stylesheet" href="css/s2_test.css?v=7">
 <style>
 /* Sesión 3 · «Construye el puente». Interfaz de la S1/S2 (piedra, oro y pergamino) + mecánica del ejercicio de
    TEORÍA at home PRO → Modulación (casillas cuadradas, casilla 5 mágica, editor Nota / Alteración / Tipo / 7ª). */
@@ -602,7 +602,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
 <script src="js/s2_test.js?v=13"></script>
 <script src="js/s3_motor.js?v=3"></script>
 <script src="js/rueda.js?v=1"></script>
-<script src="js/orquesta.js?v=5"></script>
+<script src="js/orquesta.js?v=6"></script>
 <script>
 (function(){
   var $ = function(i){ return document.getElementById(i); };
@@ -911,7 +911,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       var i = sel; guarda(i); sel = null; ed.classList.remove('show');
       pinta(i);
       /* (Iago 2-nov) cada «Hecho» hace sonar la secuencia desde el principio hasta la última casilla puesta */
-      if(!demo){ var ult = i; EX.sol.forEach(function(d, j){ if(!d.fixed && user[j]) ult = Math.max(ult, j); }); oye(0, ult); }
+      if(!demo){ var ult = i; EX.sol.forEach(function(d, j){ if(!d.fixed && user[j]) ult = Math.max(ult, j); }); while(ult + 1 < EX.n && EX.sol[ult + 1].fixed) ult++; oye(0, ult); }   /* (Iago 2-nov) si detrás solo queda la casilla dada (el I final), suena todo hasta el final */
       revisa();
     }
     function editor(i){
@@ -927,7 +927,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       [].forEach.call(ed.querySelectorAll('[data-a]'), function(b){ b.onclick = function(){ clic('tecla'); est.alter = +b.dataset.a; vivo(i); }; });
       [].forEach.call(ed.querySelectorAll('[data-m]'), function(b){ b.onclick = function(){ clic('tecla'); est.modo = b.dataset.m; if(est.modo !== 'M') est.seventh = false; vivo(i); }; });
       ed.querySelector('[data-s]').onclick = function(){ clic('tecla'); est.seventh = !est.seventh; if(est.seventh) est.modo = 'M'; vivo(i); };
-      ed.querySelector('.eHecho').onclick = function(){ if(!corriendo || demoClic){ clic('boton'); cierra(); } };
+      ed.querySelector('.eHecho').onclick = function(){ if(!corriendo || demoClic){ clic(demo ? 'tecla' : 'boton', true); cierra(); } };   /* (Iago 2-nov) en la demo, «Hecho» suena a tecla y seleccionar, a clic de ratón; el alumno real conserva sus sonidos
       ed.querySelector('.eVacia').onclick = function(){ if(corriendo) return; clic('boton'); user[i] = null; sel = null; ed.classList.remove('show'); pinta(); revisa(); };
       vivo(i, true);
     }
@@ -950,7 +950,7 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       if(completo()){ guarda(i); xs = pintaPartitura(T.querySelector('.pent'), user, null); }
     }
     /* sonidos de botones (Splice, retro): maquina = casilla, tecla = editor, boton = acciones, ding = cartel nuevo */
-    function clic(nombre){ if(!musOn) return; Orq.listo().then(function(){ Orq.fx(nombre, Orq.ahora() + .005, nombre === 'ding' ? .35 : .55); }); }
+    function clic(nombre, tal){ if(!musOn) return; if(demo && !tal && (nombre === 'tecla' || nombre === 'maquina')) nombre = 'raton';   /* (Iago 2-nov) el alumno robot selecciona con clic de ratón */ Orq.listo().then(function(){ Orq.fx(nombre, Orq.ahora() + .005, nombre === 'ding' ? .35 : .55); }); }
     /* (Iago 1-nov) al completar una sección, suenan todos los acordes hasta ahí (no solo el último) */
     function finSeccion(i){
       var P = [[1,2,3], [4], EX.n === 8 ? [5,6] : [5]], F = [3, 4, EX.n - 1];
@@ -1097,6 +1097,27 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       despues(1250, function(){ if(!enEscena(sec)) return; dedo.classList.add('clic'); el.classList.add('pulsa'); demoClic = true; el.click(); demoClic = false;
         despues(260, function(){ dedo.classList.remove('clic'); el.classList.remove('pulsa'); if(alFin) despues(650, alFin); }); });
     }
+    /* (Iago 2-nov) el alumno robot lee el cartel con el dedo: pasa el puntero por debajo de cada línea, a velocidad de lectura */
+    function leeCartel(alFin){
+      if(cC.hidden){ if(alFin) alFin(); return; }
+      var R = T.getBoundingClientRect(), rg = document.createRange(), lin = [];
+      rg.selectNodeContents(cTx);
+      [].forEach.call(rg.getClientRects(), function(r){ if(r.width < 2) return;
+        var L = lin.filter(function(l){ return Math.abs(l.top - r.top) < 6; })[0];
+        if(L){ L.left = Math.min(L.left, r.left); L.right = Math.max(L.right, r.right); L.bottom = Math.max(L.bottom, r.bottom); }
+        else lin.push({top:r.top, bottom:r.bottom, left:r.left, right:r.right}); });
+      lin.sort(function(a, b){ return a.top - b.top; });
+      dedo.classList.add('on');
+      (function linea(k){
+        if(!enEscena(sec) || cC.hidden) return;
+        if(k >= lin.length){ dedo.style.transition = ''; despues(450, function(){ if(alFin) alFin(); }); return; }
+        var L = lin[k]; dedo.style.transition = 'left .45s ease, top .45s ease, opacity .3s';
+        dedo.style.left = (L.left - R.left) + 'px'; dedo.style.top = (L.bottom - R.top + 1) + 'px';
+        despues(520, function(){ var d = Math.max(.7, (L.right - L.left)/190);
+          dedo.style.transition = 'left ' + d.toFixed(2) + 's linear, opacity .3s'; dedo.style.left = (L.right - R.left) + 'px';
+          despues(d*1000 + 120, function(){ linea(k + 1); }); });
+      })(0);
+    }
     /* el alumno robot desliza la rueda paso a paso hasta la armadura */
     function dedoGira(K, sig, alFin){
       var host = T.querySelector('.armSel[data-k="' + K + '"] .rueda'), r = host.getBoundingClientRect(), R = T.getBoundingClientRect(), api = ruedas[K];
@@ -1117,33 +1138,36 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
     }
     function demoCorre(){
       corriendo = true; var P = ej.pasos, sol = EX.sol.map(function(s){ return s.acc[0]; });
+      /* (Iago 2-nov) desde el primer momento se ve el puntero: aquí manda el ordenador */
+      dedo.style.transition = 'none'; dedo.style.left = (T.clientWidth*.5) + 'px'; dedo.style.top = (T.clientHeight*.62) + 'px'; void dedo.offsetWidth; dedo.style.transition = ''; dedo.classList.add('on');
       sol[4] = EX.sol[4].acc.filter(function(a){ return a.root.letter === ej.puente; })[0];
       (function hazPaso(p){
         if(!enEscena(sec)) return;
-        if(p >= P.length){ dedo.classList.remove('on'); corriendo = false;
+        if(p >= P.length){ corriendo = false;
           bCorr.disabled = false; bCorr.classList.add('late');
           cartelPon('¡Listo!', 'Todas las casillas llenas. Ahora, <b>✓ Comprobar</b>: a cruzar el puente.', false, function(){
             despues(900, function(){ corriendo = true; dedoA(bCorr, function(){ dedo.classList.remove('on'); corriendo = false; }); }); });
-          despues(2600, function(){ if(enEscena(sec)) dedoA(bEnt, null); });
+          despues(900, function(){ if(enEscena(sec)) leeCartel(function(){ dedoA(bEnt, null); }); });
           return; }
         pasoVisual(p);
         cartelPon(P[p].tit, P[p].tx, false, function(){ despues(700, paso_); }, P[p].arm ? function(){ despues(500, function(){ hazPaso(p + 1); }); } : null);
-        despues(3200, function(){ if(enEscena(sec)) dedoA(bEnt, null); });   /* el alumno robot lee y pulsa «Entendido» */
+        despues(900, function(){ if(enEscena(sec)) leeCartel(function(){ dedoA(bEnt, null); }); });   /* el alumno robot lee el cartel con el dedo y pulsa «Entendido» */
         function paso_(){
           if(P[p].arm){   /* el «alumno fantasma» elige las armaduras */
             var cl = [];
-            ['A','B'].forEach(function(K){ cl.push({rueda:K, sig:EX[K].sig}); });
-            cl.push('.cartelC .bEnt'); cl.push(1300);   /* la ventana pasa al piano */
+            cl.push({lee:true}); ['A','B'].forEach(function(K){ cl.push({rueda:K, sig:EX[K].sig}); });
+            cl.push('.cartelC .bEnt'); cl.push(1300); cl.push({lee:true});   /* la ventana pasa al piano */
             M.conflictivas(EX.A, EX.B).forEach(function(l){ cl.push('.cf-piano .cf-t[data-l="' + l + '"]'); }); cl.push('.cartelC .bEnt'); cl.push(1500); cl.push('.cartelC .bEnt');
-            (function va(j){ if(!enEscena(sec)) return; if(j >= cl.length){ dedo.classList.remove('on'); return; }   /* el último clic («Siguiente paso») lleva al paso 1 */
+            (function va(j){ if(!enEscena(sec)) return; if(j >= cl.length){ return; }   /* el último clic («Siguiente paso») lleva al paso 1 */
               if(typeof cl[j] === 'number'){ despues(cl[j], function(){ va(j + 1); }); return; }
+              if(cl[j].lee){ leeCartel(function(){ va(j + 1); }); return; }
               if(cl[j].rueda){ dedoGira(cl[j].rueda, cl[j].sig, function(){ va(j + 1); }); return; }
               dedoA(T.querySelector(cl[j]), function(){ va(j + 1); }); })(0);
             return;
           }
           (function cas(j){ if(!enEscena(sec)) return; if(j >= P[p].casillas.length){ pasoVisual(p);
               var fin = p === 1 ? 3 : p === 2 ? 4 : EX.n - 1; oye(0, fin, function(){ despues(1300, function(){ hazPaso(p + 1); }); }); return; }
-            var i = P[p].casillas[j]; demoAcorde(i, sol[i], function(){ dedo.classList.remove('on'); despues(350, function(){ cas(j + 1); }); }); })(0);
+            var i = P[p].casillas[j]; demoAcorde(i, sol[i], function(){ despues(350, function(){ cas(j + 1); }); }); })(0);
         }
       })(0);
     }
