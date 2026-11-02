@@ -688,7 +688,7 @@ body.mundo #voz b{color:#ffd98a;font-weight:700;text-shadow:0 0 10px rgba(255,21
     window.scrollTo(0, 0);
   }
   $('bAnt').onclick = function(){ ve(idx - 1); };
-  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = '../'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ if(ESC[idx].dataset.e === 'reflexion' && rePendiente){ muestraRe(); return; } ve(idx + 1); };
+  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = window.MOD_VOLVER || '../prueba.html'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ if(ESC[idx].dataset.e === 'reflexion' && rePendiente){ muestraRe(); return; } ve(idx + 1); };
   function modo(v){ AULA = v; $('mJ').setAttribute('aria-pressed', !v); $('mV').setAttribute('aria-pressed', v); if(R) R.auto(v); }
   $('mJ').onclick = function(){ modo(false); }; $('mV').onclick = function(){ modo(true); };
   function despues(ms, f){ timers.push(setTimeout(f, ms)); }
