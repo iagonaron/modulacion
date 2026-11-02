@@ -5,6 +5,7 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
+- 2-nov 13:55 · C1 · HECHO · S3 v3.7 / S4 v2.7: la dominante sin 7.ª resta 2,5 sobre 10 (una = 7,5; las dos = 5), no 0,25, como aclara Iago; también la pista del test de la S3 (−2,5). DESHACER: s3/index.html y s4/index.html a 7510cb8.
 - 2-nov 13:45 · C1 · HECHO · S3 v3.6 / S4 v2.6: el alumno robot lee los carteles un poco más rápido (dedo a 250 px/s, antes 190; cambio de línea 0,38 s). Y para la dominante pulsa directamente «7ª (dominante)», que ya marca Mayor (no pulsa antes Mayor). Solo cambian s3/index.html y s4/index.html. DESHACER: volver esos dos ficheros al commit 14e4406 (el de la S3 tiene un commit intermedio solo con la velocidad).
 - 2-nov 12:58 · C1 · HECHO · S2 v15: la cinemática diatónica es ahora el vídeo de la modulación exitosa de la S3 (26 s, llega a la ciudad) con los acordes del libro (C F G7 C · Em · D7 G) a ♩ = 96, percusión, arpa y final de la canción «wow»; tiempos en s2/js/s2_datos.js. DESHACER: volver s2/index.html, s2/js/s2_datos.js y s2/video/diatonica.mp4 al commit anterior a este bloque.
 - 2-nov 12:50 · C1 · HECHO · música en el menú (prueba.html: suena al entrar y al volver de una sesión; botón ♪ para quitarla) y «Cerrar sesión»/↩ vuelven al menú conservando la cuenta #c=… (controles v4 en s1, s2, s3; s4 usa los de s3). DESHACER: volver esos ficheros a 1c252c0.
