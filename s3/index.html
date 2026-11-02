@@ -1115,9 +1115,9 @@ body.mundo .pie .bOir:hover{border-color:#ffd98a;color:#ffd98a}
       (function linea(k){
         if(!enEscena(sec) || cC.hidden) return;
         if(k >= lin.length){ dedo.style.transition = ''; despues(450, function(){ if(alFin) alFin(); }); return; }
-        var L = lin[k]; dedo.style.transition = 'left .45s ease, top .45s ease, opacity .3s';
+        var L = lin[k]; dedo.style.transition = 'left .38s ease, top .38s ease, opacity .3s';
         dedo.style.left = (L.left - R.left) + 'px'; dedo.style.top = (L.bottom - R.top + 1) + 'px';
-        despues(520, function(){ var d = Math.max(.7, (L.right - L.left)/190);
+        despues(430, function(){ var d = Math.max(.55, (L.right - L.left)/250);   /* 2-nov 13:35 Iago: un poco más rápido (antes 190 px/s) */
           dedo.style.transition = 'left ' + d.toFixed(2) + 's linear, opacity .3s'; dedo.style.left = (L.right - R.left) + 'px';
           despues(d*1000 + 120, function(){ linea(k + 1); }); });
       })(0);
