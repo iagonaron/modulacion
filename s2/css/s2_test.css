@@ -61,7 +61,7 @@
 .s2t .s2t-extra { flex-basis: 100%; margin-top: 2px; color: var(--oro2); font-weight: 700; }
 .s2t .s2t-btns { flex: none; display: flex; align-items: stretch; min-width: 170px; }
 .s2t .s2t-btn {
-  flex: 1; padding: 0 22px; min-height: 52px; font-family: "Marcellus SC", Georgia, serif; font-size: 21px; letter-spacing: .03em;
+  flex: 1; padding: 0 22px; min-height: 52px; font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 500; font-size: 17px; letter-spacing: 0;   /* (Iago 2-nov) Marcellus se veía raro en el botón: la misma letra que los botones de abajo */
   color: #1a1300; background: linear-gradient(#ffe6a8, #e8bc58); border: 2px solid var(--oro); border-radius: 4px;
   box-shadow: 0 3px 0 #8a6a1c, 0 0 14px rgba(255, 217, 138, .3); transition: transform .08s, filter .15s;
 }
@@ -69,7 +69,7 @@
 .s2t .s2t-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #8a6a1c; }
 .s2t .s2t-btn:disabled { color: #6f7391; background: rgba(255, 255, 255, .06); border-color: rgba(244, 213, 138, .25); box-shadow: none; cursor: not-allowed; }
 .s2t .s2t-btn[hidden] { display: none; }
-.s2t .s2t-btn-sig { animation: s2t-latido 1.4s ease-in-out infinite; }
+.s2t .s2t-btn-sig { animation: none; }   /* (Iago 2-nov) sin parpadeo */
 
 /* ---------- Fichas (opciones) ---------- */
 .s2t .s2t-tile {
