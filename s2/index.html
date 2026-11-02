@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<script src="js/controles.js?v=2"></script>
+<script src="js/controles.js?v=3"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://ge.lmathome.es/piel/latido.js?v=1"></script>
 <script>window.TROZOS = {"video/cromatica.mp4": 2, "video/enarmonica.mp4": 2};</script>
 <title>Modulación · Sesión 2</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus+SC&family=Pixelify+Sans:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/s2_test.css?v=2">
+<link rel="stylesheet" href="css/s2_test.css?v=3">
 <style>
 /* Sesión 2 · «Tres formas de viajar». Misma interfaz que la S1 desde el wow (piedra, oro y pergamino), sin la etapa retro. */
 :root{
@@ -524,7 +524,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
 <script src="js/sonido.js?v=14"></script>
 <script src="js/pentagrama.js?v=17"></script>
 <script src="js/s2_datos.js?v=8"></script>
-<script src="js/s2_test.js?v=7"></script>
+<script src="js/s2_test.js?v=10"></script>
 <script>
 (function(){
   var $ = function(i){ return document.getElementById(i); };
@@ -540,7 +540,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
     definicion:'Dicho de forma muy simple, modular es ir de una tonalidad A a una tonalidad B de forma coherente musicalmente. Coherente quiere decir que el oído tiene que aceptar el cambio.',
     caminos:'Hoy ves tres formas de viajar. La **diatónica**, a tonalidades cercanas, el puente. La **cromática**, cuando no hay acordes comunes pero sí parecidos, el desnivel. Y la **enarmónica**, el truco para irnos muy lejos, el portal.',
     diaCine:'Para ir a una tonalidad cercana, con hasta dos alteraciones de diferencia en la armadura, buscas un acorde común, un acorde que pertenece a las dos tonalidades. Ese acorde es tu puente.',
-    diaPart:'Es el ejemplo de los apuntes, de Do mayor a Sol mayor. Míralo paso a paso.',
+    diaPart:'Es el ejemplo de los apuntes, de Do mayor a Sol mayor. Míralo paso a paso.|Fíjate en la dominante: siempre la escribes **con séptima**. No es solo una cuestión de estilo: la séptima le da **impulso** hacia el I, hacia donde quieres llegar.',
     croCine:'¿Y si quieres ir a una tonalidad lejana, que no tiene acordes en común con la tuya? Buscas uno parecido, que solo se diferencie por un cromatismo. Ese pequeño cambio es como saltar un desnivel.',
     croPart:'De Do mayor a Mi bemol mayor. Fíjate en el Fa mayor, le bajas el la y se convierte en Fa menor, el segundo grado de Mi bemol.',
     enaCine:'La tercera es la más mágica y la menos común, la enarmónica. Una nota puede escribirse de dos maneras, la bemol es igual a sol sostenido. Si reescribes el acorde puente, se abre un portal hacia tonalidades muy lejanas.',
@@ -699,7 +699,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
     ESC.forEach(function(e, k){ e.classList.toggle('on', k === idx); });
     $('puntos').innerHTML = ESC.map(function(e, k){ return '<i class="'+(k < idx ? 'ya' : (k === idx ? 'ahora' : ''))+'"></i>'; }).join('');
     var k = ESC[idx].dataset.e;
-    $('bAnt').disabled = idx === 0; $('bSig').textContent = idx === ESC.length - 1 ? 'Fin' : (ESC[idx + 1].dataset.e === 'cierre' ? 'Terminar la sesión 2 ▶' : 'Siguiente ▶');
+    $('bAnt').disabled = idx === 0; $('bSig').textContent = idx === ESC.length - 1 ? 'Cerrar sesión' : (ESC[idx + 1].dataset.e === 'cierre' ? 'Terminar la sesión 2 ▶' : 'Siguiente ▶');
     if(!arrancado) return;
     tema(k); voz(k);
     if(ENTRA[k]) ENTRA[k]();
@@ -707,7 +707,7 @@ body.lectura .escena.on.cineE .titulo{opacity:0!important}
   }
   function irA(k){ ve(ESC.findIndex(function(e){ return e.dataset.e === k; })); }
   $('bAnt').onclick = function(){ ve(idx - 1); };
-  $('bSig').onclick = function(){ ve(idx + 1); };
+  $('bSig').onclick = function(){ if(idx === ESC.length - 1){ location.href = '../'; return; }   /* (Iago 2-nov) la última pantalla cierra la sesión y vuelve al menú principal */ ve(idx + 1); };
   function modo(v){ AULA = v; $('mJ').setAttribute('aria-pressed', !v); $('mV').setAttribute('aria-pressed', v); }
   $('mJ').onclick = function(){ modo(false); }; $('mV').onclick = function(){ modo(true); };
   [].forEach.call(document.querySelectorAll('.camCard'), function(b){ b.onclick = function(){ irA(b.dataset.ir); }; });
