@@ -5,6 +5,7 @@ Antes de subir nada: mira el último commit de `main`, lee esto, apunta abajo fe
 El index.html de siempre (el portal antiguo) no se toca: lo nuevo va en prueba.html, s1/, s2/…
 
 ## Registro (lo más reciente arriba · hora de Galicia)
+- 2-nov 07:55 · C1 · EN CURSO · S1 v49, S2 v14, S3 v3, S4 v2: s1/index.html, s1/js/controles.js, s2/index.html, s2/css/s2_test.css, s2/js/{controles,s2_test}.js, s3/index.html, s3/css/s2_test.css, s3/js/{controles,orquesta,s2_test,s3_motor,rueda}.js, s3/video/{s3_exito.mp4.1-2, s3_caida.mp4, s3_tropiezo.mp4}, s4/index.html.
 - 1-nov 23:30 · C1 · HECHO · S4 «Práctica libre» (carpeta s4/ nueva: solo index.html; js, img, sfx y vídeos se toman de ../s3/) + tarjeta en prueba.html
   + s3/index.html (precarga del vídeo con la versión buena). Ejercicios infinitos alternando 7 y 8 casillas, mayores y menores, sin carteles ni pistas;
   armaduras obligatorias; marcador (puentes en pie, racha); «Saltar ▶» en la cinemática. DESHACER: quitar la tarjeta de prueba.html (volver a 89d7bb2).
