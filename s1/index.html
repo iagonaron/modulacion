@@ -303,11 +303,11 @@ body.perg-real .pergamino::before, body.perg-real .pergamino::after{display:none
 body.perg-real .pergamino .tit .prim.flota{right:-30px;top:-52px}
 /* espíritus de luz: Mozart y Rachmaninov aparecen junto a su partitura */
 .escena{position:relative}
-.espiritu{position:absolute;right:150px;top:-12px;height:min(22vh,165px);pointer-events:none;z-index:3;opacity:0;filter:drop-shadow(0 0 22px rgba(255,214,120,.55));transform:translateY(16px) scale(.96);transition:opacity 1.6s ease, transform 1.6s ease}
-.espiritu.r{filter:drop-shadow(0 0 22px rgba(170,170,255,.55))}
+.espiritu{position:absolute;right:150px;top:-12px;height:min(22vh,165px);pointer-events:none;z-index:3;opacity:0;transform:translateY(16px);transition:opacity 1.6s ease, transform 1.6s ease}
+.espiritu.r{}   /* (3-nov-2026, Iago: «se ven borrosos» en el iPad) sin filtros: Safari pinta borroso lo que se mueve con filtro; el brillo ya viene en la imagen */
 .escena.on .espiritu{animation:espiritu 1.8s ease .3s forwards, flota 5s ease-in-out 2.1s infinite alternate}
-@keyframes espiritu{from{opacity:0;transform:translateY(16px) scale(.96);filter:blur(8px) drop-shadow(0 0 22px rgba(255,214,120,.55))} to{opacity:.95;transform:none}}
-@keyframes flota{from{opacity:.95;transform:none} to{opacity:.95;transform:translateY(-10px)}}
+@keyframes espiritu{from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none}}
+@keyframes flota{from{opacity:1;transform:none} to{opacity:1;transform:translateY(-10px)}}
 .escena h2{position:relative;z-index:4}
 /* fondo VIVO desde el primer segundo: el mundo, desenfocado y en penumbra, deriva despacio; partículas siempre */
 body:not(.mundo) #mundoFondo{opacity:.62;filter:blur(7px) brightness(.5) saturate(.85)}
