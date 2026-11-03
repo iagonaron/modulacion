@@ -59,6 +59,34 @@
     if(rRes) proto.resume = function(){ return P.on ? Promise.resolve() : rRes.apply(this, arguments); };
   }
 
+  /* ---- (3-nov-2026, Iago: en el iPad la banda sonora suena a todo volumen, también donde debe callar) ----
+     En iPad/iPhone el volumen de <audio>/<video> es de solo lectura (siempre 1): los fundidos de música nunca llegaban a 0
+     y no se paraba. Solo allí (si el navegador sí deja cambiar el volumen, esto no hace nada) el volumen de cada audio/vídeo
+     pasa por un control de ganancia de Web Audio, y lo que la página «lee» es lo que pidió, así que los fundidos acaban y,
+     al llegar a 0, se pausa como en el ordenador. El contexto de audio se despierta con el primer toque en la pantalla. */
+  (function(){
+    var prueba = document.createElement('audio'); try{ prueba.volume = .5; }catch(e){}
+    if(Math.abs(prueba.volume - .5) < .01) return;            /* el volumen funciona: nada que hacer */
+    var d = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'volume'); if(!d || !d.set) return;
+    var AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+    var ctx = null;
+    function contexto(){ if(!ctx){ try{ ctx = new AC(); }catch(e){ ctx = null; } } return ctx; }
+    function despierta(){ var c = contexto(); if(c && c.state !== 'running' && !P.on){ try{ c.resume(); }catch(e){} } }
+    ['touchend', 'pointerdown', 'click', 'keydown'].forEach(function(n){ document.addEventListener(n, despierta, true); });
+    function enruta(m){
+      if(m.__lmGan) return m.__lmGan;
+      var c = contexto(); if(!c || c.state !== 'running') return null;   /* sin el audio despierto, no se toca (sonaría mudo) */
+      try{ var fu = c.createMediaElementSource(m), g = c.createGain(); fu.connect(g); g.connect(c.destination); m.__lmGan = g; }catch(e){ m.__lmGan = null; return null; }
+      return m.__lmGan;
+    }
+    function aplica(m){ var g = enruta(m); if(g){ try{ g.gain.value = m.__lmVol == null ? 1 : m.__lmVol; }catch(e){} } }
+    Object.defineProperty(HTMLMediaElement.prototype, 'volume', {configurable:true, enumerable:d.enumerable,
+      get:function(){ return this.__lmVol == null ? 1 : this.__lmVol; },
+      set:function(v){ v = Math.max(0, Math.min(1, +v || 0)); this.__lmVol = v; aplica(this); }});
+    var playAntes = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function(){ despierta(); if(this.__lmVol != null) aplica(this); return playAntes.apply(this, arguments); };
+  })();
+
   function pausa(){
     if(P.on) return;
     P.on = true; P.desde = realNow();
