@@ -227,3 +227,30 @@
     }
   });
 })();
+
+/* (13-nov-2026, Iago · Qué suma v2, C1) «cada capítulo cuenta al llegar al 75 %»: cada sesión de Modulación le dice al latido cuánto lleva hecho
+   (data-lm-progreso, 0–1, en <html> junto a data-lm-ejercicio = sesion-N; el latido lo manda a la campana cada 5 s).
+   Se mide por ESCENAS ALCANZADAS: avance = escena más lejana a la que has llegado ÷ (escenas − 1); la última («cierre», «Terminar la sesión»)
+   vale 1. Las escenas con tarea (taller, test, desafío) ocultan «Siguiente» hasta que se resuelven, así que llegar a la siguiente es haberlas hecho.
+   Nunca baja: el máximo se guarda en este navegador (lm_mod_prog_sesion-N). Solo LEE el DOM (.escena.on); no toca el motor ni llama a Supabase.
+   Portada (prueba.html) no carga este bloque ni lleva progreso. Quitarlo: borrar este bloque. */
+(function () {
+  var GUARDADO = null, ult = '';
+  function clave(ej) { return 'lm_mod_prog_' + ej; }
+  function tic() {
+    try {
+      var h = document.documentElement, ej = h.getAttribute('data-lm-ejercicio') || '';
+      if (!/^sesion-\d+$/.test(ej)) { if (h.hasAttribute('data-lm-progreso')) h.removeAttribute('data-lm-progreso'); return; }
+      var esc = document.querySelectorAll('.escena'), n = esc.length, idx = -1, i;
+      if (n < 2) return;
+      for (i = 0; i < n; i++) if (esc[i].classList.contains('on')) { idx = i; break; }
+      if (idx < 0) return;                                   /* aún no se ha pintado ninguna escena */
+      if (GUARDADO === null) { GUARDADO = 0; try { var g = parseFloat(localStorage.getItem(clave(ej))); if (g > 0 && g <= 1) GUARDADO = g; } catch (e) {} }
+      var v = Math.min(1, idx / (n - 1));
+      if (v > GUARDADO) { GUARDADO = v; try { localStorage.setItem(clave(ej), String(v)); } catch (e) {} }
+      var a = GUARDADO.toFixed(3);
+      if (a !== ult || h.getAttribute('data-lm-progreso') !== a) { ult = a; h.setAttribute('data-lm-progreso', a); }
+    } catch (e) {}
+  }
+  setInterval(tic, 1000);
+})();
